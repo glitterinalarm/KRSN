@@ -72,7 +72,7 @@ for category, news in news_by_category.items():
 grid_html += '</div>'
 
 # Inject into insights.html
-path = "dist/insights.html"
+path = "insights.html"
 with open(path, "r") as f:
     content = f.read()
 

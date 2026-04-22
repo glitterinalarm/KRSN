@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import os
 
-files_to_fix = ['dist/work.html', 'dist/lab.html']
+files_to_fix = ['work.html', 'lab.html']
 
 for path in files_to_fix:
     if not os.path.exists(path):

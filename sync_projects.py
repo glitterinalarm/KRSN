@@ -16,7 +16,7 @@ with open(STATE_FILE, 'r') as f:
     state_data = json.load(f)
 
 # Load HTML
-WORK_FILE = 'dist/work.html'
+WORK_FILE = 'work.html'
 if not os.path.exists(WORK_FILE):
     print("Work file not found.")
     exit()

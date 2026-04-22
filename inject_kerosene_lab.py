@@ -1,9 +1,9 @@
 import re
 import os
 
-path = "dist/lab.html"
+path = "lab.html"
 if not os.path.exists(path):
-    print("dist/lab.html not found!")
+    print("lab.html not found!")
     exit(0)
 
 with open(path, "r") as f:

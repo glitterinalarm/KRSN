@@ -11,8 +11,8 @@ python3 fix_site_navigation.py
 python3 fix_grid.py
 
 # 3.5 Copy Uploads from Manager to Dist
-mkdir -p dist/assets/uploads
-cp -r assets_manager/uploads/* dist/assets/uploads/
+mkdir -p assets/uploads
+cp -r assets_manager/uploads/* assets/uploads/
 
 # 4. Sync Projects (Titles, Categories, Media, Video)
 # This uses the data from projects_state.json
