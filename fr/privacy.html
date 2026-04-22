@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@1,6..72,200..800&amp;family=Space+Grotesk:wght@300..700&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style>
+        body { background-color: #0a0a0a; color: #e5e2e1; font-family: 'Space Grotesk', sans-serif; }
+        .headline-serif { font-family: 'Newsreader', serif; font-style: italic; }
+        .grain { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; opacity: 0.03; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"); }
+    </style>
+
+<style id="mobile-readability-fix">
+        @media (max-width: 768px) {
+            /* Better reading for descriptions */
+            p.text-sm, p.font-light {
+                font-size: 15px !important;
+                line-height: 1.7 !important;
+                opacity: 0.8 !important;
+                margin-top: 15px !important;
+                letter-spacing: 0.01em !important;
+            }
+            /* Prevents text from sticking to edges */
+            .p-4, .p-6, .p-8 {
+                padding-left: 20px !important;
+                padding-right: 20px !important;
+            }
+            /* Adjust Titles */
+            h3 {
+                font-size: 1.4rem !important;
+                line-height: 1.2 !important;
+                margin-bottom: 8px !important;
+            }
+            /* Space out project blocks */
+            .group {
+                margin-bottom: 2rem !important;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+<div class="grain"></div>
+<nav class="p-10">
+<a class="text-xl font-black tracking-widest uppercase no-underline text-white" href="index.html">BLSTC</a>
+</nav>
+<main class="max-w-4xl mx-auto px-10 py-20">
+<h1 class="text-6xl md:text-8xl headline-serif mb-20 leading-none tracking-tighter">Politique de Confidentialité.</h1>
+<div class="space-y-16 opacity-80 font-light leading-relaxed">
+<section>
+<h2 class="text-primary uppercase tracking-widest text-xs font-bold mb-6">01. Data Collection</h2>
+<p>We value human privacy as much as creative vision. We do not use trackers or third-party cookies. Any information shared via our brief intake form is stored securely and used exclusively for project collaboration.</p>
+</section>
+<section>
+<h2 class="text-primary uppercase tracking-widest text-xs font-bold mb-6">02. Creative Integrity</h2>
+<p>Project assets, whether human-crafted or AI-augmented, remain confidential until their public release agreed upon by both parties.</p>
+</section>
+<section>
+<h2 class="text-primary uppercase tracking-widest text-xs font-bold mb-6">03. Right to Erasure</h2>
+<p>At any point, you may request the deletion of your shared brief data from our internal systems.</p>
+</section>
+</div>
+<div class="mt-40 pt-10 border-t border-white/10 flex justify-between items-center text-[10px] uppercase tracking-widest opacity-40">
+<span>v.2026.01</span>
+<a class="hover:text-white transition-colors" href="index.html">Retour au Monolithe</a>
+</div>
+</main>
+</body>
+</html>
