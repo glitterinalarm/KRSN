@@ -113,8 +113,6 @@
       transition: background-color 5000s ease-in-out 0s;
     }
   </style>
-
-
 <style id="mobile-readability-fix">
         @media (max-width: 768px) {
             /* Better reading for descriptions */
@@ -253,7 +251,7 @@
 </div>
 </div>
 <!-- Right Column: Intake Form -->
-<form class="lg:col-span-8 space-y-20">
+<form class="lg:col-span-8 space-y-20" onsubmit="return false;">
 <!-- Identity & Context -->
 <section class="space-y-12">
 <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-12">
@@ -349,4 +347,37 @@
         });
     });
 </script>
+
+
+<script id="mailto-logic">
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            const form = event.target;
+            const name = form.querySelector('input[placeholder*="Doe"], input[placeholder*="Dupont"]').value;
+            const email = form.querySelector('input[type="email"]').value;
+            const company = form.querySelector('input[placeholder*="Company"], input[placeholder*="entreprise"]').value;
+            const brief = form.querySelector('textarea').value;
+            const timeline = form.querySelector('input[placeholder*="Weeks"], input[placeholder*="Semaines"]').value;
+
+            const subject = encodeURIComponent(`[BLSTC Brief] New Production Request from ${company || name}`);
+            const body = encodeURIComponent(
+                `Full Name: ${name}\n` +
+                `Email: ${email}\n` +
+                `Company: ${company}\n` +
+                `Timeline: ${timeline}\n\n` +
+                `Project Vision:\n${brief}`
+            ).replace(/%5Cn/g, '%0D%0A');
+
+            window.location.href = `mailto:9ermain@gmail.com?subject=${subject}&body=${body}`;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.querySelector('form');
+            if (form) {
+                form.addEventListener('submit', handleFormSubmit);
+                const btn = form.querySelector('button[type="submit"]');
+                if (btn) btn.removeAttribute('onclick'); // Clean up manual hacks
+            }
+        });
+    </script>
 </body></html>
