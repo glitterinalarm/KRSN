@@ -294,7 +294,7 @@
 <p class="text-[11px] text-outline">(Optional, up to 10MB)</p>
 </div>
 </div>
-<button class="w-full md:w-auto px-16 py-6 bg-surface-container-highest text-primary font-bold uppercase tracking-[0.3em] text-xs hover:bg-primary-container hover:text-on-primary-container transition-all duration-300 active:scale-95" type="submit">
+<button class="w-full md:w-auto px-16 py-6 bg-surface-container-highest text-primary font-bold uppercase tracking-[0.3em] text-xs hover:bg-primary-container hover:text-on-primary-container transition-all duration-300 active:scale-95" onclick="launchDialogue(); return false;" type="button">
             Start the Dialogue
           </button>
 </div>
@@ -349,35 +349,42 @@
 </script>
 
 
-<script id="mailto-logic">
-        function handleFormSubmit(event) {
-            event.preventDefault();
-            const form = event.target;
-            const name = form.querySelector('input[placeholder*="Doe"], input[placeholder*="Dupont"]').value;
-            const email = form.querySelector('input[type="email"]').value;
-            const company = form.querySelector('input[placeholder*="Company"], input[placeholder*="entreprise"]').value;
-            const brief = form.querySelector('textarea').value;
-            const timeline = form.querySelector('input[placeholder*="Weeks"], input[placeholder*="Semaines"]').value;
+<script id="mailto-logic-v3">
+        function launchDialogue() {
+            try {
+                // Find all possible inputs regardless of their order
+                const inputs = document.querySelectorAll('input');
+                const textarea = document.querySelector('textarea');
+                
+                let name = "";
+                let company = "";
+                let email = "";
+                let timeline = "";
+                let brief = textarea ? textarea.value : "";
 
-            const subject = encodeURIComponent(`[BLSTC Brief] New Production Request from ${company || name}`);
-            const body = encodeURIComponent(
-                `Full Name: ${name}\n` +
-                `Email: ${email}\n` +
-                `Company: ${company}\n` +
-                `Timeline: ${timeline}\n\n` +
-                `Project Vision:\n${brief}`
-            ).replace(/%5Cn/g, '%0D%0A');
+                inputs.forEach(input => {
+                    const label = input.closest('div')?.querySelector('label')?.innerText.toLowerCase() || "";
+                    if (label.includes('name') || label.includes('nom')) name = input.value;
+                    if (label.includes('company') || label.includes('entité') || label.includes('entreprise')) company = input.value;
+                    if (label.includes('email') || label.includes('adresse')) email = input.value;
+                    if (label.includes('timeline') || label.includes('délai')) timeline = input.value;
+                });
 
-            window.location.href = `mailto:9ermain@gmail.com?subject=${subject}&body=${body}`;
-        }
+                const subject = encodeURIComponent(`[BLSTC Brief] New Production Request from ${company || name || 'New Client'}`);
+                const body = encodeURIComponent(
+                    `Full Name: ${name}\n` +
+                    `Email: ${email}\n` +
+                    `Company: ${company}\n` +
+                    `Timeline: ${timeline}\n\n` +
+                    `Project Vision:\n${brief}`
+                ).replace(/%5Cn/g, '%0D%0A');
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const form = document.querySelector('form');
-            if (form) {
-                form.addEventListener('submit', handleFormSubmit);
-                const btn = form.querySelector('button[type="submit"]');
-                if (btn) btn.removeAttribute('onclick'); // Clean up manual hacks
+                window.location.href = `mailto:9ermain@gmail.com?subject=${subject}&body=${body}`;
+            } catch (e) {
+                console.error("Mailto error:", e);
+                // Fallback to simple mailto if something fails
+                window.location.href = "mailto:9ermain@gmail.com?subject=Project Enquiry";
             }
-        });
+        }
     </script>
 </body></html>

@@ -12,7 +12,7 @@ python3 fix_grid.py
 python3 fix_mobile_ui.py
 python3 fix_cta_buttons.py
 python3 remove_inquire.py
-python3 setup_mailto.py
+python3 setup_mailto_v3.py
 
 # 3.5 Copy Uploads from Manager to Dist
 mkdir -p assets/uploads
