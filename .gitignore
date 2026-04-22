@@ -1,0 +1,11 @@
+# Local assets and temporary files
+assets_manager/
+projects_media.json
+screens.json
+screen_updates*.json
+test_images.py
+__pycache__/
+*.pyc
+
+# Keep the dist folder (this is what is deployed)
+!dist/

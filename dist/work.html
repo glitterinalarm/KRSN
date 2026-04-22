@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Space+Grotesk:wght@300..700&amp;family=Inter:wght@100..900&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries">
+  </script>
+  <script id="tailwind-config">
+   tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-fixed": "#181c20",
+                    "surface-tint": "#b8c3ff",
+                    "secondary-fixed": "#e2e2e4",
+                    "primary-container": "#2e5bff",
+                    "inverse-on-surface": "#313030",
+                    "error": "#ffb4ab",
+                    "surface-container-lowest": "#0e0e0e",
+                    "tertiary-fixed": "#e0e2e8",
+                    "primary-fixed": "#dde1ff",
+                    "background": "#131313",
+                    "secondary-container": "#454749",
+                    "on-error-container": "#ffdad6",
+                    "error-container": "#93000a",
+                    "surface": "#131313",
+                    "on-tertiary-container": "#eef0f5",
+                    "surface-dim": "#131313",
+                    "on-primary": "#002388",
+                    "inverse-surface": "#e5e2e1",
+                    "tertiary-fixed-dim": "#c4c6cc",
+                    "primary": "#b8c3ff",
+                    "on-primary-container": "#efefff",
+                    "surface-container": "#201f1f",
+                    "inverse-primary": "#124af0",
+                    "surface-container-high": "#2a2a2a",
+                    "on-tertiary": "#2d3135",
+                    "on-error": "#690005",
+                    "secondary-fixed-dim": "#c6c6c8",
+                    "tertiary": "#c4c6cc",
+                    "surface-container-low": "#1c1b1b",
+                    "on-surface-variant": "#c4c5d9",
+                    "primary-fixed-dim": "#b8c3ff",
+                    "on-primary-fixed": "#001356",
+                    "on-surface": "#e5e2e1",
+                    "on-primary-fixed-variant": "#0035be",
+                    "on-secondary-container": "#b4b5b7",
+                    "outline": "#8e90a2",
+                    "outline-variant": "#434656",
+                    "on-secondary-fixed-variant": "#454749",
+                    "tertiary-container": "#6a6d72",
+                    "surface-container-highest": "#353534",
+                    "surface-bright": "#3a3939",
+                    "secondary": "#c6c6c8",
+                    "on-secondary": "#2f3132",
+                    "surface-variant": "#353534",
+                    "on-tertiary-fixed-variant": "#44474b",
+                    "on-background": "#e5e2e1",
+                    "on-secondary-fixed": "#1a1c1d"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0px",
+                    "lg": "0px",
+                    "xl": "0px",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Newsreader", "serif"],
+                    "body": ["Space Grotesk", "sans-serif"],
+                    "label": ["Space Grotesk", "sans-serif"],
+                    "inter": ["Inter", "sans-serif"]
+            }
+          },
+        },
+      }
+  </script>
+  <style>
+   body { font-family: 'Space Grotesk', sans-serif; }
+        .font-serif-italic { font-family: 'Newsreader', serif; font-style: italic; }
+        .grain-overlay {
+            pointer-events: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.04;
+            z-index: 9999;
+        }
+        html { scroll-behavior: smooth; }
+  </style>
+ </head>
+ <body class="bg-background text-on-surface selection:bg-primary selection:text-on-primary-fixed" id="top">
+  <div class="grain-overlay">
+  </div>
+  <!-- Navigation Shell -->
+  <nav class="fixed top-0 w-full z-50 bg-black/90 backdrop-blur-md border-b border-white/10 transition-all duration-300">
+   <div class="flex justify-between items-center px-6 py-4 w-full max-w-full mx-auto">
+    <div class="flex items-center gap-6">
+     <a class="text-xl font-black tracking-widest text-white uppercase font-inter no-underline" href="index.html">
+      BLSTC
+     </a>
+     <!-- Language Toggle Next To Logo -->
+     <div class="hidden md:flex items-center gap-2 font-inter text-[9px] uppercase tracking-widest text-outline-variant border-l border-white/10 pl-6">
+      <button class="hover:text-primary transition-colors focus:outline-none" id="lang-fr" onclick="switchLang('fr')">
+       FR
+      </button>
+      <span class="opacity-30">
+       /
+      </span>
+      <button class="hover:text-primary transition-colors focus:outline-none" id="lang-en" onclick="switchLang('en')">
+       EN
+      </button>
+     </div>
+    </div>
+    <div class="hidden md:flex items-center gap-8 font-inter tracking-tighter uppercase text-xs font-light">
+     <a class="text-gray-400 hover:text-white transition-all duration-300 no-underline" href="work.html#directed-by-humans" id="nav-human">
+      By Human
+     </a>
+     <a class="text-gray-400 hover:text-white transition-all duration-300 no-underline" href="work.html#generative-systems" id="nav-ai">
+      AI Native
+     </a>
+     <a class="text-gray-400 hover:text-white transition-all duration-300 no-underline" href="lab.html">
+      Lab
+     </a>
+     <a class="text-gray-400 hover:text-white transition-all duration-300 no-underline" href="insights.html">
+      Insights
+     </a>
+     <a class="text-gray-400 hover:text-white transition-all duration-300 no-underline" href="contact.html">
+      Contact
+     </a>
+     <a class="bg-white text-black px-4 py-2 text-[10px] uppercase tracking-widest font-bold hover:opacity-70 transition-opacity ml-4 no-underline" href="contact.html">
+      Inquire
+     </a>
+    </div>
+    <div class="flex items-center gap-4 md:hidden">
+     <!-- Mobile Lang Toggle -->
+     <div class="flex items-center gap-2 font-inter text-[9px] uppercase tracking-widest text-outline-variant mr-4">
+      <button class="hover:text-primary transition-colors focus:outline-none" onclick="switchLang('fr')">
+       FR
+      </button>
+      <span class="opacity-30">
+       /
+      </span>
+      <button class="hover:text-primary transition-colors focus:outline-none" onclick="switchLang('en')">
+       EN
+      </button>
+     </div>
+     <button class="text-white active:scale-95 duration-200" id="mobile-menu-trigger">
+      <span class="material-symbols-outlined" data-icon="menu">
+       menu
+      </span>
+     </button>
+    </div>
+   </div>
+   <script type="text/javascript">
+    function checkCurrentLang() {
+        if(window.location.pathname.startsWith('/fr')) {
+            document.querySelectorAll('#lang-fr').forEach(el => el.classList.add('text-primary'));
+        } else {
+            document.querySelectorAll('#lang-en').forEach(el => el.classList.add('text-primary'));
+        }
+    }
+    
+    function switchLang(lang) {
+        var path = window.location.pathname;
+        var file = path.split('/').pop();
+        if(!file || file === 'fr') file = 'index.html';
+        
+        var isFr = path.startsWith('/fr');
+        
+        if(lang === 'fr' && !isFr) {
+            window.location.href = '/fr/' + file;
+        } else if (lang === 'en' && isFr) {
+            window.location.href = '/' + file;
+        }
+    }
+    
+    document.addEventListener('DOMContentLoaded', checkCurrentLang);
+   </script>
+  </nav>
+  <main class="pt-32">
+   <!-- Hero Title Section -->
+   <header class="px-10 mb-24">
+    <h1 class="text-[12vw] font-serif-italic leading-[0.85] tracking-tighter text-on-surface" style="">
+     <span class="text-primary" style="">
+      <font color="#e5e2e1">
+       Works
+      </font>
+      .
+     </span>
+    </h1>
+    <div class="mt-8 flex flex-col md:flex-row justify-between items-end gap-6">
+     <div class="max-w-xl">
+      <p class="text-lg font-light text-on-surface-variant leading-relaxed" style="">
+       Creating is not just about filling a space or following a trend: it is about solving a problem, conveying an emotion, and building a solid identity.
+      </p>
+      <div class="mt-8 flex gap-4">
+       <span class="text-xs font-label uppercase tracking-widest text-primary" style="">
+        Two Ways of Working
+       </span>
+       <span class="material-symbols-outlined text-primary animate-bounce" data-icon="south" style="">
+        south
+       </span>
+      </div>
+     </div>
+     <div class="flex gap-4">
+      <span class="text-xs font-label uppercase tracking-widest text-primary border-l border-primary/30 pl-4" style="">
+       v.2026.08
+      </span>
+      <span class="text-xs font-label uppercase tracking-widest text-on-surface-variant border-l border-outline-variant pl-4" style="">
+       Digital Monolith
+      </span>
+     </div>
+    </div>
+   </header>
+   <!-- Section 1: Directed by Humans -->
+   <section class="px-10 py-20 bg-surface" id="directed-by-humans">
+    <div class="mb-12 flex flex-col md:flex-row md:items-baseline justify-between gap-4">
+     <div class="flex items-baseline gap-4">
+      <h2 class="text-4xl md:text-6xl font-serif-italic" style="">
+       Directed by Humans
+      </h2>
+     </div>
+     <div class="md:text-right">
+      <p class="text-xs font-label text-primary tracking-[0.3em] uppercase" style="">
+       Strategic Orchestration &amp; Creative Direction
+      </p>
+     </div>
+    </div>
+    <!-- Asymmetric Bento Grid for Human Work -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-0 border border-outline-variant/10">
+     <!-- Large Feature -->
+     <div class="group relative overflow-hidden border-r border-outline-variant/10 md:col-span-8 aspect-[2/1] group relative overflow-hidden">
+      <img alt="Cinematic wide shot of a futuristic brutalist concrete structure at dawn" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-video="https://www.youtube.com/embed/_Rr_aqBYW14?autoplay=1&amp;mute=1&amp;controls=0&amp;loop=1&amp;playlist=_Rr_aqBYW14&amp;modestbranding=1&amp;rel=0&amp;iv_load_policy=3&amp;showinfo=0" src="https://i.ibb.co/pqrVWtc/DGPN02.png" style=""/>
+      <div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-60">
+      </div>
+      <div class="absolute bottom-10 left-10">
+       <p class="text-xs font-label text-primary mb-2 tracking-widest" style="">
+        BROADCAST
+       </p>
+       <h3 class="text-3xl font-serif-italic text-on-surface" style="">
+        Police Nationale
+       </h3>
+       <p class="text-sm text-on-surface-variant font-light mt-4 line-clamp-3">
+        Cinematic direction and high-end production for the National Police institutional film.
+       </p>
+      </div>
+     </div>
+     <!-- Secondary Item -->
+     <div class="group relative overflow-hidden border-b border-outline-variant/10 md:col-span-4 aspect-square group relative overflow-hidden">
+      <img alt="Close-up of a human eye with intense focus" class="w-full h-full object-cover grayscale brightness-75 group-hover:grayscale-0 transition-all duration-700" data-slideshow="/assets/uploads/LBC_00.jpg,/assets/uploads/leboncoin_LBC_02.jpg,/assets/uploads/leboncoin_LBC_03.jpg,/assets/uploads/leboncoin_LBC_04.jpg,/assets/uploads/LBC_05.jpg,/assets/uploads/LBC_07.jpg" src="/assets/uploads/LBC_00.jpg" style=""/>
+      <div class="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+      </div>
+      <div class="absolute bottom-10 left-10">
+       <p class="text-xs font-label text-primary mb-2 tracking-widest" style="">
+        MOTION
+       </p>
+       <h3 class="text-2xl font-serif-italic text-on-surface" style="">
+        Leboncoin
+       </h3>
+       <p class="text-sm text-on-surface-variant font-light mt-4 line-clamp-3">
+        Fluid motion design and character animation for Leboncoin's digital campaigns.
+       </p>
+      </div>
+     </div>
+     <!-- Third Item -->
+     <div class="group relative overflow-hidden border-r border-outline-variant/10 md:col-span-4 aspect-square group relative overflow-hidden">
+      <img alt="Abstract architectural lines of a staircase" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-slideshow="/assets/uploads/1758205991092.jpeg,/assets/uploads/bnp_parisbas_AXEPTA_01.jpeg,/assets/uploads/bnp_parisbas_Citylight_Mockup_4.jpg,/assets/uploads/bnp_parisbas_Layer-3.png,/assets/uploads/IMG_0515.jpg,/assets/uploads/bnp_parisbas_AXEPTA_07.jpg,/assets/uploads/carrousel_03_copy.png,/assets/uploads/IMG_0618-2aline.jpg" src="/assets/uploads/1758205991092.jpeg" style=""/>
+      <div class="absolute bottom-10 left-10">
+       <h3 class="text-2xl font-serif-italic text-on-surface" style="">
+        <font color="#b8c3ff" face="Space Grotesk, sans-serif">
+         <span style="font-size: 12px; font-style: normal; letter-spacing: 1.2px;">
+          BNP Parisbas
+         </span>
+        </font>
+        <br/>
+        <div>
+         <span style="font-size: 1.5rem; font-weight: inherit;">
+          BNP Parisbas
+         </span>
+        </div>
+       </h3>
+       <p class="text-sm text-on-surface-variant font-light mt-4 line-clamp-3">
+        Strategic branding and visual identity system designed for BNP Paribas, focusing on clarity and institutional strength.
+       </p>
+      </div>
+     </div>
+     <!-- Long Item -->
+     <div class="group relative overflow-hidden md:col-span-8 aspect-[2/1] group relative overflow-hidden">
+      <img alt="A lone figure standing in a vast desert" class="w-full h-full object-cover transition-transform duration-1000 group-hover:translate-x-4" data-slideshow="" data-video="https://www.youtube.com/embed/LN0UTmC-ms4?autoplay=1&amp;mute=1&amp;controls=0&amp;loop=1&amp;playlist=LN0UTmC-ms4&amp;modestbranding=1&amp;rel=0&amp;iv_load_policy=3&amp;showinfo=0" src="/assets/uploads/new_project_1776441848129_TOURISME.jpg" style=""/>
+      <div class="absolute inset-0 bg-background/40">
+      </div>
+      <div class="absolute inset-0 flex items-center justify-center">
+       <div class="text-center">
+        <p class="text-xs font-label text-primary mb-2 tracking-[0.5em]" style="">
+         BROADCAST
+        </p>
+        <h3 class="text-5xl font-serif-italic text-on-surface" style="">
+         Ministere du Tourisme
+        </h3>
+        <p class="text-sm text-on-surface-variant font-light mt-4 line-clamp-3">
+         Large-scale visual production for the Ministry of Tourism, showcasing global heritage with a modern eye.
+        </p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <!-- Section 2: AI-Native Productions -->
+   <section class="px-10 py-32 bg-surface-container-low border-t border-outline-variant/5" id="generative-systems">
+    <div class="mb-20 flex flex-col md:flex-row md:items-end justify-between gap-8">
+     <div>
+      <span class="text-xs font-label text-primary tracking-[0.3em] uppercase block mb-4" style="">
+       Generative Systems &amp; High-Fidelity AI Outputs
+      </span>
+      <h2 class="text-7xl font-serif-italic leading-none" style="">
+       AI-Native
+       <br/>
+       Productions
+      </h2>
+     </div>
+     <div class="max-w-md">
+      <p class="text-on-surface-variant font-body text-sm leading-relaxed border-l border-primary/20 pl-6" style="">
+       AI as a technical lever to explore previously inaccessible visual territories.
+      </p>
+     </div>
+    </div>
+    <!-- Glassmorphism Cards for AI Work -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+     <!-- Card 1 -->
+     <div class="group relative bg-surface-container-high/40 backdrop-blur-2xl p-8 border-t border-primary/10 hover:border-primary/40 transition-all duration-500">
+      <div class="aspect-[4/5] mb-8 overflow-hidden">
+       <img alt="Surreal digital art of fluid iridescent shapes" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" data-slideshow="/assets/uploads/freepik__a-woman-in-a-yellow-sweater-stands-in-the-center-o__93810.gif,/assets/uploads/epokalypse__a_bright_and_clean_editorial_fashion_photograph_s_6aed0a55-f659-4866-8e9a-314fcb5a353c_3.png,/assets/uploads/epokalypse__a_surrealist_shot_of_a_woman_inside_a_minimalist__f33a1039-978e-4491-be60-73daacc704a2_0.png,/assets/uploads/epokalypse__a_surrealist_shot_of_a_24s_woman_in_a_shopping_ma_09c37933-acb2-43d5-b581-257baed57a47_3.png,/assets/uploads/epokalypse__a_high-contrast_graphic_fashion_shot_inside_a_wor_865b72d0-32c5-4a64-a7b1-d5e446cd1a16_2.png" src="/assets/uploads/freepik__a-woman-in-a-yellow-sweater-stands-in-the-center-o__93810.gif" style=""/>
+      </div>
+      <div class="space-y-4">
+       <div class="flex justify-between items-start">
+        <h3 class="text-2xl font-serif-italic" style="">
+         <span style="font-size: 1.5rem; font-weight: inherit;">
+          Westfield
+         </span>
+        </h3>
+        <span class="text-[10px] font-label border border-primary/30 px-2 py-0.5 text-primary" style="">
+         IMAGE &amp; VIDEO GENERATION
+        </span>
+       </div>
+       <p class="text-sm text-on-surface-variant font-light line-clamp-3" style="">
+        Crafting a poetic, digital-first atmosphere for the Westfield Days, blending dreamlike aesthetics with high-end motion.
+       </p>
+      </div>
+     </div>
+     <!-- Card 2 -->
+     <div class="group relative bg-surface-container-high/40 backdrop-blur-2xl p-8 border-t border-primary/10 hover:border-primary/40 transition-all duration-500 md:mt-12">
+      <div class="aspect-[4/5] mb-8 overflow-hidden">
+       <img alt="High-tech futuristic interface" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" data-slideshow="/assets/uploads/epokalypse__70s_disco_fashion_scene_man_wearing_bell-bottom_p_5db20b8f-f018-45f6-8f6e-9ebf7da50c5a_1.png,/assets/uploads/w_Gen4-put-IMG_2-on-the-desk-of-IMG_1--1347920771.png,/assets/uploads/KV_TEMPS01.png,/assets/uploads/w_Gen4-make-IMG_1--more-like-IMG_2--864491146.png,/assets/uploads/w_Gen4-close-up-IMG_1-happy-man-dress-like-IMG_2-looking-at-his-files-2171162812.png,/assets/uploads/papier.png" src="/assets/uploads/epokalypse__70s_disco_fashion_scene_man_wearing_bell-bottom_p_5db20b8f-f018-45f6-8f6e-9ebf7da50c5a_1.png" style=""/>
+      </div>
+      <div class="space-y-4">
+       <div class="flex justify-between items-start">
+        <h3 class="text-2xl font-serif-italic" style="">
+         Mondoffice
+        </h3>
+        <span class="text-[10px] font-label border border-primary/30 px-2 py-0.5 text-primary" style="">
+         GENERATIVE IMAGE + MUSIC
+        </span>
+       </div>
+       <p class="text-sm text-on-surface-variant font-light line-clamp-3" style="">
+        An aesthetic fusion of product photography and generative sound, creating a cohesive multi-sensory brand universe.
+       </p>
+      </div>
+     </div>
+     <!-- Card 3 -->
+     <div class="group relative bg-surface-container-high/40 backdrop-blur-2xl p-8 border-t border-primary/10 hover:border-primary/40 transition-all duration-500">
+      <div class="aspect-[4/5] mb-8 overflow-hidden">
+       <img alt="Macro photography of a high-tech processor chip" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" data-slideshow="/assets/uploads/B_INFLUENCE_00.jpg,/assets/uploads/Gemini_Generated_Image_omprkfomprkfompr.png,/assets/uploads/image_00006.png,/assets/uploads/Gemini_Generated_Image_u5uibdu5uibdu5ui.jpg,/assets/uploads/image_00001.png,/assets/uploads/NEWSPAPER01.jpg,/assets/uploads/NEWSPAPER02.jpg,/assets/uploads/notif_01.jpg" src="/assets/uploads/B_INFLUENCE_00.jpg" style=""/>
+      </div>
+      <div class="space-y-4">
+       <div class="flex justify-between items-start">
+        <h3 class="text-2xl font-serif-italic" style="">
+         Mantufesto
+        </h3>
+        <span class="text-[10px] font-label border border-primary/30 px-2 py-0.5 text-primary" style="">
+         COMPLETE WORKFLOW
+        </span>
+       </div>
+       <p class="text-sm text-on-surface-variant font-light line-clamp-3" style="">
+        A full-spectrum production pipeline. We orchestrated a complete AI workflow transitioning from initial ideation to photorealistic masters.
+       </p>
+      </div>
+     </div>
+    </div>
+   </section>
+   <!-- CTA Section -->
+   <section class="py-40 px-10 flex flex-col items-center text-center">
+    <h2 class="text-5xl md:text-8xl font-serif-italic mb-12 max-w-4xl leading-tight" style="">
+     Ready to build the future?
+    </h2>
+    <button class="bg-surface-container-highest px-12 py-6 text-primary font-label uppercase tracking-[0.3em] text-sm hover:bg-primary-container hover:text-on-primary-container transition-all duration-300" style="">
+     Brief us on your next production
+    </button>
+   </section>
+  </main>
+  <!-- Footer Shell -->
+  <footer class="bg-black dark:bg-black w-full py-12 px-6 border-t border-white/10">
+   <div class="flex flex-col md:flex-row justify-between items-center gap-8 w-full">
+    <div class="text-sm font-bold text-white uppercase font-inter" style="">
+     BLSTC
+    </div>
+    <div class="font-inter text-[10px] tracking-[0.2em] uppercase text-gray-600" style="">
+     © 2026 BLSTC ARCHITECTURAL NOIR
+    </div>
+    <div class="flex gap-8 font-inter text-[10px] tracking-[0.2em] uppercase">
+     <a class="text-gray-600 hover:text-white transition-colors" href="#" style="">
+      Privacy
+     </a>
+     <a class="text-gray-600 hover:text-white transition-colors" href="#" style="">
+      Terms
+     </a>
+     <a class="text-gray-600 hover:text-white transition-colors" href="#" style="">
+      Studio
+     </a>
+     <div class="flex gap-4 ml-4">
+      <span class="text-white hover:opacity-70 transition-opacity cursor-pointer" style="">
+       IG
+      </span>
+      <span class="text-white hover:opacity-70 transition-opacity cursor-pointer" style="">
+       TW
+      </span>
+      <span class="text-white hover:opacity-70 transition-opacity cursor-pointer" style="">
+       LI
+      </span>
+     </div>
+    </div>
+   </div>
+  </footer>
+  <!-- Mobile Menu Overlay -->
+  <div class="fixed inset-0 z-[100] flex flex-col justify-center items-center gap-12 transition-all duration-500 opacity-0 pointer-events-none md:hidden" id="mobile-menu" style="background-color: rgba(0,0,0,0.95);">
+   <button class="absolute top-8 right-10 material-symbols-outlined text-white text-3xl" id="close-menu">
+    close
+   </button>
+   <a class="text-4xl font-serif-italic text-white hover:text-primary transition-colors" href="index.html">
+    Home
+   </a>
+   <a class="text-4xl font-serif-italic text-white hover:text-primary transition-colors" href="work.html">
+    Work
+   </a>
+   <a class="text-4xl font-serif-italic text-white hover:text-primary transition-colors" href="lab.html">
+    Laboratory
+   </a>
+   <a class="text-4xl font-serif-italic text-white hover:text-primary transition-colors" href="insights.html">
+    Insights
+   </a>
+   <a class="text-4xl font-serif-italic text-white hover:text-primary transition-colors" href="contact.html">
+    Contact
+   </a>
+  </div>
+  <script>
+   const menuBtn = document.getElementById('mobile-menu-trigger');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const closeBtn = document.getElementById('close-menu');
+    const menuLinks = mobileMenu ? mobileMenu.querySelectorAll('a') : [];
+
+    function toggleMenu() {
+        mobileMenu.classList.toggle('opacity-0');
+        mobileMenu.classList.toggle('pointer-events-none');
+        document.body.classList.toggle('overflow-hidden');
+    }
+
+    if (menuBtn && mobileMenu) menuBtn.addEventListener('click', toggleMenu);
+    if (closeBtn && mobileMenu) closeBtn.addEventListener('click', toggleMenu);
+    
+    menuLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            mobileMenu.classList.add('opacity-0');
+            mobileMenu.classList.add('pointer-events-none');
+            document.body.classList.remove('overflow-hidden');
+        });
+    });
+  </script>
+  <script>
+   document.querySelectorAll('img[data-slideshow], img[data-video]').forEach(img => {
+        let interval = null;
+        const videoUrl = img.getAttribute('data-video');
+        const slidesStr = img.getAttribute('data-slideshow');
+        const originalSrc = img.src;
+        const container = img.closest('.group');
+        if (!container) return;
+
+        container.style.position = 'relative';
+
+        container.addEventListener('mouseenter', () => {
+            if (videoUrl) {
+                container.querySelectorAll('iframe').forEach(f => f.remove());
+                const iframe = document.createElement('iframe');
+                iframe.src = videoUrl;
+                iframe.style.position = 'absolute'; iframe.style.inset = '0';
+                iframe.style.width = '100%'; iframe.style.height = '100%';
+                iframe.style.zIndex = '30'; iframe.style.pointerEvents = 'none';
+                iframe.style.border = '0'; iframe.style.opacity = '0';
+                iframe.style.transition = 'opacity 0.6s ease';
+                iframe.allow = "autoplay; encrypted-media; gyroscope; picture-in-picture";
+                container.appendChild(iframe);
+                iframe.offsetHeight; iframe.style.opacity = '1';
+            } else if (slidesStr) {
+                const slides = slidesStr.split(',');
+                let index = 0;
+                if (interval) clearInterval(interval);
+                interval = setInterval(() => {
+                    img.src = slides[index];
+                    index = (index + 1) % slides.length;
+                }, 400);
+            }
+        });
+
+        container.addEventListener('mouseleave', () => {
+            if (interval) { clearInterval(interval); interval = null; }
+            const iframes = container.querySelectorAll('iframe');
+            iframes.forEach(iframe => {
+                iframe.style.opacity = '0';
+                setTimeout(() => iframe.remove(), 600);
+            });
+            img.src = originalSrc;
+        });
+        if (slidesStr) {
+            slidesStr.split(',').forEach(src => { (new Image()).src = src; });
+        }
+    });
+  </script>
+ </body>
+</html>

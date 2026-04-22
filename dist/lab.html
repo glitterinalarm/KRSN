@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@1,6..72,200..800&amp;family=Space+Grotesk:wght@300..700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-fixed": "#181c20",
+                    "surface-tint": "#b8c3ff",
+                    "secondary-fixed": "#e2e2e4",
+                    "primary-container": "#2e5bff",
+                    "inverse-on-surface": "#313030",
+                    "error": "#ffb4ab",
+                    "surface-container-lowest": "#0e0e0e",
+                    "tertiary-fixed": "#e0e2e8",
+                    "primary-fixed": "#dde1ff",
+                    "background": "#131313",
+                    "secondary-container": "#454749",
+                    "on-error-container": "#ffdad6",
+                    "error-container": "#93000a",
+                    "surface": "#131313",
+                    "on-tertiary-container": "#eef0f5",
+                    "surface-dim": "#131313",
+                    "on-primary": "#002388",
+                    "inverse-surface": "#e5e2e1",
+                    "tertiary-fixed-dim": "#c4c6cc",
+                    "primary": "#b8c3ff",
+                    "on-primary-container": "#efefff",
+                    "surface-container": "#201f1f",
+                    "inverse-primary": "#124af0",
+                    "surface-container-high": "#2a2a2a",
+                    "on-tertiary": "#2d3135",
+                    "on-error": "#690005",
+                    "secondary-fixed-dim": "#c6c6c8",
+                    "tertiary": "#c4c6cc",
+                    "surface-container-low": "#1c1b1b",
+                    "on-surface-variant": "#c4c5d9",
+                    "primary-fixed-dim": "#b8c3ff",
+                    "on-primary-fixed": "#001356",
+                    "on-surface": "#e5e2e1",
+                    "on-primary-fixed-variant": "#0035be",
+                    "on-secondary-container": "#b4b5b7",
+                    "outline": "#8e90a2",
+                    "outline-variant": "#434656",
+                    "on-secondary-fixed-variant": "#454749",
+                    "tertiary-container": "#6a6d72",
+                    "surface-container-highest": "#353534",
+                    "surface-bright": "#3a3939",
+                    "secondary": "#c6c6c8",
+                    "on-secondary": "#2f3132",
+                    "surface-variant": "#353534",
+                    "on-tertiary-fixed-variant": "#44474b",
+                    "on-background": "#e5e2e1",
+                    "on-secondary-fixed": "#1a1c1d"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0px",
+                    "lg": "0px",
+                    "xl": "0px",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Newsreader"],
+                    "body": ["Space Grotesk"],
+                    "label": ["Space Grotesk"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(19, 19, 19, 0.7);
+            backdrop-filter: blur(20px);
+        }
+        .grain-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+        body {
+            background-color: #131313;
+            color: #e5e2e1;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .text-glow {
+            text-shadow: 0 0 15px rgba(184, 195, 255, 0.3);
+        }
+    </style>
+</head>
+<body class="selection:bg-primary-container selection:text-on-primary-container">
+<div class="grain-overlay"></div>
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-black/90 backdrop-blur-md border-b border-white/10 transition-all duration-300">
+<div class="flex justify-between items-center px-6 py-4 w-full max-w-full mx-auto">
+<div class="flex items-center gap-6">
+<a class="text-xl font-black tracking-widest text-white uppercase font-inter no-underline" href="index.html">
+         BLSTC
+        </a>
+<!-- Language Toggle Next To Logo -->
+<div class="hidden md:flex items-center gap-2 font-inter text-[9px] uppercase tracking-widest text-outline-variant border-l border-white/10 pl-6">
+<button class="hover:text-primary transition-colors focus:outline-none" id="lang-fr" onclick="switchLang('fr')">FR</button>
+<span class="opacity-30">/</span>
+<button class="hover:text-primary transition-colors focus:outline-none" id="lang-en" onclick="switchLang('en')">EN</button>
+</div>
+</div>
+<div class="hidden md:flex items-center gap-8 font-inter tracking-tighter uppercase text-xs font-light">
+<a class="text-gray-400 hover:text-white transition-all duration-300 no-underline" href="work.html#directed-by-humans" id="nav-human">By Human</a>
+<a class="text-gray-400 hover:text-white transition-all duration-300 no-underline" href="work.html#generative-systems" id="nav-ai">AI Native</a>
+<a class="text-gray-400 hover:text-white transition-all duration-300 no-underline" href="lab.html">Lab</a>
+<a class="text-gray-400 hover:text-white transition-all duration-300 no-underline" href="insights.html">Insights</a>
+<a class="text-gray-400 hover:text-white transition-all duration-300 no-underline" href="contact.html">Contact</a>
+<a class="bg-white text-black px-4 py-2 text-[10px] uppercase tracking-widest font-bold hover:opacity-70 transition-opacity ml-4 no-underline" href="contact.html">
+      Inquire
+     </a>
+</div>
+<div class="flex items-center gap-4 md:hidden">
+<!-- Mobile Lang Toggle -->
+<div class="flex items-center gap-2 font-inter text-[9px] uppercase tracking-widest text-outline-variant mr-4">
+<button class="hover:text-primary transition-colors focus:outline-none" onclick="switchLang('fr')">FR</button>
+<span class="opacity-30">/</span>
+<button class="hover:text-primary transition-colors focus:outline-none" onclick="switchLang('en')">EN</button>
+</div>
+<button class="text-white active:scale-95 duration-200" id="mobile-menu-trigger">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+</div>
+</div>
+<script type="text/javascript">
+    function checkCurrentLang() {
+        if(window.location.pathname.startsWith('/fr')) {
+            document.querySelectorAll('#lang-fr').forEach(el => el.classList.add('text-primary'));
+        } else {
+            document.querySelectorAll('#lang-en').forEach(el => el.classList.add('text-primary'));
+        }
+    }
+    
+    function switchLang(lang) {
+        var path = window.location.pathname;
+        var file = path.split('/').pop();
+        if(!file || file === 'fr') file = 'index.html';
+        
+        var isFr = path.startsWith('/fr');
+        
+        if(lang === 'fr' && !isFr) {
+            window.location.href = '/fr/' + file;
+        } else if (lang === 'en' && isFr) {
+            window.location.href = '/' + file;
+        }
+    }
+    
+    document.addEventListener('DOMContentLoaded', checkCurrentLang);
+   </script>
+</nav>
+<main class="pt-32">
+<!-- Hero Section -->
+<section class="px-10 mb-32">
+<div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
+<div class="lg:col-span-8">
+<span class="text-primary font-body uppercase tracking-[0.3em] text-xs mb-6 block">00 / Research &amp; Development</span>
+<h1 class="font-headline italic text-7xl md:text-9xl leading-[0.9] tracking-tighter text-on-surface">
+                        The <span class="text-primary-container">Lab.</span>
+</h1>
+</div>
+<div class="lg:col-span-4 pb-4">
+<p class="font-body text-outline leading-relaxed max-w-xs uppercase text-[10px] tracking-wider">This is where I test what hasn't been done yet. Whether it's designing websites through vibe coding or prototyping new visual concepts, this space is my R&amp;D engine.</p>
+</div>
+</div>
+</section>
+<!-- Bento Grid Experiments -->
+<section class="px-10 mb-32">
+<div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 grid-rows-2 gap-4 h-[auto] md:h-[900px]">
+    <!-- Featured: Kerosene Webzine (Large) -->
+    <div class="md:col-span-2 md:row-span-2 bg-surface-container p-12 flex flex-col justify-between border border-outline-variant/10 group cursor-pointer hover:bg-surface-container-high transition-all duration-700 relative overflow-hidden" onclick="window.open('https://kerosene-seven.vercel.app/', '_blank')">
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-[0.03] grayscale group-hover:scale-110 transition-transform duration-1000"></div>
+        <div class="absolute right-0 top-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] -mr-40 -mt-40 pointer-events-none group-hover:bg-primary/10 transition-colors duration-1000"></div>
+        <div class="relative z-10 flex justify-between items-start">
+            <h4 class="font-body uppercase text-sm tracking-[0.4em] text-outline-variant">Laboratory Featured Project</h4>
+            <span class="flex items-center gap-3 text-primary font-body text-xs uppercase tracking-[0.3em]">
+                <span class="w-2 h-2 bg-primary animate-pulse"></span>
+                ACTIVE AI ECOSYSTEM
+            </span>
+        </div>
+        <div class="relative z-10">
+            <h3 class="font-headline italic text-7xl md:text-8xl text-on-surface group-hover:text-primary transition-all duration-500">KÉROSÈNE</h3>
+            <p class="text-on-surface-variant font-body text-lg mt-8 max-w-lg leading-relaxed font-light">
+                Une plateforme de veille créative luxueuse, entièrement gérée en autonomie par des agents IA sur le sourcing et la rédaction d'articles.
+            </p>
+        </div>
+        <div class="relative z-10 flex gap-6 mt-12">
+            <div class="h-16 px-10 bg-surface-container-highest flex items-center justify-center border-l-4 border-primary transition-all group-hover:bg-white group-hover:text-black">
+                <span class="font-body text-xs tracking-widest uppercase font-bold">Launch Webzine</span>
+            </div>
+            <div class="h-16 w-16 border border-outline-variant/20 flex items-center justify-center text-outline-variant group-hover:text-white transition-colors">
+                <span class="material-symbols-outlined">arrow_outward</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Proxy Reading (Instagram) -->
+    <div class="md:col-span-2 bg-surface-container-high p-8 flex flex-col justify-between border border-outline-variant/10 group cursor-pointer hover:bg-surface-container-highest transition-colors relative overflow-hidden" onclick="window.open('https://www.instagram.com/proxyreading/?hl=en', '_blank')">
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-[0.05] grayscale group-hover:scale-110 group-hover:opacity-10 transition-all duration-1000"></div>
+        <div class="relative z-10 flex justify-between items-start">
+            <h4 class="font-body uppercase text-xs tracking-[0.2em] text-primary">Visual Research</h4>
+            <span class="bg-surface-container-highest text-outline-variant text-[10px] px-2 py-1 uppercase tracking-widest border border-outline-variant/20">INSTAGRAM ARCHIVE</span>
+        </div>
+        <div class="relative z-10 py-10">
+            <h3 class="font-headline italic text-4xl md:text-5xl text-on-surface group-hover:text-primary transition-colors">Relecture Contemporaine</h3>
+            <p class="text-outline text-sm mt-4 leading-relaxed font-light">Redéfinition des peintures du passé à l'ère de l'intelligence visuelle.</p>
+        </div>
+        <div class="relative z-10 flex gap-4 items-center">
+            <div class="w-8 h-[1px] bg-primary group-hover:w-16 transition-all duration-300"></div>
+            <span class="font-body text-[10px] tracking-widest uppercase text-primary">Explorer le flux</span>
+        </div>
+    </div>
+
+    <!-- TL3BDR (YouTube) -->
+    <div class="md:col-span-2 bg-black/40 p-8 flex flex-col justify-between border border-outline-variant/10 group cursor-pointer hover:bg-black/80 transition-all duration-700 relative overflow-hidden" onclick="window.open('https://www.youtube.com/@TL3BDR', '_blank')">
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-10 grayscale group-hover:scale-110 group-hover:opacity-20 transition-all duration-1000"></div>
+        <div class="relative z-10 flex justify-between items-start">
+            <h4 class="font-body uppercase text-xs tracking-[0.2em] text-primary">Teasing Project</h4>
+            <span class="bg-red-600/20 text-red-500 text-[10px] px-2 py-1 uppercase tracking-widest font-bold border border-red-500/20">YOUTUBE TRANSMISSION</span>
+        </div>
+        <div class="relative z-10 py-10">
+            <h3 class="font-headline italic text-4xl md:text-5xl text-on-surface group-hover:text-primary transition-colors">TL3BDR</h3>
+            <p class="text-outline text-sm mt-4 max-w-md leading-relaxed font-light">
+                Teasing visuel dédié aux nouvelles de Liu Cixin (Le Problème à Trois Corps).
+            </p>
+        </div>
+        <div class="relative z-10 flex items-center gap-3">
+            <span class="material-symbols-outlined text-primary text-3xl">play_circle</span>
+            <span class="font-body text-xs tracking-widest uppercase text-primary">Regarder les épisodes</span>
+        </div>
+    </div>
+</div>
+</section>
+<!-- Technical Specs / Data Feed -->
+<section class="bg-surface-container-low py-24 border-y border-outline-variant/5">
+<div class="max-w-7xl mx-auto px-10">
+<div class="flex flex-col md:flex-row justify-between items-start mb-16 gap-8">
+<div>
+<h2 class="font-headline italic text-5xl mb-4">Technical Logs</h2>
+<p class="text-outline font-body text-xs uppercase tracking-widest">Raw data from the monolith exploration core</p>
+</div>
+<div class="bg-surface-container-highest p-6 max-w-sm border-l-2 border-primary-container">
+<p class="font-body text-xs leading-relaxed italic text-on-surface-variant">
+                            "The pursuit of perfection is a technical constraint. The pursuit of soul is an architectural one."
+                        </p>
+<p class="font-body text-[10px] uppercase mt-4 tracking-tighter">— LOG_ENTRY_04.24</p>
+</div>
+</div>
+<div class="space-y-4">
+<!-- Log Row 1 -->
+<div class="grid grid-cols-1 md:grid-cols-12 items-center p-6 bg-surface hover:bg-surface-container-high transition-colors group cursor-crosshair">
+<div class="md:col-span-1 font-body text-[10px] text-primary">01.</div>
+<div class="md:col-span-4 font-body text-sm tracking-wide group-hover:translate-x-2 transition-transform">AUTONOMOUS_INTERFACES_V2</div>
+<div class="md:col-span-3 font-body text-[10px] text-outline uppercase tracking-widest">Generative UX</div>
+<div class="md:col-span-3 font-body text-[10px] text-outline text-right">04.12.2026</div>
+<div class="md:col-span-1 flex justify-end">
+<span class="material-symbols-outlined text-primary opacity-0 group-hover:opacity-100 transition-opacity">arrow_outward</span>
+</div>
+</div>
+<!-- Log Row 2 -->
+<div class="grid grid-cols-1 md:grid-cols-12 items-center p-6 bg-surface hover:bg-surface-container-high transition-colors group cursor-crosshair">
+<div class="md:col-span-1 font-body text-[10px] text-primary">02.</div>
+<div class="md:col-span-4 font-body text-sm tracking-wide group-hover:translate-x-2 transition-transform">SPATIAL_TYPOGRAPHY_EXPERIMENT</div>
+<div class="md:col-span-3 font-body text-[10px] text-outline uppercase tracking-widest">Motion Studies</div>
+<div class="md:col-span-3 font-body text-[10px] text-outline text-right">03.28.2026</div>
+<div class="md:col-span-1 flex justify-end">
+<span class="material-symbols-outlined text-primary opacity-0 group-hover:opacity-100 transition-opacity">arrow_outward</span>
+</div>
+</div>
+<!-- Log Row 3 -->
+<div class="grid grid-cols-1 md:grid-cols-12 items-center p-6 bg-surface hover:bg-surface-container-high transition-colors group cursor-crosshair">
+<div class="md:col-span-1 font-body text-[10px] text-primary">03.</div>
+<div class="md:col-span-4 font-body text-sm tracking-wide group-hover:translate-x-2 transition-transform">OBSIDIAN_RENDER_PIPELINE</div>
+<div class="md:col-span-3 font-body text-[10px] text-outline uppercase tracking-widest">Visual Engines</div>
+<div class="md:col-span-3 font-body text-[10px] text-outline text-right">03.15.2026</div>
+<div class="md:col-span-1 flex justify-end">
+<span class="material-symbols-outlined text-primary opacity-0 group-hover:opacity-100 transition-opacity">arrow_outward</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- CTA Section -->
+<section class="px-10 py-32 text-center relative overflow-hidden">
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<div class="w-[800px] h-[800px] bg-primary/5 blur-[120px] rounded-full"></div>
+</div>
+<div class="relative z-10 max-w-2xl mx-auto">
+<h2 class="font-headline italic text-6xl mb-8">Initiate <span class="text-primary">Collaboration?</span></h2>
+<p class="font-body text-on-surface-variant text-sm mb-12 uppercase tracking-widest leading-relaxed">
+                    We are selectively opening the lab for collaborative AI research and architectural digital ventures.
+                </p>
+<div class="flex flex-col md:flex-row gap-4 justify-center">
+<button class="bg-surface-container-highest text-primary px-10 py-5 font-body text-xs uppercase tracking-widest hover:bg-primary-container hover:text-on-primary-container transition-all">
+                        Request Protocol
+                    </button>
+<button class="border border-outline-variant px-10 py-5 font-body text-xs uppercase tracking-widest hover:border-primary transition-all">
+                        View Dossier
+                    </button>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full py-12 px-6 bg-black dark:bg-black border-t border-white/10">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8 w-full">
+<div class="text-sm font-bold text-white uppercase tracking-widest">BLSTC</div>
+<div class="text-white dark:text-gray-100 font-body text-[10px] tracking-[0.2em] uppercase">
+                © 2026 BLSTC ARCHITECTURAL NOIR
+            </div>
+<div class="flex gap-8">
+<a class="text-gray-600 hover:text-white transition-colors font-body text-[10px] tracking-[0.2em] uppercase" href="#">Privacy</a>
+<a class="text-gray-600 hover:text-white transition-colors font-body text-[10px] tracking-[0.2em] uppercase" href="#">Terms</a>
+<a class="text-gray-600 hover:text-white transition-colors font-body text-[10px] tracking-[0.2em] uppercase" href="#">Studio</a>
+</div>
+</div>
+</footer>
+<!-- Fixed LAB status in corner (Lab context indicator) -->
+<div class="fixed bottom-10 left-10 z-40 hidden md:block">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 bg-primary animate-pulse"></div>
+<span class="font-body text-[10px] uppercase tracking-[0.4em] text-primary">Lab_System: Active</span>
+</div>
+</div>
+<!-- Mobile Menu Overlay -->
+<div class="fixed inset-0 z-[100] flex flex-col justify-center items-center gap-12 transition-all duration-500 opacity-0 pointer-events-none md:hidden" id="mobile-menu" style="background-color: rgba(0,0,0,0.95);">
+<button class="absolute top-8 right-10 material-symbols-outlined text-white text-3xl" id="close-menu">close</button>
+<a class="text-4xl font-serif-italic text-white hover:text-primary transition-colors" href="index.html">Home</a>
+<a class="text-4xl font-serif-italic text-white hover:text-primary transition-colors" href="work.html">Work</a>
+<a class="text-4xl font-serif-italic text-white hover:text-primary transition-colors" href="lab.html">Laboratory</a>
+<a class="text-4xl font-serif-italic text-white hover:text-primary transition-colors" href="insights.html">Insights</a>
+<a class="text-4xl font-serif-italic text-white hover:text-primary transition-colors" href="contact.html">Contact</a>
+</div>
+<script>
+    const menuBtn = document.getElementById('mobile-menu-trigger');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const closeBtn = document.getElementById('close-menu');
+    const menuLinks = mobileMenu ? mobileMenu.querySelectorAll('a') : [];
+
+    function toggleMenu() {
+        mobileMenu.classList.toggle('opacity-0');
+        mobileMenu.classList.toggle('pointer-events-none');
+        document.body.classList.toggle('overflow-hidden');
+    }
+
+    if (menuBtn && mobileMenu) menuBtn.addEventListener('click', toggleMenu);
+    if (closeBtn && mobileMenu) closeBtn.addEventListener('click', toggleMenu);
+    
+    menuLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            mobileMenu.classList.add('opacity-0');
+            mobileMenu.classList.add('pointer-events-none');
+            document.body.classList.remove('overflow-hidden');
+        });
+    });
+</script>
+</body></html>

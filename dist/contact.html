@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@1,6..72,200..800&amp;family=Space+Grotesk:wght@300..700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-tertiary-fixed": "#181c20",
+            "surface-tint": "#b8c3ff",
+            "secondary-fixed": "#e2e2e4",
+            "primary-container": "#2e5bff",
+            "inverse-on-surface": "#313030",
+            "error": "#ffb4ab",
+            "surface-container-lowest": "#0e0e0e",
+            "tertiary-fixed": "#e0e2e8",
+            "primary-fixed": "#dde1ff",
+            "background": "#131313",
+            "secondary-container": "#454749",
+            "on-error-container": "#ffdad6",
+            "error-container": "#93000a",
+            "surface": "#131313",
+            "on-tertiary-container": "#eef0f5",
+            "surface-dim": "#131313",
+            "on-primary": "#002388",
+            "inverse-surface": "#e5e2e1",
+            "tertiary-fixed-dim": "#c4c6cc",
+            "primary": "#b8c3ff",
+            "on-primary-container": "#efefff",
+            "surface-container": "#201f1f",
+            "inverse-primary": "#124af0",
+            "surface-container-high": "#2a2a2a",
+            "on-tertiary": "#2d3135",
+            "on-error": "#690005",
+            "secondary-fixed-dim": "#c6c6c8",
+            "tertiary": "#c4c6cc",
+            "surface-container-low": "#1c1b1b",
+            "on-surface-variant": "#c4c5d9",
+            "primary-fixed-dim": "#b8c3ff",
+            "on-primary-fixed": "#001356",
+            "on-surface": "#e5e2e1",
+            "on-primary-fixed-variant": "#0035be",
+            "on-secondary-container": "#b4b5b7",
+            "outline": "#8e90a2",
+            "outline-variant": "#434656",
+            "on-secondary-fixed-variant": "#454749",
+            "tertiary-container": "#6a6d72",
+            "surface-container-highest": "#353534",
+            "surface-bright": "#3a3939",
+            "secondary": "#c6c6c8",
+            "on-secondary": "#2f3132",
+            "surface-variant": "#353534",
+            "on-tertiary-fixed-variant": "#44474b",
+            "on-background": "#e5e2e1",
+            "on-secondary-fixed": "#1a1c1d"
+          },
+          "borderRadius": {
+            "DEFAULT": "0px",
+            "lg": "0px",
+            "xl": "0px",
+            "full": "9999px"
+          },
+          "fontFamily": {
+            "headline": ["Newsreader"],
+            "body": ["Space Grotesk"],
+            "label": ["Space Grotesk"]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    body {
+      background-color: #131313;
+      font-family: 'Space Grotesk', sans-serif;
+      color: #e5e2e1;
+    }
+    .headline-serif {
+      font-family: 'Newsreader', serif;
+      font-style: italic;
+    }
+    .grain {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #0e0e0e;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #2a2a2a;
+    }
+    input:focus, textarea:focus {
+      outline: none;
+    }
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover, 
+    input:-webkit-autofill:focus {
+      -webkit-text-fill-color: #e5e2e1;
+      -webkit-box-shadow: 0 0 0px 1000px #131313 inset;
+      transition: background-color 5000s ease-in-out 0s;
+    }
+  </style>
+</head>
+<body class="custom-scrollbar">
+<div class="grain"></div>
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-black/90 backdrop-blur-md border-b border-white/10 transition-all duration-300">
+<div class="flex justify-between items-center px-6 py-4 w-full max-w-full mx-auto">
+<div class="flex items-center gap-6">
+<a class="text-xl font-black tracking-widest text-white uppercase font-inter no-underline" href="index.html">
+         BLSTC
+        </a>
+<!-- Language Toggle Next To Logo -->
+<div class="hidden md:flex items-center gap-2 font-inter text-[9px] uppercase tracking-widest text-outline-variant border-l border-white/10 pl-6">
+<button class="hover:text-primary transition-colors focus:outline-none" id="lang-fr" onclick="switchLang('fr')">FR</button>
+<span class="opacity-30">/</span>
+<button class="hover:text-primary transition-colors focus:outline-none" id="lang-en" onclick="switchLang('en')">EN</button>
+</div>
+</div>
+<div class="hidden md:flex items-center gap-8 font-inter tracking-tighter uppercase text-xs font-light">
+<a class="text-gray-400 hover:text-white transition-all duration-300 no-underline" href="work.html#directed-by-humans" id="nav-human">By Human</a>
+<a class="text-gray-400 hover:text-white transition-all duration-300 no-underline" href="work.html#generative-systems" id="nav-ai">AI Native</a>
+<a class="text-gray-400 hover:text-white transition-all duration-300 no-underline" href="lab.html">Lab</a>
+<a class="text-gray-400 hover:text-white transition-all duration-300 no-underline" href="insights.html">Insights</a>
+<a class="text-gray-400 hover:text-white transition-all duration-300 no-underline" href="contact.html">Contact</a>
+<a class="bg-white text-black px-4 py-2 text-[10px] uppercase tracking-widest font-bold hover:opacity-70 transition-opacity ml-4 no-underline" href="contact.html">
+      Inquire
+     </a>
+</div>
+<div class="flex items-center gap-4 md:hidden">
+<!-- Mobile Lang Toggle -->
+<div class="flex items-center gap-2 font-inter text-[9px] uppercase tracking-widest text-outline-variant mr-4">
+<button class="hover:text-primary transition-colors focus:outline-none" onclick="switchLang('fr')">FR</button>
+<span class="opacity-30">/</span>
+<button class="hover:text-primary transition-colors focus:outline-none" onclick="switchLang('en')">EN</button>
+</div>
+<button class="text-white active:scale-95 duration-200" id="mobile-menu-trigger">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+</div>
+</div>
+<script type="text/javascript">
+    function checkCurrentLang() {
+        if(window.location.pathname.startsWith('/fr')) {
+            document.querySelectorAll('#lang-fr').forEach(el => el.classList.add('text-primary'));
+        } else {
+            document.querySelectorAll('#lang-en').forEach(el => el.classList.add('text-primary'));
+        }
+    }
+    
+    function switchLang(lang) {
+        var path = window.location.pathname;
+        var file = path.split('/').pop();
+        if(!file || file === 'fr') file = 'index.html';
+        
+        var isFr = path.startsWith('/fr');
+        
+        if(lang === 'fr' && !isFr) {
+            window.location.href = '/fr/' + file;
+        } else if (lang === 'en' && isFr) {
+            window.location.href = '/' + file;
+        }
+    }
+    
+    document.addEventListener('DOMContentLoaded', checkCurrentLang);
+   </script>
+</nav>
+<main class="pt-32 pb-24 px-6 md:px-10 max-w-7xl mx-auto min-h-screen">
+<!-- Header Section -->
+<div class="mb-24 flex flex-col md:flex-row md:items-end justify-between gap-12">
+<div class="max-w-2xl">
+<span class="text-primary uppercase tracking-[0.3em] text-xs font-bold block mb-6">Briefing Intake</span>
+<h1 class="text-6xl md:text-8xl headline-serif leading-[0.9] tracking-tighter text-on-surface">
+          Define the <br/>Vision.
+        </h1>
+</div>
+<div class="max-w-xs mb-4">
+<p class="text-outline text-sm leading-relaxed font-light">
+          We don't just deliver files. We provide high-end creative direction and AI augmentation. Let's start the dialogue.
+        </p>
+</div>
+</div>
+<!-- Form Section -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
+<!-- Left Column: Context -->
+<div class="lg:col-span-4 space-y-12">
+<div class="p-8 bg-surface-container-low border-l-2 border-primary-container">
+<p class="text-xs text-outline-variant uppercase tracking-widest mb-4">Studio Availability</p>
+<p class="text-on-surface text-lg font-medium">Q4 2026 — Open for select creative partner engagements.</p>
+</div>
+<div class="space-y-4">
+<h3 class="font-headline italic text-2xl text-on-surface">Principles</h3>
+<ul class="space-y-6 text-sm text-outline">
+<li class="flex gap-4">
+<span class="text-primary font-bold">01</span>
+<span>Be direct. We value creative clarity over long documentation.</span>
+</li>
+<li class="flex gap-4">
+<span class="text-primary font-bold">02</span>
+<span>Standard production cycles range from 8 to 16 weeks.</span>
+</li>
+<li class="flex gap-4">
+<span class="text-primary font-bold">03</span>
+<span>Synthesizing human craft with high-end AI capabilities.</span>
+</li>
+</ul>
+</div>
+<div class="aspect-[4/5] bg-surface-container-high overflow-hidden relative group">
+<img alt="Minimalist creative void" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="a minimalist architectural void with sharp light casting geometric shadows on smooth dark concrete walls ultra high contrast cinematic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAHfmM7I-acB6w1KnnAF1CW-pB3lOA-_SGlpCiQuTlLmLDLq-_RIRe9XXW-Ow9DWSSpzepdtwIlTW8ry1ahqZD5lbwtFkXMR6etWCz0dLBY9HD2lUSMARSb9oPe76ysm0fNbSJ-WuZGfKWin6lHHOAKzE8b04vOoyZhHVBTre6ePN14fpQGumIu9IRIrUeaLOzky9ghlxqkgqx1er5-qp-gVW-Q4KQxEdjMpiLq0LM8tVNwfXR7MO6apUi2qAJGlcbdx3JaybHxdIHK"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background to-transparent opacity-60"></div>
+<div class="absolute bottom-6 left-6">
+<p class="text-[10px] uppercase tracking-[0.4em] text-primary">Studio Atmosphere</p>
+</div>
+</div>
+</div>
+<!-- Right Column: Intake Form -->
+<form class="lg:col-span-8 space-y-20">
+<!-- Identity & Context -->
+<section class="space-y-12">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-12">
+<div class="relative group">
+<label class="block text-[10px] text-outline-variant uppercase tracking-widest mb-2 group-focus-within:text-primary transition-colors">Full Name</label>
+<input class="w-full bg-transparent border-b border-outline-variant py-4 text-xl placeholder:text-surface-container-highest focus:border-primary transition-colors" placeholder="John Doe" type="text"/>
+</div>
+<div class="relative group">
+<label class="block text-[10px] text-outline-variant uppercase tracking-widest mb-2 group-focus-within:text-primary transition-colors">Email Address</label>
+<input class="w-full bg-transparent border-b border-outline-variant py-4 text-xl placeholder:text-surface-container-highest focus:border-primary transition-colors" placeholder="hello@domain.com" type="email"/>
+</div>
+<div class="relative group md:col-span-2">
+<label class="block text-[10px] text-outline-variant uppercase tracking-widest mb-2 group-focus-within:text-primary transition-colors">Project Entity / Company</label>
+<input class="w-full bg-transparent border-b border-outline-variant py-4 text-xl placeholder:text-surface-container-highest focus:border-primary transition-colors" placeholder="Studio Name or Company" type="text"/>
+</div>
+</div>
+</section>
+<!-- Nature of Engagement -->
+<section class="space-y-12">
+<div class="relative group">
+<label class="block text-[10px] text-outline-variant uppercase tracking-widest mb-2 group-focus-within:text-primary transition-colors">Brief / Project Goals</label>
+<textarea class="w-full bg-transparent border-b border-outline-variant py-4 text-xl placeholder:text-surface-container-highest focus:border-primary transition-colors resize-none" placeholder="Describe the creative vision you wish to pursue..." rows="3"></textarea>
+</div>
+</section>
+<!-- Logistics -->
+<section class="grid grid-cols-1 gap-x-12 gap-y-12 max-w-2xl">
+<div class="relative group">
+<label class="block text-[10px] text-outline-variant uppercase tracking-widest mb-2 group-focus-within:text-primary transition-colors">Timeline (Weeks)</label>
+<input class="w-full bg-transparent border-b border-outline-variant py-4 text-xl placeholder:text-surface-container-highest focus:border-primary transition-colors" placeholder="e.g. 12 Weeks" type="text"/>
+</div>
+</section>
+<!-- Submit -->
+<div class="pt-8 flex flex-col md:flex-row items-center justify-between gap-8">
+<div class="flex items-center gap-4 group cursor-pointer">
+<div class="w-12 h-12 flex items-center justify-center border border-outline-variant group-hover:border-primary transition-colors duration-500">
+<span class="material-symbols-outlined text-primary" data-icon="attachment">attachment</span>
+</div>
+<div>
+<p class="text-[10px] uppercase tracking-widest text-outline-variant">Supporting Files</p>
+<p class="text-[11px] text-outline">(Optional, up to 10MB)</p>
+</div>
+</div>
+<button class="w-full md:w-auto px-16 py-6 bg-surface-container-highest text-primary font-bold uppercase tracking-[0.3em] text-xs hover:bg-primary-container hover:text-on-primary-container transition-all duration-300 active:scale-95" type="submit">
+            Initialize Design
+          </button>
+</div>
+</form>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-12 px-6 bg-black dark:bg-black border-t border-white/10">
+<div class="flex flex-col md:flex-row justify-between items-center gap-8 w-full">
+<div class="text-sm font-bold text-white uppercase tracking-widest">BLSTC</div>
+<div class="text-white dark:text-gray-100 font-['Inter'] text-[10px] tracking-[0.2em] uppercase">
+      © 2026 BLSTC CREATIVE PRODUCTION
+    </div>
+<div class="flex gap-6 font-['Inter'] text-[10px] tracking-[0.2em] uppercase">
+<a class="text-gray-600 hover:text-white transition-colors" href="/privacy">Privacy</a>
+<a class="text-gray-600 hover:text-white transition-colors" href="/terms">Terms</a>
+<a class="text-gray-600 hover:text-white transition-colors" href="/studio">Studio</a>
+</div>
+</div>
+</footer>
+<!-- Mobile Menu Overlay -->
+<div class="fixed inset-0 z-[100] flex flex-col justify-center items-center gap-12 transition-all duration-500 opacity-0 pointer-events-none md:hidden" id="mobile-menu" style="background-color: rgba(0,0,0,0.95);">
+<button class="absolute top-8 right-10 material-symbols-outlined text-white text-3xl" id="close-menu">close</button>
+<a class="text-4xl font-serif-italic text-white hover:text-primary transition-colors" href="index.html">Home</a>
+<a class="text-4xl font-serif-italic text-white hover:text-primary transition-colors" href="work.html">Work</a>
+<a class="text-4xl font-serif-italic text-white hover:text-primary transition-colors" href="lab.html">Laboratory</a>
+<a class="text-4xl font-serif-italic text-white hover:text-primary transition-colors" href="insights.html">Insights</a>
+<a class="text-4xl font-serif-italic text-white hover:text-primary transition-colors" href="contact.html">Contact</a>
+</div>
+<script>
+    const menuBtn = document.getElementById('mobile-menu-trigger');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const closeBtn = document.getElementById('close-menu');
+    const menuLinks = mobileMenu ? mobileMenu.querySelectorAll('a') : [];
+
+    function toggleMenu() {
+        mobileMenu.classList.toggle('opacity-0');
+        mobileMenu.classList.toggle('pointer-events-none');
+        document.body.classList.toggle('overflow-hidden');
+    }
+
+    if (menuBtn && mobileMenu) menuBtn.addEventListener('click', toggleMenu);
+    if (closeBtn && mobileMenu) closeBtn.addEventListener('click', toggleMenu);
+    
+    menuLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            mobileMenu.classList.add('opacity-0');
+            mobileMenu.classList.add('pointer-events-none');
+            document.body.classList.remove('overflow-hidden');
+        });
+    });
+</script>
+</body></html>
