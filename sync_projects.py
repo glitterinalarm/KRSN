@@ -98,7 +98,7 @@ for project in projects:
             desc_p.string = data.get('description', '')
         else:
             # Create if missing (e.g. for Human projects)
-            new_p = soup.new_tag('p', attrs={"class": "text-sm text-on-surface-variant font-light mt-4 line-clamp-3"})
+            new_p = soup.new_tag('p', attrs={"class": "text-sm text-on-surface-variant font-light mt-4"})
             new_p.string = data.get('description', '')
             h3.parent.append(new_p)
 

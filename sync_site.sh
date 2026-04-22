@@ -9,6 +9,7 @@ python3 fix_site_navigation.py
 
 # 3. Fix Grid Alignment & Aspect Ratios
 python3 fix_grid.py
+python3 fix_mobile_ui.py
 
 # 3.5 Copy Uploads from Manager to Dist
 mkdir -p assets/uploads

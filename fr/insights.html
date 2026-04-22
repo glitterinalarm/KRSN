@@ -87,6 +87,34 @@
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
     </style>
+
+<style id="mobile-readability-fix">
+        @media (max-width: 768px) {
+            /* Better reading for descriptions */
+            p.text-sm, p.font-light {
+                font-size: 15px !important;
+                line-height: 1.7 !important;
+                opacity: 0.8 !important;
+                margin-top: 15px !important;
+                letter-spacing: 0.01em !important;
+            }
+            /* Prevents text from sticking to edges */
+            .p-4, .p-6, .p-8 {
+                padding-left: 20px !important;
+                padding-right: 20px !important;
+            }
+            /* Adjust Titles */
+            h3 {
+                font-size: 1.4rem !important;
+                line-height: 1.2 !important;
+                margin-bottom: 8px !important;
+            }
+            /* Space out project blocks */
+            .group {
+                margin-bottom: 2rem !important;
+            }
+        }
+    </style>
 </head>
 <body class="bg-background text-on-surface">
 <div class="grain-overlay"></div>
@@ -175,8 +203,8 @@
 <!-- Large Feature -->
 <div class="md:col-span-8 bg-surface-container-low group relative overflow-hidden">
 <div class="aspect-[16/9] relative bg-black">
-                <iframe class="absolute inset-0 w-full h-full" src="https://www.youtube.com/embed/0T2AZ8wNZGY?autoplay=0&controls=1&rel=0&modestbranding=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-            </div>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" class="absolute inset-0 w-full h-full" frameborder="0" src="https://www.youtube.com/embed/0T2AZ8wNZGY?autoplay=0&amp;controls=1&amp;rel=0&amp;modestbranding=1" title="YouTube video player"></iframe>
+</div>
 <div class="p-10 cursor-pointer" onclick="window.open('https://kerosene-seven.vercel.app/article/manual-hero', '_blank')">
 <div class="flex items-center gap-4 mb-6">
 <span class="text-primary font-label text-xs uppercase tracking-widest">À LA UNE</span>
@@ -206,89 +234,83 @@
 <section class="px-10 mb-32">
 <div class="max-w-7xl mx-auto">
 <div class="mb-12 flex items-center justify-between border-b border-outline-variant pb-4">
-    <h3 class="font-label text-xs uppercase tracking-[0.4em]">Kérosène Daily Curation</h3>
-    <a href="https://kerosene-seven.vercel.app/" target="_blank" class="text-[10px] uppercase tracking-widest text-on-surface-variant hover:text-white transition-colors">View All Transmissions →</a>
+<h3 class="font-label text-xs uppercase tracking-[0.4em]">Kérosène Daily Curation</h3>
+<a class="text-[10px] uppercase tracking-widest text-on-surface-variant hover:text-white transition-colors" href="https://kerosene-seven.vercel.app/" target="_blank">View All Transmissions →</a>
 </div>
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-
-    <div class="flex flex-col gap-6 group cursor-pointer" onclick="window.open('https://www.itsnicethat.com/articles/ben-rayner-mud-sweat-and-tears-photography-publication-project-220426', '_blank')">
-        <div class="aspect-video bg-surface-container-lowest overflow-hidden">
-            <img src="https://admin.itsnicethat.com/images/MkFRSksTYdWSeArUY4JnReIRKpI=/276396/width-1440/ben-rayner-photography-itsnicethat-11.jpg" alt="Ben Rayner’s Mud, Sweat & Tears is a photographic tribute to long distance running" class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700">
-        </div>
-        <div class="flex flex-col gap-2">
-            <div class="flex items-center justify-between">
-                <span class="text-[9px] font-label uppercase tracking-widest text-primary">GRAPHISME</span>
-                <span class="text-[9px] font-label uppercase tracking-widest text-outline-variant">It's Nice That</span>
-            </div>
-            <h4 class="text-lg font-serif-italic leading-tight group-hover:text-primary transition-colors">Ben Rayner’s Mud, Sweat & Tears is a photographic tribute to long distance running</h4>
-        </div>
-    </div>
-    
-    <div class="flex flex-col gap-6 group cursor-pointer" onclick="window.open('https://motionographer.com/quickie/tempo-collection-bmp-produccions/', '_blank')">
-        <div class="aspect-video bg-surface-container-lowest overflow-hidden">
-            <img src="https://s35726.pcdn.co/wp-content/uploads/2026/04/Screenshot-2026-04-22-at-11.59.34-AM-700x388.png" alt="Tempo Collection | BMP Produccions" class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700">
-        </div>
-        <div class="flex flex-col gap-2">
-            <div class="flex items-center justify-between">
-                <span class="text-[9px] font-label uppercase tracking-widest text-primary">INNOVATION</span>
-                <span class="text-[9px] font-label uppercase tracking-widest text-outline-variant">Motionographer</span>
-            </div>
-            <h4 class="text-lg font-serif-italic leading-tight group-hover:text-primary transition-colors">Tempo Collection | BMP Produccions</h4>
-        </div>
-    </div>
-    
-    <div class="flex flex-col gap-6 group cursor-pointer" onclick="window.open('https://www.highsnobiety.com/p/vans-premium-authentic-prima/', '_blank')">
-        <div class="aspect-video bg-surface-container-lowest overflow-hidden">
-            <img src="https://www.highsnobiety.com/static-assets/dato/1776781852-premium-authentic-prima-shoes-vans-black-alt6.jpg" alt="Vans’ Blinged Out Ballet Sneaker Is Not Playing Coy" class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700">
-        </div>
-        <div class="flex flex-col gap-2">
-            <div class="flex items-center justify-between">
-                <span class="text-[9px] font-label uppercase tracking-widest text-primary">DROP</span>
-                <span class="text-[9px] font-label uppercase tracking-widest text-outline-variant">Highsnobiety</span>
-            </div>
-            <h4 class="text-lg font-serif-italic leading-tight group-hover:text-primary transition-colors">Vans’ Blinged Out Ballet Sneaker Is Not Playing Coy</h4>
-        </div>
-    </div>
-    
-    <div class="flex flex-col gap-6 group cursor-pointer" onclick="window.open('https://www.dazeddigital.com/life-culture/article/70129/1/building-a-cyberdeck-diy-tech-rebellious-billionaire-broligarchs-computers?utm_source=Link&utm_medium=Link&utm_campaign=RSSFeed&utm_term=building-a-cyberdeck-is-the-most-rebellious-thing-you-can-do-right-now', '_blank')">
-        <div class="aspect-video bg-surface-container-lowest overflow-hidden">
-            <img src="https://images-prod.dazeddigital.com/1200/0-0-2815-1877/azure/dazed-prod/1420/2/1422993.jpg" alt="Building a cyberdeck is the most rebellious thing you can do right now" class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700">
-        </div>
-        <div class="flex flex-col gap-2">
-            <div class="flex items-center justify-between">
-                <span class="text-[9px] font-label uppercase tracking-widest text-primary">TREND</span>
-                <span class="text-[9px] font-label uppercase tracking-widest text-outline-variant">Dazed</span>
-            </div>
-            <h4 class="text-lg font-serif-italic leading-tight group-hover:text-primary transition-colors">Building a cyberdeck is the most rebellious thing you can do right now</h4>
-        </div>
-    </div>
-    
-    <div class="flex flex-col gap-6 group cursor-pointer" onclick="window.open('https://wearesocial.com/blog/2026/03/we-are-socials-monday-mashup-767/', '_blank')">
-        <div class="aspect-video bg-surface-container-lowest overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1000&auto=format&fit=crop" alt="We Are Social’s Monday Mashup #767" class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700">
-        </div>
-        <div class="flex flex-col gap-2">
-            <div class="flex items-center justify-between">
-                <span class="text-[9px] font-label uppercase tracking-widest text-primary">SOCIAL MEDIA</span>
-                <span class="text-[9px] font-label uppercase tracking-widest text-outline-variant">We Are Social Global</span>
-            </div>
-            <h4 class="text-lg font-serif-italic leading-tight group-hover:text-primary transition-colors">We Are Social’s Monday Mashup #767</h4>
-        </div>
-    </div>
-    
-    <div class="flex flex-col gap-6 group cursor-pointer" onclick="window.open('https://www.maginative.com/article/googles-gemini-3-is-here-heres-why-it-actually-matters/', '_blank')">
-        <div class="aspect-video bg-surface-container-lowest overflow-hidden">
-            <img src="https://storage.ghost.io/c/49/a0/49a0c44f-2e08-4cc3-80a6-bf8207f188f4/content/images/2026/11/gemini3.jpg" alt="With Gemini 3, Google Begins Rebuilding How Work Gets Done" class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700">
-        </div>
-        <div class="flex flex-col gap-2">
-            <div class="flex items-center justify-between">
-                <span class="text-[9px] font-label uppercase tracking-widest text-primary">IA CRÉATIVE</span>
-                <span class="text-[9px] font-label uppercase tracking-widest text-outline-variant">Maginative</span>
-            </div>
-            <h4 class="text-lg font-serif-italic leading-tight group-hover:text-primary transition-colors">With Gemini 3, Google Begins Rebuilding How Work Gets Done</h4>
-        </div>
-    </div>
-    </div>
+<div class="flex flex-col gap-6 group cursor-pointer" onclick="window.open('https://www.itsnicethat.com/articles/ben-rayner-mud-sweat-and-tears-photography-publication-project-220426', '_blank')">
+<div class="aspect-video bg-surface-container-lowest overflow-hidden">
+<img alt="Ben Rayner’s Mud, Sweat &amp; Tears is a photographic tribute to long distance running" class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" src="https://admin.itsnicethat.com/images/MkFRSksTYdWSeArUY4JnReIRKpI=/276396/width-1440/ben-rayner-photography-itsnicethat-11.jpg"/>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="text-[9px] font-label uppercase tracking-widest text-primary">GRAPHISME</span>
+<span class="text-[9px] font-label uppercase tracking-widest text-outline-variant">It's Nice That</span>
+</div>
+<h4 class="text-lg font-serif-italic leading-tight group-hover:text-primary transition-colors">Ben Rayner’s Mud, Sweat &amp; Tears is a photographic tribute to long distance running</h4>
+</div>
+</div>
+<div class="flex flex-col gap-6 group cursor-pointer" onclick="window.open('https://motionographer.com/quickie/tempo-collection-bmp-produccions/', '_blank')">
+<div class="aspect-video bg-surface-container-lowest overflow-hidden">
+<img alt="Tempo Collection | BMP Produccions" class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" src="https://s35726.pcdn.co/wp-content/uploads/2026/04/Screenshot-2026-04-22-at-11.59.34-AM-700x388.png"/>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="text-[9px] font-label uppercase tracking-widest text-primary">INNOVATION</span>
+<span class="text-[9px] font-label uppercase tracking-widest text-outline-variant">Motionographer</span>
+</div>
+<h4 class="text-lg font-serif-italic leading-tight group-hover:text-primary transition-colors">Tempo Collection | BMP Produccions</h4>
+</div>
+</div>
+<div class="flex flex-col gap-6 group cursor-pointer" onclick="window.open('https://www.highsnobiety.com/p/vans-premium-authentic-prima/', '_blank')">
+<div class="aspect-video bg-surface-container-lowest overflow-hidden">
+<img alt="Vans’ Blinged Out Ballet Sneaker Is Not Playing Coy" class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" src="https://www.highsnobiety.com/static-assets/dato/1776781852-premium-authentic-prima-shoes-vans-black-alt6.jpg"/>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="text-[9px] font-label uppercase tracking-widest text-primary">DROP</span>
+<span class="text-[9px] font-label uppercase tracking-widest text-outline-variant">Highsnobiety</span>
+</div>
+<h4 class="text-lg font-serif-italic leading-tight group-hover:text-primary transition-colors">Vans’ Blinged Out Ballet Sneaker Is Not Playing Coy</h4>
+</div>
+</div>
+<div class="flex flex-col gap-6 group cursor-pointer" onclick="window.open('https://www.dazeddigital.com/life-culture/article/70129/1/building-a-cyberdeck-diy-tech-rebellious-billionaire-broligarchs-computers?utm_source=Link&amp;utm_medium=Link&amp;utm_campaign=RSSFeed&amp;utm_term=building-a-cyberdeck-is-the-most-rebellious-thing-you-can-do-right-now', '_blank')">
+<div class="aspect-video bg-surface-container-lowest overflow-hidden">
+<img alt="Building a cyberdeck is the most rebellious thing you can do right now" class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" src="https://images-prod.dazeddigital.com/1200/0-0-2815-1877/azure/dazed-prod/1420/2/1422993.jpg"/>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="text-[9px] font-label uppercase tracking-widest text-primary">TREND</span>
+<span class="text-[9px] font-label uppercase tracking-widest text-outline-variant">Dazed</span>
+</div>
+<h4 class="text-lg font-serif-italic leading-tight group-hover:text-primary transition-colors">Building a cyberdeck is the most rebellious thing you can do right now</h4>
+</div>
+</div>
+<div class="flex flex-col gap-6 group cursor-pointer" onclick="window.open('https://wearesocial.com/blog/2026/03/we-are-socials-monday-mashup-767/', '_blank')">
+<div class="aspect-video bg-surface-container-lowest overflow-hidden">
+<img alt="We Are Social’s Monday Mashup #767" class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&amp;w=1000&amp;auto=format&amp;fit=crop"/>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="text-[9px] font-label uppercase tracking-widest text-primary">SOCIAL MEDIA</span>
+<span class="text-[9px] font-label uppercase tracking-widest text-outline-variant">We Are Social Global</span>
+</div>
+<h4 class="text-lg font-serif-italic leading-tight group-hover:text-primary transition-colors">We Are Social’s Monday Mashup #767</h4>
+</div>
+</div>
+<div class="flex flex-col gap-6 group cursor-pointer" onclick="window.open('https://www.maginative.com/article/googles-gemini-3-is-here-heres-why-it-actually-matters/', '_blank')">
+<div class="aspect-video bg-surface-container-lowest overflow-hidden">
+<img alt="With Gemini 3, Google Begins Rebuilding How Work Gets Done" class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" src="https://storage.ghost.io/c/49/a0/49a0c44f-2e08-4cc3-80a6-bf8207f188f4/content/images/2026/11/gemini3.jpg"/>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="text-[9px] font-label uppercase tracking-widest text-primary">IA CRÉATIVE</span>
+<span class="text-[9px] font-label uppercase tracking-widest text-outline-variant">Maginative</span>
+</div>
+<h4 class="text-lg font-serif-italic leading-tight group-hover:text-primary transition-colors">With Gemini 3, Google Begins Rebuilding How Work Gets Done</h4>
+</div>
+</div>
+</div>
 </div>
 </section>
 <!-- Newsletter Tonal Shift -->
