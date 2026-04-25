@@ -92,32 +92,54 @@ class Genome {
         };
     }
 
-    // Fusion: averages parent genomes + random mutation
-    // This ensures REAL filiation — child looks like parents
+    // Biological dominance model:
+    // Dominant phenotype (>0.6) → inherited strongly. Mutation small (±12%).
+    // Cohesion decays ~10% per generation (not halved).
     static fuse(A, B) {
         const child = {};
+        const PHENOTYPES = ['v_membrane','v_neural','v_spine','v_spores','v_sharp'];
+        const PHYSICS    = ['g_fluid','g_mycelium','g_swarm','g_orbit','g_pulse'];
+        const DOM = 0.6;
+
         for (const k in A) {
-            if (k === 'blend_additive') {
-                child[k] = Math.random() > 0.5 ? A[k] : B[k];
-            } else if (typeof A[k] === 'boolean' || typeof A[k] === 'string') {
-                child[k] = Math.random() > 0.5 ? A[k] : B[k];
+            const av = A[k] || 0, bv = B[k] || 0;
+            if (typeof A[k] === 'boolean' || k === 'blend_additive') { child[k] = Math.random() > 0.5 ? A[k] : B[k]; continue; }
+            if (typeof A[k] === 'string') { child[k] = Math.random() > 0.5 ? A[k] : B[k]; continue; }
+
+            if (PHENOTYPES.includes(k)) {
+                // Dominant gene expresses — child inherits strong parent's value
+                const maxV = Math.max(av, bv), minV = Math.min(av, bv);
+                child[k] = maxV > DOM
+                    ? clamp(maxV * rand(0.82, 1.08), 0, 1.5)        // dominant: keep strong
+                    : clamp((maxV + minV) / 2 * rand(0.75, 1.15), 0, 1.5); // recessive: blend
+            } else if (PHYSICS.includes(k)) {
+                // Stronger physics gene carries through
+                const maxV = Math.max(av, bv);
+                child[k] = maxV > DOM
+                    ? clamp(maxV * rand(0.85, 1.05), 0, 5)
+                    : clamp((av + bv) / 2 * rand(0.8, 1.1), 0, 5);
+            } else if (k === 'cohesion') {
+                // Gentle decay per generation (~10%), not halved
+                child[k] = clamp((av + bv) / 2 * 0.88, 0.08, 0.96);
+            } else if (k.startsWith('color')) {
+                // Color: blend with small tint shift
+                child[k] = clamp((av + bv) / 2 + rand(-20, 20), 0, 255);
             } else {
-                const av = A[k] || 0, bv = B[k] || 0;
-                // Average of parents + 60% random mutation
-                child[k] = (av + bv) / 2 + (Math.random() - 0.5) * ((av + bv) / 2) * 0.7;
-                if (k.startsWith('v_alpha') || k.startsWith('color')) child[k] = clamp(child[k], 0, 255);
-                if (k === 'cohesion') child[k] = clamp(child[k] * 0.55, 0.05, 0.95); // decay over generations
+                // Everything else: modest blend + ±12% noise
+                child[k] = (av + bv) / 2 + (Math.random() - 0.5) * (av + bv) * 0.12;
+                if (k.startsWith('v_alpha')) child[k] = clamp(child[k], 0, 255);
                 else if (k.startsWith('g_') || k.startsWith('v_')) child[k] = Math.max(0, child[k]);
             }
         }
-        child.isStable  = false;
-        child.fontSize  = clamp(((A.fontSize||250) + (B.fontSize||250)) / 2 + rand(-80, 80), 80, 500);
+        child.isStable = false;
+        child.fontSize = clamp(((A.fontSize||250) + (B.fontSize||250)) / 2 + rand(-60, 60), 80, 500);
         return child;
     }
 }
 
 // ─────────────────────────────────────────────────────────────
 // SKETCH
+
 // ─────────────────────────────────────────────────────────────
 const sketch = (p) => {
     p.preload = () => FONT_SOURCES.forEach(f => p.loadFont(f.url, font => FONTS.push({ name: f.name, obj: font })));
