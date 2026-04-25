@@ -322,7 +322,9 @@ class LivingTypo {
         }
 
         // ══════════════════════════════════════════
-        //  FUSION CHILDREN — vertex particle system
+        //  FUSION CHILDREN — point-cloud rendering
+        //  NEVER connect all vertices as one path
+        //  Each style is a totally different visual
         // ══════════════════════════════════════════
         const vs = this.vertices;
         if (vs.length < 3) return;
@@ -331,113 +333,156 @@ class LivingTypo {
         p.translate(this.x, this.y);
         if (d.blend_additive) p.blendMode(p.ADD);
 
-        // Accent
-        switch (d.accentStyle) {
-            case 'baroque':
-                p.noFill(); p.stroke(R, G, B, 20); p.strokeWeight(0.8);
-                for (let k = 1; k <= 3; k++) {
-                    p.push(); p.scale(1+k*0.1); p.rotate(k*0.04);
-                    p.beginShape(); vs.forEach(v => p.curveVertex(v.pos.x, v.pos.y)); p.endShape(p.CLOSE);
-                    p.pop();
-                }
-                break;
-            case 'echo':
-                p.noFill(); p.stroke(R, G, B, 15); p.strokeWeight(2);
-                p.push(); p.translate(7,7);
-                p.beginShape(); vs.forEach(v => p.curveVertex(v.pos.x, v.pos.y)); p.endShape(p.CLOSE);
-                p.pop();
-                break;
-            case 'futurist':
-                p.stroke(R, G, B, 60); p.strokeWeight(0.5);
-                vs.forEach(v => { if (v.vel && v.vel.mag() > 0.2) p.line(v.pos.x, v.pos.y, v.pos.x-v.vel.x*10, v.pos.y-v.vel.y*10); });
-                break;
-            case 'glitch':
-                if (p.frameCount % 14 < 2) {
-                    p.noStroke(); p.fill(R,G,B,80);
-                    p.push(); p.translate((Math.random()-0.5)*30, 0);
-                    p.beginShape(); vs.forEach(v => p.curveVertex(v.pos.x, v.pos.y)); p.endShape(p.CLOSE);
-                    p.pop();
-                }
-                break;
-            case 'ghost':
-                p.noFill(); p.stroke(255,255,255,10); p.strokeWeight(2.5);
-                p.push(); p.translate(4,-4); p.scale(1.06);
-                p.beginShape(); vs.forEach(v => p.curveVertex(v.pos.x, v.pos.y)); p.endShape(p.CLOSE);
-                p.pop();
-                break;
+        // Minimal accent — no full-path curveVertex
+        if (d.accentStyle === 'futurist') {
+            p.stroke(R, G, B, 50); p.strokeWeight(0.5);
+            vs.forEach(v => { if (v.vel && v.vel.mag() > 0.3) p.line(v.pos.x, v.pos.y, v.pos.x-v.vel.x*8, v.pos.y-v.vel.y*8); });
+        }
+        if (d.accentStyle === 'glitch' && p.frameCount % 14 < 2) {
+            p.noStroke(); p.fill(R, G, B, 60);
+            const sub = vs.filter((_,i) => i % 20 === 0);
+            p.push(); p.translate((Math.random()-0.5)*30, 0);
+            p.beginShape(); sub.forEach(v => p.vertex(v.pos.x, v.pos.y)); p.endShape(p.CLOSE);
+            p.pop();
         }
 
-        // Dominant visual
+        // ── POINT-CLOUD DOMINANT STYLES ──
+        // Each one treats vertex positions as DATA, not as a connected path
         switch (d.visualStyle) {
+
             case 'membrane':
-                p.noStroke(); p.fill(R,G,B,alphaF);
-                p.beginShape(); vs.forEach(v => p.curveVertex(v.pos.x, v.pos.y)); p.endShape(p.CLOSE);
-                p.noFill(); p.stroke(R,G,B,alphaS*0.5); p.strokeWeight(1.5);
-                p.beginShape(); vs.forEach(v => p.curveVertex(v.pos.x, v.pos.y)); p.endShape(p.CLOSE);
+                // Soft gaussian blob: overlapping transparent circles = organic cloud
+                p.noStroke();
+                p.fill(R, G, B, Math.min(alphaF / 8, 22));
+                vs.forEach(v => p.circle(v.pos.x, v.pos.y, d.v_strokeW * 7));
+                // Bright dots on top
+                p.fill(R, G, B, Math.min(alphaF, 190));
+                vs.forEach((v, i) => { if (i % 7 === 0) p.circle(v.pos.x, v.pos.y, d.v_strokeW * 0.9); });
                 break;
+
             case 'outline':
-                p.noFill(); p.stroke(R,G,B,alphaS); p.strokeWeight(d.v_strokeW);
-                if (d.v_dashGap > 0) p.drawingContext.setLineDash([d.v_strokeW*2, d.v_dashGap]);
-                p.beginShape(); vs.forEach(v => p.vertex(v.pos.x, v.pos.y)); p.endShape(p.CLOSE);
-                p.drawingContext.setLineDash([]);
+                // Simplified skeleton: only every Nth point drawn as a polygon
+                {
+                    const step = Math.max(6, Math.floor(vs.length / 40));
+                    const pts  = vs.filter((_, i) => i % step === 0);
+                    p.noFill(); p.stroke(R, G, B, alphaS); p.strokeWeight(d.v_strokeW);
+                    if (d.v_dashGap > 0) p.drawingContext.setLineDash([d.v_strokeW*2, d.v_dashGap]);
+                    p.beginShape(); pts.forEach(v => p.curveVertex(v.pos.x, v.pos.y)); p.endShape(p.CLOSE);
+                    p.drawingContext.setLineDash([]);
+                }
                 break;
-            case 'neural': {
-                const lim = 80;
-                p.stroke(R,G,B,alphaS*0.5); p.strokeWeight(0.8);
-                for (let i=0; i<vs.length; i+=5) {
-                    for (let j=i+1; j<vs.length; j+=9) {
-                        if (vs[i].pos.dist(vs[j].pos) < lim) p.line(vs[i].pos.x, vs[i].pos.y, vs[j].pos.x, vs[j].pos.y);
+
+            case 'neural':
+                // Connection network — proximity-based links, opacity by distance
+                {
+                    const lim = 55;
+                    for (let i = 0; i < vs.length; i += 6) {
+                        for (let j = i + 1; j < vs.length; j += 10) {
+                            const d2 = vs[i].pos.dist(vs[j].pos);
+                            if (d2 < lim) {
+                                p.stroke(R, G, B, alphaS * (1 - d2/lim) * 0.55); p.strokeWeight(0.7);
+                                p.line(vs[i].pos.x, vs[i].pos.y, vs[j].pos.x, vs[j].pos.y);
+                            }
+                        }
+                    }
+                    // Node dots
+                    p.noStroke(); p.fill(R, G, B, alphaS);
+                    vs.forEach((v, i) => { if (i % 14 === 0) p.circle(v.pos.x, v.pos.y, 2.5); });
+                }
+                break;
+
+            case 'spores':
+                // Dot colony — varying sizes, bacterial feel
+                p.noStroke();
+                vs.forEach((v, i) => {
+                    if (i % 3 === 0) {
+                        const sz = d.v_strokeW * rand(0.4, 1.9);
+                        p.fill(R, G, B, alphaS * rand(0.3, 1.0));
+                        p.circle(v.pos.x, v.pos.y, sz);
+                    }
+                });
+                break;
+
+            case 'contour_fill':
+                // Radial streak field — each vertex draws a line toward its centroid
+                {
+                    let cmX = 0, cmY = 0;
+                    vs.forEach(v => { cmX += v.pos.x; cmY += v.pos.y; });
+                    const cx = cmX / vs.length, cy = cmY / vs.length;
+                    p.strokeWeight(d.v_strokeW * 0.4);
+                    vs.forEach((v, i) => {
+                        if (i % 5 === 0) {
+                            const mix = rand(0.1, 0.65);
+                            p.stroke(R, G, B, alphaS * rand(0.2, 0.6));
+                            p.line(v.pos.x, v.pos.y, cx + (v.pos.x-cx)*mix, cy + (v.pos.y-cy)*mix);
+                        }
+                    });
+                    // Accent dots
+                    p.noStroke(); p.fill(R, G, B, alphaF * 0.7);
+                    vs.forEach((v, i) => { if (i % 9 === 0) p.circle(v.pos.x, v.pos.y, d.v_strokeW * 1.4); });
+                }
+                break;
+
+            case 'glowing':
+                // Concentric rings (simplified polygon at different scales)
+                {
+                    const step = Math.max(8, Math.floor(vs.length / 30));
+                    const pts  = vs.filter((_, i) => i % step === 0);
+                    for (let sc = 0.7; sc <= 1.4; sc += 0.15) {
+                        const a = alphaS * (1 - Math.abs(sc - 1.0) * 1.5) * 0.45;
+                        p.noFill(); p.stroke(R, G, B, a); p.strokeWeight(d.v_strokeW * (1 - Math.abs(sc-1)*1.3));
+                        p.push(); p.scale(sc);
+                        p.beginShape(); pts.forEach(v => p.curveVertex(v.pos.x, v.pos.y)); p.endShape(p.CLOSE);
+                        p.pop();
+                    }
+                    // Glowing dots
+                    const ctx = p.drawingContext;
+                    ctx.shadowColor = `rgba(${R},${G},${B},0.85)`; ctx.shadowBlur = 10;
+                    p.noStroke(); p.fill(R, G, B, alphaF);
+                    vs.forEach((v, i) => { if (i % 10 === 0) p.circle(v.pos.x, v.pos.y, 3.5); });
+                    ctx.shadowBlur = 0;
+                }
+                break;
+
+            case 'fragmented':
+                // Shattered triangles — crystal / shatter effect
+                p.noStroke();
+                for (let i = 0; i < vs.length - 8; i += 14) {
+                    const shade = rand(0.4, 1.0);
+                    p.fill(R*shade, G*shade, B*shade, alphaF * rand(0.5, 1.0));
+                    p.triangle(
+                        vs[i].pos.x, vs[i].pos.y,
+                        vs[i+1].pos.x, vs[i+1].pos.y,
+                        vs[Math.min(i+7, vs.length-1)].pos.x, vs[Math.min(i+7, vs.length-1)].pos.y
+                    );
+                }
+                // Thin edges
+                p.noFill(); p.stroke(R, G, B, alphaS * 0.3); p.strokeWeight(0.5);
+                for (let i = 0; i < vs.length - 1; i += 20) {
+                    p.line(vs[i].pos.x, vs[i].pos.y, vs[i+1].pos.x, vs[i+1].pos.y);
+                }
+                break;
+
+            case 'wireframe':
+                // Stride lattice — connect vertex[i] to vertex[i+N] for two strides
+                {
+                    const s1 = Math.max(3, Math.floor(vs.length / 30));
+                    const s2 = Math.max(7, Math.floor(vs.length / 12));
+                    p.stroke(R, G, B, alphaS * 0.55); p.strokeWeight(d.v_strokeW * 0.35);
+                    for (let i = 0; i < vs.length; i += 4) {
+                        p.line(vs[i].pos.x, vs[i].pos.y, vs[(i+s1)%vs.length].pos.x, vs[(i+s1)%vs.length].pos.y);
+                    }
+                    p.stroke(R, G, B, alphaS * 0.22); p.strokeWeight(d.v_strokeW * 0.6);
+                    for (let i = 0; i < vs.length; i += 8) {
+                        p.line(vs[i].pos.x, vs[i].pos.y, vs[(i+s2)%vs.length].pos.x, vs[(i+s2)%vs.length].pos.y);
                     }
                 }
-                p.noStroke(); p.fill(R,G,B,alphaF*0.3);
-                p.beginShape(); vs.forEach(v => p.curveVertex(v.pos.x, v.pos.y)); p.endShape(p.CLOSE);
-                break;
-            }
-            case 'spores':
-                p.noStroke(); p.fill(R,G,B,alphaS);
-                vs.forEach((v,i) => { if (i%4===0) p.circle(v.pos.x, v.pos.y, d.v_strokeW*rand(0.5,1.4)); });
-                p.noFill(); p.stroke(R,G,B,22); p.strokeWeight(0.7);
-                p.beginShape(); vs.forEach(v => p.curveVertex(v.pos.x, v.pos.y)); p.endShape(p.CLOSE);
-                break;
-            case 'contour_fill':
-                p.fill(R,G,B,alphaF*0.8); p.stroke(R,G,B,alphaS); p.strokeWeight(d.v_strokeW*0.9);
-                p.beginShape(); vs.forEach(v => p.curveVertex(v.pos.x, v.pos.y)); p.endShape(p.CLOSE);
-                break;
-            case 'glowing':
-                for (let pass=3; pass>=0; pass--) {
-                    p.noFill(); p.stroke(R,G,B,(alphaS/4)*(1-pass*0.17)); p.strokeWeight(d.v_strokeW*(1+pass*1.3));
-                    p.push(); p.scale(1+pass*0.04);
-                    p.beginShape(); vs.forEach(v => p.curveVertex(v.pos.x, v.pos.y)); p.endShape(p.CLOSE);
-                    p.pop();
-                }
-                p.noStroke(); p.fill(R,G,B,alphaF);
-                p.beginShape(); vs.forEach(v => p.curveVertex(v.pos.x, v.pos.y)); p.endShape(p.CLOSE);
-                break;
-            case 'fragmented':
-                p.noStroke(); p.fill(R,G,B,alphaF);
-                p.beginShape(p.TRIANGLES);
-                for (let i=0; i<vs.length-2; i+=10) {
-                    p.vertex(vs[i].pos.x, vs[i].pos.y);
-                    p.vertex(vs[i+1].pos.x, vs[i+1].pos.y);
-                    p.vertex(vs[i+2].pos.x, vs[i+2].pos.y);
-                }
-                p.endShape();
-                p.noFill(); p.stroke(R,G,B,alphaS*0.4); p.strokeWeight(0.6);
-                p.beginShape(); vs.forEach(v => p.vertex(v.pos.x, v.pos.y)); p.endShape();
-                break;
-            case 'wireframe':
-                p.stroke(R,G,B,alphaS*0.65); p.strokeWeight(d.v_strokeW*0.4);
-                for (let i=0; i<vs.length; i+=3) {
-                    const j = (i + Math.floor(vs.length/5)) % vs.length;
-                    p.line(vs[i].pos.x, vs[i].pos.y, vs[j].pos.x, vs[j].pos.y);
-                }
-                p.noFill(); p.stroke(R,G,B,alphaS*0.25); p.strokeWeight(1);
-                p.beginShape(); vs.forEach(v => p.vertex(v.pos.x, v.pos.y)); p.endShape(p.CLOSE);
                 break;
         }
 
         p.blendMode(p.BLEND);
         p.pop();
+
     }
 }
 
