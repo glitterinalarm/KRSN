@@ -47,38 +47,38 @@ class Genome {
             g_pulse:     rPow(3),
             g_vortex:    rPow(4),
             g_gravity:   rPow(5),
-            g_speed:     rand(0.2, 3),
-            g_amplitude: rand(0.5, 2.5),
-            cohesion:    rand(0.65, 1.0),
+            g_speed:     rand(0.2, 1.5),
+            g_amplitude: rand(0.3, 1.2),
+            cohesion:    rand(0.85, 1.0),
 
-            // [TOPOLOGY]
-            v_resolution: rand(0.04, 0.18),
-            v_roughness:  rPow(3) * 60,
-            v_fisheye:    rPow(4) * 2,
-            v_shear:      rPow(4) * 1.5,
-            v_complexity: rand(0.2, 1.0), // Combined factor for detail levels
+            // [TOPOLOGY] - Cleaner birth
+            v_resolution: rand(0.12, 0.22), // Higher detail at start
+            v_roughness:  rPow(4) * 8,     // Much lower start jitter
+            v_fisheye:    rPow(5) * 0.4,   // Much lower start lens effect
+            v_shear:      rPow(5) * 0.15,  // Much lower start slant
+            v_complexity: rand(0.1, 0.3),  // Simpler at start
 
             // [PHENOTYPES]
-            v_neural:   rPow(2.2),
-            v_membrane: rPow(1.8),
-            v_spine:    rPow(2),
-            v_spores:   rPow(2.5),
-            v_sharp:    rPow(3),
-            v_liquid:   rPow(3.5),
-            v_glitch:   rPow(4),
+            v_neural:   rPow(3),
+            v_membrane: rPow(2.5),
+            v_spine:    rPow(2.2),
+            v_spores:   rPow(3),
+            v_sharp:    rPow(4),
+            v_liquid:   rPow(4.5),
+            v_glitch:   rPow(5),
             
-            // [ELEMENTAL SCALES] - How big are the squares/triangles/segments
-            v_elementScale: rand(0.3, 3.0),   // Hereditary size factor
-            v_elementCount: rand(0.2, 2.0),   // Hereditary density factor
+            // [ELEMENTAL SCALES]
+            v_elementScale: rand(0.5, 1.5),
+            v_elementCount: rand(0.4, 0.8),
 
             // [STYLE]
-            v_strokeW: rand(0.5, 8),
-            v_dashA:   rPow(2.5) * 60,
-            v_dashB:   rPow(2) * 40,
-            v_alphaF:  rand(50, 190),
-            v_alphaS:  rand(120, 255),
+            v_strokeW: rand(1, 4),
+            v_dashA:   rPow(3) * 30,
+            v_dashB:   rPow(2.5) * 20,
+            v_alphaF:  rand(60, 150),
+            v_alphaS:  rand(150, 255),
 
-            blend_additive: Math.random() > 0.75,
+            blend_additive: Math.random() > 0.8,
             colorR: Math.random() * 255,
             colorG: Math.random() * 255,
             colorB: Math.random() * 255
@@ -103,16 +103,17 @@ class Genome {
 
             if (PHENOTYPES.includes(k) || PHYSICS.includes(k) || DENSE_KEYS.includes(k)) {
                 const maxV = Math.max(av, bv);
+                // Child can become more complex than parents
                 child[k] = maxV > DOM_THRESH
-                    ? clamp(maxV * rand(0.85, 1.15), 0.01, 10)
-                    : clamp((av + bv) / 2 * rand(0.7, 1.3), 0.01, 10);
+                    ? clamp(maxV * rand(0.9, 1.2), 0.01, 10)
+                    : clamp((av + bv) / 2 * rand(0.8, 1.4), 0.01, 10);
             } else if (k === 'cohesion') {
-                child[k] = clamp((av + bv) / 2 * 0.92, 0.1, 0.98);
+                child[k] = clamp((av + bv) / 2 * 0.9, 0.05, 0.98);
             } else if (k.startsWith('color')) {
                 child[k] = clamp((av + bv) / 2 + rand(-35, 35), 0, 255);
             } else {
                 child[k] = (av + bv) / 2 + (Math.random()-0.5) * av * 0.25;
-                if (k.startsWith('g_') || k.startsWith('v_')) child[k] = Math.max(0.01, child[k]);
+                if (k.startsWith('g_') || k.startsWith('v_')) child[k] = Math.max(0, child[k]);
             }
         }
         return child;
