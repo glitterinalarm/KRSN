@@ -25,8 +25,11 @@ const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
 // BIOCONTROL / GENOME
 // ═══════════════════════════════════════════════════════════
 class BioGenome {
-    static TYPES = ['CRYSTAL', 'FLUID', 'NEURAL', 'MECHANIC', 'GASEOUS', 'FRAGMENTED', 'LIGHT'];
-    static MATERIALS = ['MATTE', 'NEON', 'GLASS', 'MEAT', 'METAL'];
+    static TYPES = [
+        'CRYSTAL', 'FLUID', 'NEURAL', 'MECHANIC', 'GASEOUS', 'FRAGMENTED', 'LIGHT',
+        'QUANTUM', 'FRACTAL', 'GRID', 'ARTISTIC', 'LIQUID_METAL', 'GHOST'
+    ];
+    static MATERIALS = ['MATTE', 'NEON', 'GLASS', 'MEAT', 'METAL', 'CHROME', 'PLASMA'];
 
     static createRandom() {
         return {
@@ -35,23 +38,26 @@ class BioGenome {
             material: pick(BioGenome.MATERIALS),
             
             // Physics Genes
-            g_speed: rand(0.05, 0.2),
-            g_amplitude: rand(0.1, 0.5),
-            g_viscosity: rand(0.5, 0.95), // How much it drags
-            g_vortex: rand(0, 0.1),
-            g_drift: rand(0.01, 0.05),
+            g_speed: rand(0.05, 0.25),
+            g_amplitude: rand(0.2, 0.8),
+            g_viscosity: rand(0.7, 0.98), 
+            g_vortex: rand(0, 0.2),
+            g_drift: rand(0.01, 0.1),
+            g_quantum: rand(0, 1), // Probability of flickering
             
             // Morphology Genes
             v_complexity: 0.1,
             v_fragmentation: 0,
             v_scale: 1.0,
-            v_strokeW: rand(1, 3),
-            v_resolution: 0.15,
+            v_strokeW: rand(1, 4),
+            v_resolution: 0.2,
+            v_fractalDepth: Math.floor(rand(1, 3)),
             
-            // Biological Traits
+            // Biological & Physical Traits
             cohesion: 1.0, 
-            breathing: rand(0.01, 0.05),
-            pulsation: rand(0.01, 0.1),
+            breathing: rand(0.01, 0.08),
+            pulsation: rand(0.02, 0.15),
+            gravity: rand(-0.1, 0.1),
             
             // Aesthetic
             colorR: Math.random() * 255,
@@ -59,7 +65,7 @@ class BioGenome {
             colorB: Math.random() * 255,
             alpha: 220,
             
-            mutationRate: 0.1
+            mutationRate: 0.15
         };
     }
 
@@ -278,29 +284,20 @@ class LivingTypo {
 
         // RENDER TYPES
         switch (d.type) {
-            case 'CRYSTAL':
-                this.drawCrystal(p, col, d);
-                break;
-            case 'FLUID':
-                this.drawFluid(p, col, d);
-                break;
-            case 'NEURAL':
-                this.drawNeural(p, col, d);
-                break;
-            case 'MECHANIC':
-                this.drawMechanic(p, col, d);
-                break;
-            case 'GASEOUS':
-                this.drawGaseous(p, col, d);
-                break;
-            case 'FRAGMENTED':
-                this.drawFragmented(p, col, d);
-                break;
-            case 'LIGHT':
-                this.drawLight(p, col, d);
-                break;
-            default:
-                this.drawDefault(p, col, d);
+            case 'CRYSTAL':     this.drawCrystal(p, col, d); break;
+            case 'FLUID':       this.drawFluid(p, col, d); break;
+            case 'NEURAL':      this.drawNeural(p, col, d); break;
+            case 'MECHANIC':    this.drawMechanic(p, col, d); break;
+            case 'GASEOUS':      this.drawGaseous(p, col, d); break;
+            case 'FRAGMENTED':  this.drawFragmented(p, col, d); break;
+            case 'LIGHT':       this.drawLight(p, col, d); break;
+            case 'QUANTUM':     this.drawQuantum(p, col, d); break;
+            case 'FRACTAL':     this.drawFractal(p, col, d); break;
+            case 'GRID':        this.drawGrid(p, col, d); break;
+            case 'ARTISTIC':    this.drawArtistic(p, col, d); break;
+            case 'LIQUID_METAL': this.drawLiquidMetal(p, col, d); break;
+            case 'GHOST':       this.drawGhost(p, col, d); break;
+            default:            this.drawDefault(p, col, d);
         }
 
         p.blendMode(p.BLEND);
@@ -308,6 +305,98 @@ class LivingTypo {
     }
 
     // --- RENDERING MODULES ---
+
+    drawQuantum(p, col, d) {
+        // Superposition: multiple transparent ghosts
+        for (let j = 0; j < 3; j++) {
+            p.push();
+            p.translate(p.noise(p.frameCount * 0.1, j) * 20 - 10, p.noise(p.frameCount * 0.1, j + 100) * 20 - 10);
+            p.stroke(col[0], col[1], col[2], d.alpha * 0.2);
+            p.noFill();
+            p.beginShape();
+            this.vertices.forEach(v => p.vertex(v.pos.x, v.pos.y));
+            p.endShape();
+            p.pop();
+        }
+        // Quantum "Flicker"
+        if (p.random() > 0.1) this.drawDefault(p, col, d);
+    }
+
+    drawFractal(p, col, d) {
+        // Recursive replication on vertices
+        this.drawDefault(p, col, d);
+        if (this.gen < 2) return;
+        p.push();
+        const sc = 0.2;
+        p.scale(sc);
+        this.vertices.forEach((v, i) => {
+            if (i % 30 === 0) {
+                p.push();
+                p.translate(v.pos.x / sc, v.pos.y / sc);
+                this.drawDefault(p, col, d);
+                p.pop();
+            }
+        });
+        p.pop();
+    }
+
+    drawGrid(p, col, d) {
+        // Snapped mathematical structure
+        const gridSize = 20 * (1.1 - d.v_complexity);
+        p.stroke(col[0], col[1], col[2], d.alpha);
+        p.noFill();
+        p.beginShape(p.LINES);
+        this.vertices.forEach(v => {
+            const gx = Math.round(v.pos.x / gridSize) * gridSize;
+            const gy = Math.round(v.pos.y / gridSize) * gridSize;
+            p.vertex(gx, gy);
+            p.vertex(v.pos.x, v.pos.y);
+        });
+        p.endShape();
+    }
+
+    drawArtistic(p, col, d) {
+        // Bauhaus / De Stijl inspired
+        p.noStroke();
+        this.vertices.forEach((v, i) => {
+            if (i % 15 === 0) {
+                const colors = [[255, 0, 0], [255, 255, 0], [0, 0, 255], [255, 255, 255]];
+                const c = pick(colors);
+                p.fill(c[0], c[1], c[2], d.alpha * 0.5);
+                const w = 40 * v.seed;
+                const h = 5 * v.seed;
+                p.push();
+                p.translate(v.pos.x, v.pos.y);
+                p.rotate(v.vel.heading());
+                p.rect(-w/2, -h/2, w, h);
+                p.pop();
+            }
+        });
+    }
+
+    drawLiquidMetal(p, col, d) {
+        p.blendMode(p.SCREEN);
+        p.strokeWeight(d.v_strokeW * 4);
+        p.stroke(200, 200, 255, 100);
+        this.drawFluid(p, [255, 255, 255], d);
+        p.strokeWeight(d.v_strokeW);
+        p.stroke(col[0], col[1], col[2], d.alpha);
+        this.drawFluid(p, col, d);
+    }
+
+    drawGhost(p, col, d) {
+        p.noFill();
+        p.strokeWeight(1);
+        for (let i = 0; i < 5; i++) {
+            p.stroke(col[0], col[1], col[2], (d.alpha / 5) * (1 - i / 5));
+            p.beginShape();
+            this.vertices.forEach(v => {
+                const off = v.vel.copy().mult(-i * 2);
+                p.vertex(v.pos.x + off.x, v.pos.y + off.y);
+            });
+            p.endShape();
+        }
+    }
 
     drawDefault(p, col, d) {
         p.noFill();
