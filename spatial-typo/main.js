@@ -429,8 +429,13 @@ function injectExportUI(p) {
     let recorder, chunks=[];
     document.getElementById('btn-vid').onclick = () => {
         if (APP_STATE.isRecording) return; APP_STATE.isRecording=true;
-        recorder=new MediaRecorder(document.querySelector('canvas').captureStream(60),{mimeType:'video/webm'});
-        recorder.ondataavailable = e=>chunks.push(e.data);
+        let recorder = null;
+        try { 
+            recorder = new MediaRecorder(document.querySelector('canvas').captureStream(60),{mimeType:'video/webm'}); 
+        } catch(e) { 
+            APP_STATE.isRecording=false; alert("Vidéo non supportée par ce navigateur."); return; 
+        }
+        recorder.ondataavailable = e => chunks.push(e.data);
         recorder.onstop = () => {
             const a=document.createElement('a');
             a.href=URL.createObjectURL(new Blob(chunks,{type:'video/webm'}));
@@ -441,3 +446,4 @@ function injectExportUI(p) {
 }
 
 new p5(sketch);
+
