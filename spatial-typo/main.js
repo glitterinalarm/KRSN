@@ -170,24 +170,29 @@ class LivingTypo {
             this.dna = parentData.dna;
             this.gen = parentData.gen;
             
-            // Re-sample or inherit vertices
-            parentData.vertices.forEach(v => {
-                this.vertices.push({
-                    pos: v.pos.copy(),
-                    basePos: v.pos.copy(),
-                    vel: p.createVector(0,0),
-                    seed: v.seed || Math.random()
-                });
+            // Re-sample or inherit vertices with strict capping
+            const MAX_VERTICES = 350;
+            const step = Math.ceil(parentData.vertices.length / MAX_VERTICES);
+            parentData.vertices.forEach((v, i) => {
+                if (i % step === 0 && this.vertices.length < MAX_VERTICES) {
+                    this.vertices.push({
+                        pos: v.pos.copy(),
+                        basePos: v.pos.copy(),
+                        vel: p.createVector(0,0),
+                        seed: v.seed || Math.random()
+                    });
+                }
             });
             
-            // If fragmented, inherit particles
+            // If fragmented, inherit particles (reduced)
             if (this.dna.type === 'FRAGMENTED' || this.dna.type === 'GASEOUS') {
-                for (let i = 0; i < 100 * this.dna.v_complexity; i++) {
-                    const v = pick(this.vertices);
+                const particleCount = Math.min(40, 60 * this.dna.v_complexity);
+                for (let i = 0; i < particleCount; i++) {
+                    const v = pick(this.vertices) || { pos: p.createVector(0,0) };
                     this.particles.push({
                         pos: v.pos.copy(),
                         vel: p.createVector(rand(-1,1), rand(-1,1)),
-                        sz: rand(2, 10),
+                        sz: rand(2, 6),
                         life: rand(0.5, 1.0)
                     });
                 }
@@ -201,14 +206,18 @@ class LivingTypo {
             this.fontName = font ? font.name : 'System';
             if (font && font.obj) {
                 const b = font.obj.textBounds(this.char, 0, 0, 400);
-                const pts = font.obj.textToPoints(this.char, -b.x - b.w/2, -b.y - b.h/2, 400, { sampleFactor: this.dna.v_resolution });
-                pts.forEach(pt => {
-                    this.vertices.push({
-                        pos: p.createVector(pt.x, pt.y),
-                        basePos: p.createVector(pt.x, pt.y),
-                        vel: p.createVector(0, 0),
-                        seed: Math.random()
-                    });
+                const sampleFactor = this.dna.v_resolution * 0.8; // Reduced sampling
+                const pts = font.obj.textToPoints(this.char, -b.x - b.w/2, -b.y - b.h/2, 400, { sampleFactor });
+                const MAX_VERTICES = 300;
+                pts.forEach((pt, i) => {
+                    if (this.vertices.length < MAX_VERTICES) {
+                        this.vertices.push({
+                            pos: p.createVector(pt.x, pt.y),
+                            basePos: p.createVector(pt.x, pt.y),
+                            vel: p.createVector(0, 0),
+                            seed: Math.random()
+                        });
+                    }
                 });
             }
         }
@@ -307,36 +316,43 @@ class LivingTypo {
     // --- RENDERING MODULES ---
 
     drawQuantum(p, col, d) {
-        // Superposition: multiple transparent ghosts
-        for (let j = 0; j < 3; j++) {
+        // Superposition: fewer ghosts for performance
+        for (let j = 0; j < 2; j++) {
             p.push();
-            p.translate(p.noise(p.frameCount * 0.1, j) * 20 - 10, p.noise(p.frameCount * 0.1, j + 100) * 20 - 10);
-            p.stroke(col[0], col[1], col[2], d.alpha * 0.2);
+            const ox = p.noise(p.frameCount * 0.05, j) * 15 - 7.5;
+            const oy = p.noise(p.frameCount * 0.05, j + 50) * 15 - 7.5;
+            p.translate(ox, oy);
+            p.stroke(col[0], col[1], col[2], d.alpha * 0.15);
             p.noFill();
             p.beginShape();
-            this.vertices.forEach(v => p.vertex(v.pos.x, v.pos.y));
+            for (let i = 0; i < this.vertices.length; i += 2) {
+                p.vertex(this.vertices[i].pos.x, this.vertices[i].pos.y);
+            }
             p.endShape();
             p.pop();
         }
         // Quantum "Flicker"
-        if (p.random() > 0.1) this.drawDefault(p, col, d);
+        if (p.random() > 0.15) this.drawDefault(p, col, d);
     }
 
     drawFractal(p, col, d) {
-        // Recursive replication on vertices
+        // Recursive replication on vertices (Heavily limited for performance)
         this.drawDefault(p, col, d);
         if (this.gen < 2) return;
         p.push();
-        const sc = 0.2;
+        const sc = 0.25;
         p.scale(sc);
-        this.vertices.forEach((v, i) => {
-            if (i % 30 === 0) {
-                p.push();
-                p.translate(v.pos.x / sc, v.pos.y / sc);
-                this.drawDefault(p, col, d);
-                p.pop();
-            }
-        });
+        let count = 0;
+        const maxChildren = 6; 
+        for (let i = 0; i < this.vertices.length; i += 50) {
+            if (count >= maxChildren) break;
+            const v = this.vertices[i];
+            p.push();
+            p.translate(v.pos.x / sc, v.pos.y / sc);
+            this.drawDefault(p, col, d);
+            p.pop();
+            count++;
+        }
         p.pop();
     }
 
@@ -437,14 +453,18 @@ class LivingTypo {
     }
 
     drawNeural(p, col, d) {
-        // Connections and tendrils
+        // High-performance Neural connections
         p.stroke(col[0], col[1], col[2], d.alpha * 0.8);
         p.strokeWeight(d.v_strokeW * 0.5);
-        for (let i = 0; i < this.vertices.length; i += 8) {
-            for (let j = i + 1; j < this.vertices.length; j += 20) {
-                const dist = this.vertices[i].pos.dist(this.vertices[j].pos);
-                if (dist < 100 * (1 + d.v_complexity)) {
-                    p.line(this.vertices[i].pos.x, this.vertices[i].pos.y, this.vertices[j].pos.x, this.vertices[j].pos.y);
+        const limit = 100 * (1 + d.v_complexity);
+        const step = Math.max(12, Math.floor(20 / (1 + d.v_complexity)));
+        for (let i = 0; i < this.vertices.length; i += step) {
+            const v1 = this.vertices[i];
+            for (let j = i + step; j < this.vertices.length; j += step * 2) {
+                const v2 = this.vertices[j];
+                const dsq = (v1.pos.x - v2.pos.x)**2 + (v1.pos.y - v2.pos.y)**2;
+                if (dsq < limit * limit) {
+                    p.line(v1.pos.x, v1.pos.y, v2.pos.x, v2.pos.y);
                 }
             }
         }
