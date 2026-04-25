@@ -1,6 +1,9 @@
-// Typography Lab - Omniversal Diversity Engine v34.0
-// PHILOSOPHY: Birth legible → Gradual organic mutation → Pure abstraction
-console.log("TypoLab Engine v34.0 - LEGIBLE BIRTH | ORGANIC DECAY | MAXIMUM DIVERSITY");
+// Typography Lab - Omniversal Diversity Engine v35.0
+// PHILOSOPHY: Legible birth → Organic decay → Pure abstraction
+// FIXED: Camera focus on molecule click | Better visual diversity | No "sharp" overload
+console.log("TypoLab Engine v35.0 - FOCUS FIX | DIVERSITY | ORGANIC");
+
+let atomCounter = 0; // integer IDs, no float precision issues
 
 const APP_STATE = { 
     atoms: [], 
@@ -9,66 +12,65 @@ const APP_STATE = {
 };
 
 const FONT_SOURCES = [
-    { name: 'Roboto Black',   url: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-black-webfont.ttf' },
-    { name: 'Source Sans Pro',url: 'https://cdnjs.cloudflare.com/ajax/libs/topcoat/0.8.0/font/SourceSansPro-Black.otf' },
-    { name: 'Source Code Pro',url: 'https://cdnjs.cloudflare.com/ajax/libs/topcoat/0.8.0/font/SourceCodePro-Bold.otf' },
-    { name: 'Roboto Light',   url: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-light-webfont.ttf' }
+    { name: 'Roboto Black',    url: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-black-webfont.ttf' },
+    { name: 'Source Sans Pro', url: 'https://cdnjs.cloudflare.com/ajax/libs/topcoat/0.8.0/font/SourceSansPro-Black.otf' },
+    { name: 'Source Code Pro', url: 'https://cdnjs.cloudflare.com/ajax/libs/topcoat/0.8.0/font/SourceCodePro-Bold.otf' },
+    { name: 'Roboto Light',    url: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-light-webfont.ttf' }
 ];
 const FONTS = [];
 
 function rand(a, b) { return Math.random() * (b - a) + a; }
-function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function pick(arr)  { return arr[Math.floor(Math.random() * arr.length)]; }
 
 // ==================================================================
-// GENOME  — encodes biology, physics, aesthetic style
+// GENOME
 // ==================================================================
 class Genome {
     static createRandom() {
         return {
-            // Speed of mutation onset (when does the letter start visually decaying?)
-            birthFrames: Math.floor(rand(60, 400)), // 1–7 seconds of stability
+            id_anim:    atomCounter++,
+            birthDelay: Math.floor(rand(80, 500)),   // frames before forces kick in
+            animType:   pick(['liquid', 'frenetic', 'orbit', 'piston', 'nebula', 'mycelium']),
 
-            // Animation physics type (all different feels)
-            animType: pick(['liquid', 'frenetic', 'orbit', 'piston', 'nebula']),
+            g_speed:     rand(0.4, 5),
+            g_amplitude: rand(0.3, 5),
+            g_friction:  rand(0.84, 0.97),
+            cohesion:    1.0,
 
-            // Physics force values
-            g_speed:     rand(0.5, 5),
-            g_amplitude: rand(0.5, 6),
-            g_friction:  rand(0.82, 0.96),
-            cohesion:    1.0, // locked at birth, decays with age
+            // VISUAL: 6 possible looks, each radically different
+            visualStyle: pick(['membrane', 'outline', 'neural', 'spores', 'contour_fill', 'glowing']),
+            // ACCENT: rare bonus layer
+            accentStyle: pick(['none','none','none','none','echo','futurist','baroque','glitch']),
 
-            // Visual rendering style (one dominant + occasional accent)
-            visualStyle: pick(['membrane', 'spine', 'neural', 'sharp', 'spores']),
-            accentStyle: pick(['none', 'none', 'none', 'baroque', 'futurist', 'echo']),
+            v_strokeW:     rand(1, 12),
+            v_dashGap:     Math.random() > 0.65 ? rand(2, 40) : 0,
+            v_alphaFill:   rand(60, 210),
+            v_alphaStr:    rand(120, 255),
+            v_noiseScale:  rand(0.002, 0.012),
+            blend_additive: Math.random() > 0.85,
 
-            // Visual params
-            v_strokeW:   rand(1, 10),
-            v_dashGap:   Math.random() > 0.7 ? rand(2, 30) : 0,
-            v_alphaFill: rand(80, 220),
-            v_alphaStr:  rand(100, 255),
-            
-            blend_additive: Math.random() > 0.8,
-            
-            colorR: Math.random()*255, 
-            colorG: Math.random()*255, 
-            colorB: Math.random()*255
+            colorR: Math.random() * 255,
+            colorG: Math.random() * 255,
+            colorB: Math.random() * 255
         };
     }
 
     static merge(A, B) {
         const child = {};
         for (const k in A) {
-            if (typeof A[k] === 'string') { child[k] = Math.random() > 0.5 ? A[k] : B[k]; }
-            else if (typeof A[k] === 'boolean') { child[k] = Math.random() > 0.5 ? A[k] : B[k]; }
-            else {
-                child[k] = (A[k] + B[k]) / 2 + (Math.random() - 0.5) * A[k] * 0.8;
+            if (typeof A[k] === 'string' || typeof A[k] === 'boolean') {
+                child[k] = Math.random() > 0.5 ? A[k] : B[k];
+            } else {
+                const av = A[k] || 0, bv = B[k] || 0;
+                child[k] = (av + bv) / 2 + (Math.random() - 0.5) * av * 0.9;
                 if (k.startsWith('v_alpha') || k.startsWith('color')) child[k] = Math.max(0, Math.min(255, child[k]));
                 if (k === 'g_friction') child[k] = Math.max(0.8, Math.min(0.99, child[k]));
                 child[k] = Math.max(0, child[k]);
             }
         }
-        child.cohesion = 1.0;
-        child.birthFrames = Math.floor(rand(60, 300));
+        child.cohesion    = 1.0;
+        child.birthDelay  = Math.floor(rand(80, 300));
+        child.id_anim     = atomCounter++;
         return child;
     }
 }
@@ -86,7 +88,6 @@ const sketch = (p) => {
         document.getElementById('loader').classList.add('hidden');
         window.TU = new TypoUniverse(p);
         injectExportUI(p);
-        // Spawn initial population
         for (let i = 0; i < 6; i++) window.TU.addAtom();
     };
 
@@ -94,8 +95,8 @@ const sketch = (p) => {
         p.background(5, 5, 8);
 
         // Smooth camera lerp
-        APP_STATE.view.x += (APP_STATE.view.targetX - APP_STATE.view.x) * 0.12;
-        APP_STATE.view.y += (APP_STATE.view.targetY - APP_STATE.view.y) * 0.12;
+        APP_STATE.view.x += (APP_STATE.view.targetX - APP_STATE.view.x) * 0.1;
+        APP_STATE.view.y += (APP_STATE.view.targetY - APP_STATE.view.y) * 0.1;
 
         p.push();
         p.translate(p.width / 2 + APP_STATE.view.x, p.height / 2 + APP_STATE.view.y);
@@ -105,7 +106,7 @@ const sketch = (p) => {
 
         if (APP_STATE.isRecording) {
             p.push(); p.fill(255, 0, 0); p.noStroke(); p.circle(30, 30, 16);
-            p.fill(255); p.textSize(14); p.text('REC', 45, 35); p.pop();
+            p.fill(255); p.textSize(14); p.text('REC', 44, 35); p.pop();
         }
     };
 
@@ -113,13 +114,13 @@ const sketch = (p) => {
 };
 
 // ==================================================================
-// LIVING TYPO — the atomic life form
+// LIVING TYPO
 // ==================================================================
 class LivingTypo {
     constructor(p, char, fontData, parentData = null) {
-        this.p   = p;
-        this.id  = Math.random();
-        this.age = 0;
+        this.p        = p;
+        this.atomId   = atomCounter++;
+        this.age      = 0;
         this.vertices = [];
 
         if (parentData) {
@@ -135,10 +136,10 @@ class LivingTypo {
                 vel:     p.createVector(0, 0)
             }));
         } else {
-            this.x = (Math.random() - 0.5) * 1400;
-            this.y = (Math.random() - 0.5) * 1400;
-            const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!?#@&';
-            this.char = char || CHARS[Math.floor(Math.random() * CHARS.length)];
+            this.x    = (Math.random() - 0.5) * 1600;
+            this.y    = (Math.random() - 0.5) * 1200;
+            const CH  = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!?#@&';
+            this.char = char || CH[Math.floor(Math.random() * CH.length)];
             this.gen  = 1;
             this.dna  = Genome.createRandom();
 
@@ -146,9 +147,8 @@ class LivingTypo {
             this.fontName = font ? font.name : 'System';
 
             if (font && font.obj) {
-                const sampleFactor = 0.12; // dense enough points, not too many
-                let b = font.obj.textBounds(this.char, 0, 0, 500);
-                let pts = font.obj.textToPoints(this.char, -b.x - b.w / 2, -b.y - b.h / 2, 500, { sampleFactor });
+                const b   = font.obj.textBounds(this.char, 0, 0, 500);
+                const pts = font.obj.textToPoints(this.char, -b.x - b.w / 2, -b.y - b.h / 2, 500, { sampleFactor: 0.13 });
                 pts.forEach(pt => this.vertices.push({
                     pos:     p.createVector(pt.x, pt.y),
                     basePos: p.createVector(pt.x, pt.y),
@@ -157,186 +157,188 @@ class LivingTypo {
             }
         }
 
-        // Hard vertex cap
         while (this.vertices.length > 600) {
             this.vertices.splice(Math.floor(Math.random() * this.vertices.length), 1);
         }
     }
 
-    // ---- PHYSICS ----
     update() {
         this.age++;
-        const d   = this.dna;
-        const age = this.age;
-        
-        // Cohesion decays over time after birthFrames
-        const maturity = Math.max(0, age - d.birthFrames);
-        const decay    = maturity / 1200; // Very slow decay
-        d.cohesion = Math.max(0.1, 1.0 - decay);
+        const d = this.dna;
+
+        // Compute how "mature" the atom is (0→1 ramp after birthDelay)
+        const maturity = Math.max(0, this.age - d.birthDelay);
+        const ramp     = Math.min(1, maturity / 120); // ramps over 2 seconds
+
+        // Cohesion slowly decays long after birth
+        d.cohesion = Math.max(0.08, 1.0 - (maturity / 2000));
+
+        if (ramp < 0.001) return; // Still in stable birth period, don't update physics
 
         const t   = this.p.frameCount * 0.01 * d.g_speed;
-        const amp = d.g_amplitude * Math.min(1, maturity / 60); // Forces ramp up slowly
+        const amp = d.g_amplitude * ramp;
 
         let cmX = 0, cmY = 0;
         this.vertices.forEach(v => { cmX += v.pos.x; cmY += v.pos.y; });
-        const center = this.p.createVector(cmX / this.vertices.length, cmY / this.vertices.length);
+        const cx = cmX / this.vertices.length, cy = cmY / this.vertices.length;
+        const center = this.p.createVector(cx, cy);
 
         this.vertices.forEach((v, i) => {
             const force = this.p.createVector(0, 0);
+            const lx = v.pos.x, ly = v.pos.y;
 
-            if (amp > 0.01) {
-                switch (d.animType) {
-                    case 'liquid':
-                        force.add(p5.Vector.fromAngle(
-                            this.p.noise(v.pos.x * 0.005 + t, v.pos.y * 0.005) * this.p.TWO_PI * 4
-                        ).mult(amp * 0.6));
-                        break;
-                    case 'frenetic':
-                        force.add((Math.random() - 0.5) * amp * 3, (Math.random() - 0.5) * amp * 3);
-                        break;
-                    case 'orbit': {
-                        const diff = p5.Vector.sub(v.pos, center);
-                        force.add(new p5.Vector(-diff.y, diff.x).normalize().mult(amp * 0.5));
-                        break;
-                    }
-                    case 'piston':
-                        force.x += Math.sin(t * 3 + i * 0.1) * amp * 2;
-                        force.y += Math.cos(t * 2 + i * 0.07) * amp;
-                        break;
-                    case 'nebula': {
-                        const dist = p5.Vector.dist(v.pos, center);
-                        const outward = p5.Vector.sub(v.pos, center).normalize();
-                        force.add(outward.mult(Math.sin(t * 5 - dist * 0.03) * amp));
-                        break;
-                    }
+            switch (d.animType) {
+                case 'liquid':
+                    force.add(p5.Vector.fromAngle(
+                        this.p.noise(lx * d.v_noiseScale + t, ly * d.v_noiseScale) * this.p.TWO_PI * 4
+                    ).mult(amp * 0.8));
+                    break;
+                case 'frenetic':
+                    force.add((Math.random() - 0.5) * amp * 3, (Math.random() - 0.5) * amp * 3);
+                    break;
+                case 'orbit': {
+                    const diff = p5.Vector.sub(v.pos, center);
+                    force.add(new p5.Vector(-diff.y, diff.x).normalize().mult(amp * 0.7));
+                    break;
+                }
+                case 'piston':
+                    force.x += Math.sin(t * 2.5 + i * 0.12) * amp * 2.5;
+                    force.y += Math.cos(t * 1.8 + i * 0.09) * amp;
+                    break;
+                case 'nebula': {
+                    const dist    = p5.Vector.dist(v.pos, center);
+                    const outward = p5.Vector.sub(v.pos, center).normalize();
+                    force.add(outward.mult(Math.sin(t * 4 - dist * 0.04) * amp * 1.5));
+                    break;
+                }
+                case 'mycelium': {
+                    const angle = Math.round(this.p.atan2(v.vel.y, v.vel.x) / (Math.PI / 3)) * (Math.PI / 3);
+                    force.add(Math.cos(angle) * amp * 0.5, Math.sin(angle) * amp * 0.5);
+                    break;
                 }
             }
 
-            // Anchor spring (gives form its cohesion)
-            force.add(p5.Vector.sub(v.basePos, v.pos).mult(d.cohesion * 0.08));
-
+            // Spring back to base
+            force.add(p5.Vector.sub(v.basePos, v.pos).mult(d.cohesion * 0.09));
             v.vel.add(force);
             v.vel.mult(d.g_friction);
             v.pos.add(v.vel);
 
-            // Base position slowly drifts away as coherence drops
-            if (d.cohesion < 0.85) {
-                const drift = (0.85 - d.cohesion) * amp * 0.5;
-                v.basePos.add(this.p.createVector(
-                    (Math.random() - 0.5) * drift,
-                    (Math.random() - 0.5) * drift
-                ));
+            // Drift base position (erosion)
+            if (d.cohesion < 0.8) {
+                const erosion = (0.8 - d.cohesion) * amp * 0.4;
+                v.basePos.add((Math.random() - 0.5) * erosion, (Math.random() - 0.5) * erosion);
             }
         });
     }
 
-    // ---- RENDERING ----
     draw() {
-        const p   = this.p;
-        const d   = this.dna;
-        const vs  = this.vertices;
-        const R   = d.colorR, G = d.colorG, B = d.colorB;
+        const p  = this.p;
+        const d  = this.dna;
+        const vs = this.vertices;
+        const R  = d.colorR, G = d.colorG, B = d.colorB;
+        if (vs.length < 3) return;
 
         p.push();
         p.translate(this.x, this.y);
         if (d.blend_additive) p.blendMode(p.ADD);
 
-        // === ACCENT: BAROQUE (subtle echoes) ===
+        // ---- ACCENT LAYERS ----
         if (d.accentStyle === 'baroque') {
-            p.noFill();
-            p.stroke(R, G, B, 25);
-            p.strokeWeight(1);
+            p.noFill(); p.stroke(R, G, B, 20); p.strokeWeight(0.8);
             for (let k = 1; k <= 3; k++) {
-                p.push();
-                p.scale(1 + k * 0.1);
-                p.rotate(k * 0.05);
-                p.beginShape(); vs.forEach(v => p.vertex(v.pos.x, v.pos.y)); p.endShape(p.CLOSE);
+                p.push(); p.scale(1 + k * 0.12); p.rotate(k * 0.04);
+                p.beginShape(); vs.forEach(v => p.curveVertex(v.pos.x, v.pos.y)); p.endShape(p.CLOSE);
                 p.pop();
             }
         }
-
-        // === ACCENT: FUTURIST (speed lines from velocity) ===
         if (d.accentStyle === 'futurist') {
-            p.stroke(R, G, B, 60);
-            p.strokeWeight(0.5);
+            p.stroke(R, G, B, 70); p.strokeWeight(0.5);
             vs.forEach(v => {
-                const spd = v.vel.mag();
-                if (spd > 0.2) p.line(v.pos.x, v.pos.y, v.pos.x - v.vel.x * 8, v.pos.y - v.vel.y * 8);
+                if (v.vel.mag() > 0.25) p.line(v.pos.x, v.pos.y, v.pos.x - v.vel.x * 10, v.pos.y - v.vel.y * 10);
             });
         }
-
-        // === ACCENT: ECHO ===
         if (d.accentStyle === 'echo') {
-            p.noFill();
-            p.stroke(R, G, B, 20);
-            p.strokeWeight(1.5);
-            p.push(); p.translate(4, 4);
-            p.beginShape(); vs.forEach(v => p.curveVertex(v.pos.x, v.pos.y)); p.endShape();
+            p.noFill(); p.stroke(R, G, B, 18); p.strokeWeight(1.5);
+            p.push(); p.translate(5, 5);
+            p.beginShape(); vs.forEach(v => p.curveVertex(v.pos.x, v.pos.y)); p.endShape(p.CLOSE);
+            p.pop();
+        }
+        if (d.accentStyle === 'glitch' && p.frameCount % 15 < 3) {
+            p.noStroke(); p.fill(R, G, B, 80);
+            p.push(); p.translate((Math.random() - 0.5) * 20, 0);
+            p.beginShape(); vs.forEach(v => p.curveVertex(v.pos.x, v.pos.y)); p.endShape(p.CLOSE);
             p.pop();
         }
 
-        // === DOMINANT VISUAL STYLE ===
+        // ---- DOMINANT VISUAL ----
         switch (d.visualStyle) {
+
             case 'membrane':
-                p.noStroke();
-                p.fill(R, G, B, d.v_alphaFill);
-                p.beginShape(); vs.forEach(v => p.curveVertex(v.pos.x, v.pos.y)); p.endShape();
-                // Outline
-                p.noFill();
-                p.stroke(R, G, B, d.v_alphaStr);
-                p.strokeWeight(d.v_strokeW * 0.3);
-                p.beginShape(); vs.forEach(v => p.curveVertex(v.pos.x, v.pos.y)); p.endShape();
+                // Solid filled form - the closest to "original letter"
+                p.noStroke(); p.fill(R, G, B, d.v_alphaFill);
+                p.beginShape(); vs.forEach(v => p.curveVertex(v.pos.x, v.pos.y)); p.endShape(p.CLOSE);
+                // Colored edge
+                p.noFill(); p.stroke(R, G, B, d.v_alphaStr * 0.6); p.strokeWeight(1.5);
+                p.beginShape(); vs.forEach(v => p.curveVertex(v.pos.x, v.pos.y)); p.endShape(p.CLOSE);
                 break;
 
-            case 'spine':
-                p.noFill();
-                p.stroke(R, G, B, d.v_alphaStr);
-                p.strokeWeight(d.v_strokeW);
+            case 'outline':
+                // Just the stroke, no fill — beautiful with dashes
+                p.noFill(); p.stroke(R, G, B, d.v_alphaStr); p.strokeWeight(d.v_strokeW);
                 if (d.v_dashGap > 0) p.drawingContext.setLineDash([d.v_strokeW * 2, d.v_dashGap]);
-                p.beginShape(); vs.forEach(v => p.vertex(v.pos.x, v.pos.y)); p.endShape();
+                p.beginShape(); vs.forEach(v => p.vertex(v.pos.x, v.pos.y)); p.endShape(p.CLOSE);
                 p.drawingContext.setLineDash([]);
                 break;
 
             case 'neural': {
-                p.stroke(R, G, B, d.v_alphaStr * 0.5);
-                p.strokeWeight(0.8);
-                const limit = 70;
+                // Mesh of connections  
+                p.stroke(R, G, B, d.v_alphaStr * 0.45); p.strokeWeight(0.7);
+                const limit = 65;
                 for (let i = 0; i < vs.length; i += 6) {
                     for (let j = i + 1; j < vs.length; j += 10) {
-                        if (vs[i].pos.dist(vs[j].pos) < limit) {
-                            p.line(vs[i].pos.x, vs[i].pos.y, vs[j].pos.x, vs[j].pos.y);
-                        }
+                        const d2 = vs[i].pos.dist(vs[j].pos);
+                        if (d2 < limit) p.line(vs[i].pos.x, vs[i].pos.y, vs[j].pos.x, vs[j].pos.y);
                     }
                 }
-                // fill the letter body lightly
-                p.noStroke(); p.fill(R, G, B, d.v_alphaFill * 0.4);
-                p.beginShape(); vs.forEach(v => p.curveVertex(v.pos.x, v.pos.y)); p.endShape();
+                // Faint fill
+                p.noStroke(); p.fill(R, G, B, d.v_alphaFill * 0.35);
+                p.beginShape(); vs.forEach(v => p.curveVertex(v.pos.x, v.pos.y)); p.endShape(p.CLOSE);
                 break;
             }
 
-            case 'sharp':
-                p.noStroke(); p.fill(R, G, B, d.v_alphaFill);
-                p.beginShape(p.TRIANGLES);
-                for (let i = 0; i < vs.length - 2; i += 8) {
-                    p.vertex(vs[i].pos.x,   vs[i].pos.y);
-                    p.vertex(vs[i+1].pos.x, vs[i+1].pos.y);
-                    p.vertex(vs[i+2].pos.x, vs[i+2].pos.y);
-                }
-                p.endShape();
-                // always add outline for recognition
-                p.noFill(); p.stroke(R, G, B, d.v_alphaStr * 0.7); p.strokeWeight(1.2);
-                p.beginShape(); vs.forEach(v => p.vertex(v.pos.x, v.pos.y)); p.endShape();
-                break;
-
             case 'spores':
-                // dots along the letter path
+                // Glowing dots along letter path
                 p.noStroke(); p.fill(R, G, B, d.v_alphaStr);
                 vs.forEach((v, i) => {
-                    if (i % 3 === 0) p.circle(v.pos.x, v.pos.y, d.v_strokeW * 0.8);
+                    if (i % 4 === 0) {
+                        const s = d.v_strokeW * rand(0.4, 1.2);
+                        p.circle(v.pos.x, v.pos.y, s);
+                    }
                 });
-                // faint outline beneath
-                p.noFill(); p.stroke(R, G, B, 40); p.strokeWeight(1);
-                p.beginShape(); vs.forEach(v => p.curveVertex(v.pos.x, v.pos.y)); p.endShape();
+                // Ghost outline
+                p.noFill(); p.stroke(R, G, B, 30); p.strokeWeight(0.8);
+                p.beginShape(); vs.forEach(v => p.curveVertex(v.pos.x, v.pos.y)); p.endShape(p.CLOSE);
+                break;
+
+            case 'contour_fill':
+                // Fill + thick outline = graphic poster feel
+                p.fill(R, G, B, d.v_alphaFill * 0.7); p.stroke(R, G, B, d.v_alphaStr); p.strokeWeight(d.v_strokeW * 0.8);
+                p.beginShape(); vs.forEach(v => p.curveVertex(v.pos.x, v.pos.y)); p.endShape(p.CLOSE);
+                break;
+
+            case 'glowing':
+                // Additive multi-pass glow
+                for (let pass = 0; pass < 3; pass++) {
+                    const scale = 1 + pass * 0.04;
+                    p.noFill(); p.stroke(R, G, B, (d.v_alphaStr / 3) * (1 - pass * 0.2)); p.strokeWeight(d.v_strokeW * (1 + pass));
+                    p.push(); p.scale(scale);
+                    p.beginShape(); vs.forEach(v => p.curveVertex(v.pos.x, v.pos.y)); p.endShape(p.CLOSE);
+                    p.pop();
+                }
+                // Core fill
+                p.noStroke(); p.fill(R, G, B, d.v_alphaFill * 0.8);
+                p.beginShape(); vs.forEach(v => p.curveVertex(v.pos.x, v.pos.y)); p.endShape(p.CLOSE);
                 break;
         }
 
@@ -346,50 +348,54 @@ class LivingTypo {
 }
 
 // ==================================================================
-// TYPO UNIVERSE — orchestrator
+// TYPO UNIVERSE
 // ==================================================================
 class TypoUniverse {
     constructor(p) {
-        this.p = p;
-        this.history = []; // For undo
+        this.p       = p;
+        this.history = [];
         this.initUI();
         this.initInteraction();
     }
 
     addAtom() {
-        this.history.push(APP_STATE.atoms.map(a => a));
+        this.history.push([...APP_STATE.atoms]);
         const font = FONTS.length ? FONTS[Math.floor(Math.random() * FONTS.length)] : null;
-        const atom = new LivingTypo(this.p, '', font);
-        APP_STATE.atoms.push(atom);
+        APP_STATE.atoms.push(new LivingTypo(this.p, '', font));
         this.updateMoleculeList();
     }
 
     undo() {
-        if (this.history.length > 0) {
+        if (this.history.length) {
             APP_STATE.atoms = this.history.pop();
             this.updateMoleculeList();
         }
     }
 
-    focusOn(atom) {
-        APP_STATE.view.targetX = -atom.x;
-        APP_STATE.view.targetY = -atom.y;
+    // CENTER CAMERA ON AN ATOM
+    focusOn(atomId) {
+        const atom = APP_STATE.atoms.find(a => a.atomId === atomId);
+        if (!atom) return;
+        // With the canvas translate: screenCenter + view = worldPos
+        // So to center atom: view.target = -atom.x, -atom.y
+        APP_STATE.view.targetX = -atom.x * APP_STATE.view.zoom;
+        APP_STATE.view.targetY = -atom.y * APP_STATE.view.zoom;
     }
 
     checkFusion(moved) {
         const other = APP_STATE.atoms.find(o => o !== moved && Math.hypot(o.x - moved.x, o.y - moved.y) < 200);
         if (!other) return;
         this.history.push([...APP_STATE.atoms]);
-        const childDNA = Genome.merge(moved.dna, other.dna);
-        const child    = new LivingTypo(this.p, '?', null, {
+        const child = new LivingTypo(this.p, '?', null, {
             x:        (moved.x + other.x) / 2,
             y:        (moved.y + other.y) / 2,
             char:     '?',
-            fontName: `${moved.fontName} + ${other.fontName}`,
+            fontName: `${moved.fontName} × ${other.fontName}`,
             gen:      Math.max(moved.gen, other.gen) + 1,
-            dna:      childDNA,
+            dna:      Genome.merge(moved.dna, other.dna),
             vertices: [...moved.vertices, ...other.vertices]
         });
+        while (child.vertices.length > 600) child.vertices.splice(Math.floor(Math.random() * child.vertices.length), 1);
         APP_STATE.atoms = APP_STATE.atoms.filter(a => a !== moved && a !== other);
         APP_STATE.atoms.push(child);
         this.updateMoleculeList();
@@ -399,11 +405,11 @@ class TypoUniverse {
         document.getElementById('add-atom').addEventListener('click', () => this.addAtom());
         document.getElementById('undo-btn').addEventListener('click', () => this.undo());
 
+        // MOLECULE LIST CLICK → camera focus
         document.getElementById('molecule-list').addEventListener('click', e => {
-            const li = e.target.closest('[data-id]');
+            const li = e.target.closest('[data-atom-id]');
             if (!li) return;
-            const atom = APP_STATE.atoms.find(a => a.id === +li.dataset.id);
-            if (atom) this.focusOn(atom);
+            this.focusOn(parseInt(li.dataset.atomId, 10));
         });
     }
 
@@ -417,17 +423,19 @@ class TypoUniverse {
             });
         }
 
-        const toWorld = (cx, cy) => ({
-            wx: (cx - window.innerWidth  / 2 - APP_STATE.view.x) / APP_STATE.view.zoom,
-            wy: (cy - window.innerHeight / 2 - APP_STATE.view.y) / APP_STATE.view.zoom
-        });
-
         let dragged = null, panning = false, lx = 0, ly = 0;
+
+        const toWorld = (cx, cy) => ({
+            wx: (cx - this.p.width  / 2 - APP_STATE.view.x) / APP_STATE.view.zoom,
+            wy: (cy - this.p.height / 2 - APP_STATE.view.y) / APP_STATE.view.zoom
+        });
 
         const onStart = (cx, cy, target) => {
             if (target.closest('.ui-overlay')) return;
             const { wx, wy } = toWorld(cx, cy);
-            dragged = APP_STATE.atoms.find(a => Math.hypot(a.x - wx, a.y - wy) < 260 / APP_STATE.view.zoom) || null;
+            // Grab radius in world space
+            const grabR = 260 / APP_STATE.view.zoom;
+            dragged = APP_STATE.atoms.find(a => Math.hypot(a.x - wx, a.y - wy) < grabR) || null;
             if (!dragged) { panning = true; lx = cx; ly = cy; }
         };
 
@@ -436,10 +444,10 @@ class TypoUniverse {
                 dragged.x += dx / APP_STATE.view.zoom;
                 dragged.y += dy / APP_STATE.view.zoom;
             } else if (panning) {
-                APP_STATE.view.targetX += cx - lx;
-                APP_STATE.view.targetY += cy - ly;
-                APP_STATE.view.x = APP_STATE.view.targetX;
-                APP_STATE.view.y = APP_STATE.view.targetY;
+                APP_STATE.view.targetX += (cx - lx);
+                APP_STATE.view.targetY += (cy - ly);
+                APP_STATE.view.x  = APP_STATE.view.targetX;
+                APP_STATE.view.y  = APP_STATE.view.targetY;
                 lx = cx; ly = cy;
             }
         };
@@ -457,19 +465,19 @@ class TypoUniverse {
             const t = e.touches[0]; onStart(t.clientX, t.clientY, e.target);
             if (dragged) e.preventDefault();
         }, { passive: false });
-
-        window.addEventListener('touchmove', e => {
-            const t = e.touches[0];
-            onMove(t.clientX, t.clientY, t.clientX - lx, t.clientY - ly);
-            lx = e.touches[0].clientX; ly = e.touches[0].clientY;
+        window.addEventListener('touchmove',  e => {
+            const t   = e.touches[0];
+            const dtx = t.clientX - lx, dty = t.clientY - ly;
+            onMove(t.clientX, t.clientY, dtx, dty);
+            lx = t.clientX; ly = t.clientY;
             if (dragged || panning) e.preventDefault();
         }, { passive: false });
-
         window.addEventListener('touchend', onEnd);
 
         window.addEventListener('wheel', e => {
             e.preventDefault();
-            APP_STATE.view.zoom = Math.max(0.1, Math.min(5, APP_STATE.view.zoom * (e.deltaY > 0 ? 0.92 : 1.09)));
+            const factor = e.deltaY > 0 ? 0.92 : 1.09;
+            APP_STATE.view.zoom = Math.max(0.1, Math.min(6, APP_STATE.view.zoom * factor));
         }, { passive: false });
     }
 
@@ -478,27 +486,33 @@ class TypoUniverse {
         if (!ml) return;
         ml.innerHTML = APP_STATE.atoms.map(a => {
             const R = Math.round(a.dna.colorR), G = Math.round(a.dna.colorG), B = Math.round(a.dna.colorB);
-            return `<li class="molecule-item" data-id="${a.id}" style="cursor:pointer; display:flex; align-items:center; gap:8px; padding:6px 4px; border-bottom:1px solid rgba(255,255,255,0.06)">
-                <span style="width:10px;height:10px;border-radius:50%;background:rgb(${R},${G},${B});flex-shrink:0"></span>
-                <span style="color:rgb(${R},${G},${B}); font-weight:700">[${a.char}]</span>
-                <span style="opacity:0.5; font-size:0.7rem">G${a.gen} · ${a.dna.animType} · ${a.dna.visualStyle}</span>
+            return `<li class="molecule-item" data-atom-id="${a.atomId}"
+                style="cursor:pointer; display:flex; align-items:center; gap:10px; padding:8px 6px;
+                       border-bottom:1px solid rgba(255,255,255,0.06); transition: background 0.2s;"
+                onmouseenter="this.style.background='rgba(255,255,255,0.05)'"
+                onmouseleave="this.style.background='none'">
+                <span style="width:12px;height:12px;border-radius:50%;background:rgb(${R},${G},${B});flex-shrink:0;box-shadow:0 0 6px rgb(${R},${G},${B})"></span>
+                <div>
+                    <div style="font-weight:700; color:rgb(${R},${G},${B}); font-size:0.85rem">Gen ${a.gen} | <span style="color:#fff">[${a.char}]</span></div>
+                    <div style="opacity:0.45; font-size:0.62rem; margin-top:2px">${a.dna.visualStyle} · ${a.dna.animType}</div>
+                </div>
             </li>`;
         }).join('');
     }
 }
 
 // ==================================================================
-// EXPORT TOOLS
+// EXPORT
 // ==================================================================
 function injectExportUI(p) {
     const parent = document.querySelector('.side-panel');
     if (!parent) return;
     const div = document.createElement('div');
-    div.style.cssText = 'margin-top:auto; padding-top:12px; border-top:1px solid rgba(255,255,255,0.08)';
+    div.style.cssText = 'margin-top:auto; padding-top:14px; border-top:1px solid rgba(255,255,255,0.08)';
     div.innerHTML = `
         <div style="display:flex; gap:8px;">
-            <button id="btn-snap" style="flex:1; background:rgba(255,255,255,0.07); color:#fff; border:1px solid rgba(255,255,255,0.15); padding:9px; cursor:pointer; font-size:0.75rem">📸 IMAGE</button>
-            <button id="btn-vid"  style="flex:1; background:rgba(220,30,30,0.2);   color:#fff; border:1px solid rgba(255,0,0,0.3);   padding:9px; cursor:pointer; font-size:0.75rem">🎥 VIDÉO</button>
+            <button id="btn-snap" style="flex:1; background:rgba(255,255,255,0.06); color:#fff; border:1px solid rgba(255,255,255,0.12); padding:9px 4px; cursor:pointer; font-size:0.72rem; border-radius:4px">📸 IMAGE</button>
+            <button id="btn-vid"  style="flex:1; background:rgba(200,30,30,0.18); color:#fff; border:1px solid rgba(255,80,80,0.25); padding:9px 4px; cursor:pointer; font-size:0.72rem; border-radius:4px">🎥 VIDÉO</button>
         </div>`;
     parent.appendChild(div);
 
