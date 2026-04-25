@@ -1,85 +1,101 @@
-// Typography Lab - Universal Synthesis Engine v31.0
-console.log("TypoLab Engine v31.0 - STABILITY & FONT FIX");
+// Typography Lab - Omniversal Diversity Engine v32.0
+console.log("TypoLab Engine v32.0 - ABSOLUTE GRAPHIC DIVERSITY");
 
 const APP_STATE = { atoms: [], view: { x: 0, y: 0, zoom: 1 }, isRecording: false };
 
-// VERIFIED WORKING URLS
 const FONT_SOURCES = [
     { name: 'Roboto', url: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-black-webfont.ttf' },
     { name: 'SourceSans', url: 'https://cdnjs.cloudflare.com/ajax/libs/topcoat/0.8.0/font/SourceSansPro-Black.otf' },
     { name: 'SourceCode', url: 'https://cdnjs.cloudflare.com/ajax/libs/topcoat/0.8.0/font/SourceCodePro-Bold.otf' },
     { name: 'RobotoLight', url: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-light-webfont.ttf' }
 ];
-
 const FONTS = [];
-let universeInitialized = false;
 
 function powerRand(p = 3) { return Math.pow(Math.random(), p); }
 
 class Genome {
     static createRandom() {
+        // To ensure diversity, we use a "Profile" system
+        // Each letter will only have a few active visual 'modules'
         return {
-            m_fractal: powerRand(4), m_harmonic: powerRand(2), m_geometry: Math.random() > 0.7,
-            p_entropy: powerRand(2), p_plasma: powerRand(3), p_charge: (Math.random()-0.5) * 5,
-            g_friction: 0.8 + Math.random() * 0.15,
-            b_mitosis: powerRand(4), b_metabolism: Math.random(), b_nerves: powerRand(2),
-            a_suprematist: powerRand(3), a_baroque: powerRand(3), a_futurist: powerRand(2), a_dada: powerRand(5),
-            g_speed: Math.random() * 3 + 0.1, g_amplitude: Math.random() * 2 + 0.5, cohesion: Math.random() * 0.6 + 0.4,
-            v_resolution: Math.random() * 0.08 + 0.04, v_roughness: powerRand(3) * 80,
-            v_strokeW: Math.random() * 8 + 0.2, v_alphaF: Math.random() * 150, v_alphaS: Math.random() * 200 + 55,
-            blend_additive: Math.random() > 0.7,
+            // BEHAVIORS
+            g_speed: Math.random() * 4 + 0.1,
+            g_amplitude: Math.random() * 3 + 0.5,
+            g_friction: 0.75 + Math.random() * 0.2,
+            cohesion: 0.6 + Math.random() * 0.4, // Increased default cohesion for legibility
+            
+            // TOPOLOGY
+            v_resolution: Math.random() * 0.1 + 0.05,
+            v_roughness: powerRand(4) * 50, // Reduced default roughness
+            
+            // VISUAL MODULES (Probabilistic activation for diversity)
+            // Old school phenotypes
+            m_neural: Math.random() > 0.7 ? Math.random() : 0,
+            m_membrane: Math.random() > 0.6 ? Math.random() : 0,
+            m_spine: Math.random() > 0.5 ? Math.random() : 0,
+            m_spores: Math.random() > 0.8 ? Math.random() : 0,
+            m_sharp: Math.random() > 0.8 ? Math.random() : 0,
+
+            // Art History phenotypes
+            m_baroque: Math.random() > 0.9 ? Math.random() : 0,
+            m_suprematist: Math.random() > 0.9 ? Math.random() : 0,
+            m_futurist: Math.random() > 0.8 ? Math.random() : 0,
+            m_dada: Math.random() > 0.95 ? Math.random() : 0,
+            
+            // Physics/Math phenotypes
+            m_echo: Math.random() > 0.8 ? Math.random() : 0,
+            m_glitch: Math.random() > 0.9 ? Math.random() : 0,
+            m_ghost: Math.random() > 0.9 ? Math.random() : 0,
+
+            // FORCES
+            f_plasma: powerRand(2),
+            f_harmonic: powerRand(3),
+            f_charge: (Math.random()-0.5) * 4,
+            f_vortex: powerRand(4),
+
+            // STYLE
+            v_strokeW: Math.random() * 10 + 0.1,
+            v_dashA: Math.random() > 0.8 ? Math.random() * 50 : 0,
+            v_dashB: Math.random() * 20,
+            v_alphaF: Math.random() * 200,
+            v_alphaS: Math.random() * 200 + 50,
+            blend_additive: Math.random() > 0.8,
             colorR: Math.random()*255, colorG: Math.random()*255, colorB: Math.random()*255
         };
     }
+
     static merge(A, B) {
         let child = {};
-        let keys = Object.keys(A).length ? Object.keys(A) : Object.keys(B);
-        for(let k of keys) {
+        for(let k in (Object.keys(A).length ? A : B)) {
             if (typeof A[k] === 'boolean') child[k] = Math.random() > 0.5 ? A[k] : B[k];
             else {
-                let valA = A[k] || 0; let valB = B[k] || 0;
-                child[k] = (valA + valB) / 2 + (Math.random()-0.5) * valA * 1.5;
+                child[k] = (A[k] || 0) * 0.5 + (B[k] || 0) * 0.5;
+                child[k] += (Math.random()-0.5) * (child[k]||1) * 0.8; // Mutation
                 if(k.startsWith('v_alpha') || k.startsWith('color')) child[k] = Math.max(0, Math.min(255, child[k]));
-                if(k.startsWith('g_friction')) child[k] = Math.max(0.7, Math.min(0.99, child[k]));
+                if(k.startsWith('g_friction')) child[k] = Math.max(0.6, Math.min(0.99, child[k]));
                 child[k] = Math.max(0, child[k]); 
             }
         }
-        child.cohesion *= 0.5; return child;
+        child.cohesion *= 0.7; // Gradual decay but slower than before
+        return child;
     }
 }
 
 const sketch = (p) => {
-    p.preload = () => { 
-        // We use loadFont without callbacks in preload to ensure P5 sits on them correctly
-        FONT_SOURCES.forEach(f => {
-            p.loadFont(f.url, (font) => {
-                FONTS.push({ name: f.name, obj: font });
-            }, (err) => console.error("Font failed:", f.name));
-        }); 
-    };
+    p.preload = () => { FONT_SOURCES.forEach(f => p.loadFont(f.url, (font) => FONTS.push({ name: f.name, obj: font }))); };
 
     p.setup = () => {
         p.createCanvas(window.innerWidth, window.innerHeight).parent('stage');
-        p.frameRate(60);
         document.getElementById('loader').classList.add('hidden');
         window.typoUniverse = new TypoUniverse(p);
         injectExportUI(p);
-        
-        // Initial population
-        for(let i=0; i<8; i++) window.typoUniverse.addAtom();
-        universeInitialized = true;
+        for(let i=0; i<7; i++) window.typoUniverse.addAtom();
     };
 
     p.draw = () => {
-        p.background(5, 5, 8);
-        if (!universeInitialized) return;
-        
-        p.push(); 
-        p.translate(p.width/2 + APP_STATE.view.x, p.height/2 + APP_STATE.view.y); 
-        p.scale(APP_STATE.view.zoom);
-        
+        p.background(6, 6, 9);
+        p.push(); p.translate(p.width/2 + APP_STATE.view.x, p.height/2 + APP_STATE.view.y); p.scale(APP_STATE.view.zoom);
         APP_STATE.atoms.forEach(atom => { atom.update(); atom.draw(); });
-        
         p.pop();
         if (APP_STATE.isRecording) { p.push(); p.fill(255,0,0); p.circle(50, 50, 20); p.fill(255); p.text("REC", 70, 50); p.pop(); }
     };
@@ -88,120 +104,131 @@ const sketch = (p) => {
 
 class LivingTypo {
     constructor(p, char, fontData, parentData = null) {
-        this.p = p; this.id = Math.random(); this.vertices = []; this.age = 0;
-        
+        this.p = p; this.id = Math.random(); this.vertices = [];
         if (parentData) {
             this.x = parentData.x; this.y = parentData.y; this.char = parentData.char; this.fontName = parentData.fontName;
             this.dna = parentData.dna; this.gen = parentData.gen;
             parentData.vertices.forEach(v => this.vertices.push({ pos: v.pos.copy(), basePos: p.createVector(v.pos.x, v.pos.y), vel: p.createVector(0,0) }));
         } else {
             this.x = (Math.random()-0.5)*1200; this.y = (Math.random()-0.5)*1200;
-            const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!?#$@&%";
+            const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ#@$%&*";
             this.char = char || alphabet[Math.floor(Math.random() * alphabet.length)];
-            this.fontName = fontData ? fontData.name : "System";
             this.gen = 1; this.dna = Genome.createRandom();
-            
-            let fontObj = (fontData && fontData.obj) ? fontData.obj : (FONTS.length > 0 ? FONTS[0].obj : null);
-            
-            if (fontObj) {
-                try {
-                    let b = fontObj.textBounds(this.char, 0, 0, 500);
-                    let rawPoints = fontObj.textToPoints(this.char, -b.x - b.w/2, -b.y - b.h/2, 500, { sampleFactor: this.dna.v_resolution });
-                    rawPoints.forEach(pt => {
-                        let nx = pt.x + (Math.random()-0.5)*this.dna.v_roughness;
-                        let ny = pt.y + (Math.random()-0.5)*this.dna.v_roughness;
-                        this.vertices.push({ pos: p.createVector(nx, ny), basePos: p.createVector(nx, ny), vel: p.createVector(0,0) });
-                    });
-                } catch(e) {
-                    console.error("Path generation failed for char:", this.char, e);
-                }
+            let font = fontData || (FONTS.length > 0 ? FONTS[Math.floor(Math.random()*FONTS.length)] : null);
+            this.fontName = font ? font.name : "System";
+            if (font && font.obj) {
+                let b = font.obj.textBounds(this.char, 0, 0, 500);
+                let pts = font.obj.textToPoints(this.char, -b.x - b.w/2, -b.y - b.h/2, 500, { sampleFactor: this.dna.v_resolution });
+                pts.forEach(pt => {
+                    let nx = pt.x + (Math.random()-0.5)*this.dna.v_roughness;
+                    let ny = pt.y + (Math.random()-0.5)*this.dna.v_roughness;
+                    this.vertices.push({ pos: p.createVector(nx, ny), basePos: p.createVector(nx, ny), vel: p.createVector(0,0) });
+                });
             }
         }
         while(this.vertices.length > 400) this.vertices.splice(Math.floor(Math.random()*this.vertices.length), 1);
-        if (this.vertices.length === 0) {
-            // Fallback for failed vertex generation
-            for(let i=0; i<20; i++) this.vertices.push({ pos: p.createVector((Math.random()-0.5)*100, (Math.random()-0.5)*100), basePos: p.createVector(0,0), vel: p.createVector(0,0) });
-        }
     }
 
     update() {
-        this.age++; let t = this.p.frameCount * 0.01 * this.dna.g_speed;
+        let t = this.p.frameCount * 0.01 * this.dna.g_speed;
         let d = this.dna; let amp = d.g_amplitude;
-        if (d.b_metabolism > 0.5) t *= (1 + Math.sin(this.p.frameCount * 0.05) * 0.5);
-        
-        let cmX=0, cmY=0; 
-        if (this.vertices.length === 0) return;
-        this.vertices.forEach(v => { cmX+=v.pos.x; cmY+=v.pos.y; });
+        let cmX=0, cmY=0; this.vertices.forEach(v => { cmX+=v.pos.x; cmY+=v.pos.y; });
         let center = this.p.createVector(cmX/this.vertices.length, cmY/this.vertices.length);
 
         for (let v of this.vertices) {
             let force = this.p.createVector(0, 0);
-            if (d.p_plasma > 0.1) force.add(p5.Vector.fromAngle(this.p.noise(v.pos.x*0.005+t, v.pos.y*0.005)*this.p.TWO_PI*4).mult(d.p_plasma*amp));
-            if (d.m_harmonic > 0.1) { force.x += Math.sin(t*2.1 + v.pos.y*0.01)*d.m_harmonic*amp; force.y += Math.cos(t*1.7 + v.pos.x*0.01)*d.m_harmonic*amp; }
-            if (Math.abs(d.p_charge) > 0.1) force.add(p5.Vector.sub(v.pos, center).normalize().mult(d.p_charge*amp));
+            if (d.f_plasma > 0.01) force.add(p5.Vector.fromAngle(this.p.noise(v.pos.x*0.005+t, v.pos.y*0.005)*this.p.TWO_PI*4).mult(d.f_plasma*amp));
+            if (d.f_harmonic > 0.01) { force.x += Math.sin(t + v.pos.y*0.01)*d.f_harmonic*amp*5; force.y += Math.cos(t*1.2 + v.pos.x*0.01)*d.f_harmonic*amp*5; }
+            if (Math.abs(d.f_charge) > 0.01) force.add(p5.Vector.sub(v.pos, center).normalize().mult(d.f_charge*amp));
+            if (d.f_vortex > 0.01) { let diff = p5.Vector.sub(v.pos, center); force.add(new p5.Vector(-diff.y, diff.x).normalize().mult(d.f_vortex*amp*5)); }
             
-            v.vel.add(force); v.vel.add(p5.Vector.sub(v.basePos, v.pos).mult(d.cohesion*0.05));
+            v.vel.add(force); v.vel.add(p5.Vector.sub(v.basePos, v.pos).mult(d.cohesion*0.04));
             v.vel.mult(d.g_friction); v.pos.add(v.vel);
-            
-            if (d.cohesion < 1) v.basePos.add(this.p.createVector(Math.random()-0.5, Math.random()-0.5).mult((1-d.cohesion)*amp));
+            if (d.cohesion < 1) v.basePos.add(this.p.createVector(Math.random()-0.5, Math.random()-0.5).mult((1-d.cohesion)*amp*5));
         }
-        if (d.b_mitosis > 0.99 && this.vertices.length > 200 && Math.random() < 0.001) this.split();
-    }
-
-    split() {
-        let childDNA = JSON.parse(JSON.stringify(this.dna));
-        let child = new LivingTypo(this.p, this.char, null, {
-            x: this.x+50, y: this.y+50, char: this.char, fontName: this.fontName, dna: childDNA, gen: this.gen+1,
-            vertices: this.vertices.slice(0, Math.floor(this.vertices.length/2))
-        });
-        APP_STATE.atoms.push(child); this.vertices = this.vertices.slice(Math.floor(this.vertices.length/2));
     }
 
     draw() {
         let p = this.p; let d = this.dna; p.push(); p.translate(this.x, this.y);
         if (d.blend_additive) p.blendMode(p.ADD);
+
+        // --- DIVERSITY RENDERER ---
         
-        if (d.a_baroque > 0.1) {
-            p.noFill(); p.stroke(d.colorR, d.colorG, d.colorB, d.v_alphaS * 0.1);
-            for(let k=1; k<4; k++) { 
-                p.push(); p.rotate(k*0.1); p.scale(1+k*0.1); 
-                p.beginShape(); this.vertices.forEach(v => p.curveVertex(v.pos.x, v.pos.y)); p.endShape(); 
-                p.pop(); 
+        // 1. MEMBRANE (Old)
+        if (d.m_membrane > 0.01) {
+            p.noStroke(); p.fill(d.colorR, d.colorG, d.colorB, d.v_alphaF * d.m_membrane);
+            p.beginShape(); this.vertices.forEach(v => p.curveVertex(v.pos.x, v.pos.y)); p.endShape();
+        }
+
+        // 2. SPINE (Old)
+        if (d.m_spine > 0.01) {
+            p.noFill(); p.stroke(d.colorR, d.colorG, d.colorB, d.v_alphaS * d.m_spine);
+            p.strokeWeight(d.v_strokeW * d.m_spine);
+            if (d.v_dashA > 1) p.drawingContext.setLineDash([d.v_dashA, d.v_dashB]);
+            p.beginShape(); this.vertices.forEach(v => p.vertex(v.pos.x, v.pos.y)); p.endShape();
+            p.drawingContext.setLineDash([]);
+        }
+
+        // 3. NEURAL (Old)
+        if (d.m_neural > 0.01) {
+            p.stroke(d.colorR, d.colorG, d.colorB, d.v_alphaS * d.m_neural * 0.4);
+            p.strokeWeight(0.5);
+            let limit = 80 * d.m_neural;
+            for(let i=0; i<this.vertices.length; i+=10) {
+                for(let j=i+1; j<this.vertices.length; j+=20) {
+                    if (this.vertices[i].pos.dist(this.vertices[j].pos) < limit) p.line(this.vertices[i].pos.x, this.vertices[i].pos.y, this.vertices[j].pos.x, this.vertices[j].pos.y);
+                }
             }
         }
-        
-        if (d.a_suprematist > 0.1) {
-            p.noStroke(); p.fill(d.colorR, d.colorG, d.colorB, d.v_alphaF * d.a_suprematist);
-            for(let i=0; i<this.vertices.length; i+=15) { 
-                let v = this.vertices[i]; 
-                if (i%30==0) p.rect(v.pos.x, v.pos.y, 20, 10); else p.circle(v.pos.x, v.pos.y, 15); 
+
+        // 4. SHARP (Old)
+        if (d.m_sharp > 0.01) {
+            p.noStroke(); p.fill(d.colorR, d.colorG, d.colorB, d.v_alphaF * d.m_sharp);
+            p.beginShape(p.TRIANGLES);
+            for(let i=0; i<this.vertices.length-2; i+=15) {
+                p.vertex(this.vertices[i].pos.x, this.vertices[i].pos.y);
+                p.vertex(this.vertices[i+1].pos.x, this.vertices[i+1].pos.y);
+                p.vertex(this.vertices[i+2].pos.x, this.vertices[i+2].pos.y);
             }
+            p.endShape();
         }
-        
-        if (d.a_futurist > 0.1) {
-            p.stroke(d.colorR, d.colorG, d.colorB, d.v_alphaS * 0.5); p.strokeWeight(1);
-            this.vertices.forEach(v => p.line(v.pos.x, v.pos.y, v.pos.x - v.vel.x*8, v.pos.y - v.vel.y*8));
+
+        // 5. BAROQUE (Synthesis)
+        if (d.m_baroque > 0.01) {
+            p.noFill(); p.stroke(d.colorR, d.colorG, d.colorB, d.v_alphaS * 0.15);
+            for(let k=1; k<4; k++) { p.push(); p.rotate(k*0.1); p.scale(1+k*0.1); p.beginShape(); this.vertices.forEach(v => p.curveVertex(v.pos.x, v.pos.y)); p.endShape(); p.pop(); }
         }
-        
-        p.noStroke(); p.fill(d.colorR, d.colorG, d.colorB, d.v_alphaF);
-        p.beginShape(); this.vertices.forEach(v => p.curveVertex(v.pos.x, v.pos.y)); p.endShape();
-        
+
+        // 6. SUPREMATIST (Synthesis)
+        if (d.m_suprematist > 0.01) {
+            p.noStroke(); p.fill(d.colorR, d.colorG, d.colorB, d.v_alphaF * d.m_suprematist);
+            for(let i=0; i<this.vertices.length; i+=25) { let v = this.vertices[i]; p.rect(v.pos.x, v.pos.y, 20*d.m_suprematist, 10); }
+        }
+
+        // 7. FUTURIST (Synthesis)
+        if (d.m_futurist > 0.01) {
+            p.stroke(d.colorR, d.colorG, d.colorB, d.v_alphaS * d.m_futurist);
+            this.vertices.forEach(v => p.line(v.pos.x, v.pos.y, v.pos.x - v.vel.x*10, v.pos.y - v.vel.y*10));
+        }
+
+        // 8. GLITCH
+        if (d.m_glitch > 0.01 && p.frameCount % 10 === 0) {
+            p.fill(255, d.m_glitch * 100); p.rect((Math.random()-0.5)*200, (Math.random()-0.5)*200, 100, 1);
+        }
+
         p.blendMode(p.BLEND); p.pop();
     }
 }
 
 class TypoUniverse {
-    constructor(p) {
-        this.p = p; this.initInteraction();
-        document.getElementById('add-atom').onclick = () => this.addAtom();
-    }
+    constructor(p) { this.p = p; this.initInteraction(); }
     addAtom() {
         const fontData = FONTS.length > 0 ? FONTS[Math.floor(Math.random() * FONTS.length)] : null;
         APP_STATE.atoms.push(new LivingTypo(this.p, '', fontData));
         this.updateUI();
     }
     checkCollisions(a) {
-        const other = APP_STATE.atoms.find(o => o !== a && Math.hypot(a.x - o.x, a.y - o.y) < 180);
+        const other = APP_STATE.atoms.find(o => o !== a && Math.hypot(a.x - o.x, a.y - o.y) < 200);
         if (other) {
             let childDNA = Genome.merge(a.dna, other.dna);
             APP_STATE.atoms.push(new LivingTypo(this.p, '', null, {
@@ -216,7 +243,6 @@ class TypoUniverse {
         const toggle = document.getElementById('menu-toggle');
         const overlay = document.querySelector('.ui-overlay');
         if (toggle) toggle.onclick = () => { overlay.classList.toggle('active'); toggle.innerText = overlay.classList.contains('active') ? '✕' : '☰'; };
-        
         const handleStart = (cx, cy, target) => {
             if (target.tagName === 'BUTTON' || target.closest('#molecule-list')) return;
             const mx = (cx - window.innerWidth/2 - APP_STATE.view.x) / APP_STATE.view.zoom;
@@ -228,7 +254,6 @@ class TypoUniverse {
             if (this.dragged) { this.dragged.x += mx / APP_STATE.view.zoom; this.dragged.y += my / APP_STATE.view.zoom; }
             else if (this.isPanning) { APP_STATE.view.x += cx - this.lx; APP_STATE.view.y += cy - this.ly; this.lx = cx; this.ly = cy; }
         };
-        
         window.addEventListener('mousedown', (e) => handleStart(e.clientX, e.clientY, e.target));
         window.addEventListener('mousemove', (e) => handleMove(e.clientX, e.clientY, e.movementX, e.movementY));
         window.addEventListener('mouseup', () => { if (this.dragged) this.checkCollisions(this.dragged); this.dragged = null; this.isPanning = false; });
@@ -244,7 +269,7 @@ class TypoUniverse {
 
 function injectExportUI(p) {
     const parent = document.querySelector('.side-panel'); if(!parent) return;
-    const div = document.createElement('div'); div.style.marginTop = 'auto'; div.innerHTML = `<button id="btn-snap" style="width:100%; background:#fff; color:#000; padding:10px; border:none; cursor:pointer">SNAP IMAGE</button>`;
+    const div = document.createElement('div'); div.innerHTML = `<button id="btn-snap" style="width:100%; border:1px solid #fff; background:none; color:#fff; padding:10px; cursor:pointer">SNAP IMAGE</button>`;
     parent.appendChild(div); document.getElementById('btn-snap').onclick = () => p.saveCanvas('mutation', 'png');
 }
 
