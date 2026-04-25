@@ -16,8 +16,7 @@ const FONT_SOURCES = [
     { name: 'Roboto',      url: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-black-webfont.ttf' },
     { name: 'Source Sans', url: 'https://cdnjs.cloudflare.com/ajax/libs/topcoat/0.8.0/font/SourceSansPro-Black.otf' },
     { name: 'Source Code', url: 'https://cdnjs.cloudflare.com/ajax/libs/topcoat/0.8.0/font/SourceCodePro-Bold.otf' },
-    { name: 'Roboto Mono', url: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-mediumitalic-webfont.ttf' },
-    { name: 'Playfair',    url: 'https://fonts.gstatic.com/s/playfairdisplay/v30/nuFvD7K_RWG_5y8shS0896_RGsQ7XFExQYfVp18.ttf' }
+    { name: 'Roboto Mono', url: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-mediumitalic-webfont.ttf' }
 ];
 const FONTS = [];
 
@@ -124,7 +123,14 @@ const sketch = (p) => {
 
     p.setup = () => {
         p.createCanvas(window.innerWidth, window.innerHeight).parent('stage');
-        document.getElementById('loader').classList.add('hidden');
+        const hideLoader = () => {
+            const l = document.getElementById('loader');
+            if (l) l.classList.add('hidden');
+        };
+        hideLoader();
+        // Safety: if setup runs but loader was missed
+        setTimeout(hideLoader, 500);
+        
         window.TU = new TypoUniverse(p);
         injectExportUI(p);
         for (let i = 0; i < 7; i++) window.TU.addAtom();
