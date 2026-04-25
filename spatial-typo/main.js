@@ -12,6 +12,15 @@ const APP_STATE = {
     isRecording: false
 };
 
+// Force loader removal after 3s safety
+setTimeout(() => {
+    const l = document.getElementById('loader');
+    if (l && !l.classList.contains('hidden')) {
+        console.warn("Loader forced to close after timeout.");
+        l.classList.add('hidden');
+    }
+}, 3500);
+
 const FONT_SOURCES = [
     { name: 'Roboto',      url: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-black-webfont.ttf' },
     { name: 'Source Sans', url: 'https://cdnjs.cloudflare.com/ajax/libs/topcoat/0.8.0/font/SourceSansPro-Black.otf' },
@@ -115,9 +124,21 @@ class Genome {
 // ═══════════════════════════════════════════════════════════
 const sketch = (p) => {
     p.preload = () => {
+        // Use a counter to track when everything is done
+        let loaded = 0;
+        const total = FONT_SOURCES.length;
+        if (total === 0) return;
+        
         FONT_SOURCES.forEach(f => {
-            try { FONTS.push({ name: f.name, obj: p.loadFont(f.url) }); }
-            catch(e) { console.warn("Font fail:", f.name); }
+            p.loadFont(f.url, 
+                (font) => {
+                    FONTS.push({ name: f.name, obj: font });
+                    console.log("Loaded font:", f.name);
+                },
+                (err) => {
+                    console.warn("Failed font:", f.name, err);
+                }
+            );
         });
     };
 
