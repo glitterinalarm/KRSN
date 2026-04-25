@@ -297,27 +297,67 @@ class TypoUniverse {
     }
 
     initInteraction() {
-        window.addEventListener('mousedown', (e) => {
-            if (e.target.tagName === 'BUTTON' || e.target.closest('#molecule-list')) return;
-            const mx = (e.clientX - (window.innerWidth/2) - APP_STATE.view.x) / APP_STATE.view.zoom;
-            const my = (e.clientY - (window.innerHeight/2) - APP_STATE.view.y) / APP_STATE.view.zoom;
+        // --- Mobile Menu Toggle ---
+        const toggle = document.getElementById('menu-toggle');
+        const overlay = document.querySelector('.ui-overlay');
+        if (toggle) {
+            toggle.onclick = () => {
+                overlay.classList.toggle('active');
+                toggle.innerText = overlay.classList.contains('active') ? '✕' : '☰';
+            };
+        }
+
+        const handleInputStart = (clientX, clientY, target) => {
+            if (target.tagName === 'BUTTON' || target.closest('#molecule-list')) return;
+            const mx = (clientX - (window.innerWidth/2) - APP_STATE.view.x) / APP_STATE.view.zoom;
+            const my = (clientY - (window.innerHeight/2) - APP_STATE.view.y) / APP_STATE.view.zoom;
             this.dragged = APP_STATE.atoms.find(a => Math.hypot(a.x - mx, a.y - my) < 200);
-            if (!this.dragged) { this.isPanning = true; this.lx = e.clientX; this.ly = e.clientY; }
-        });
-        window.addEventListener('mousemove', (e) => {
-            if (this.dragged) {
-                this.dragged.x += e.movementX / APP_STATE.view.zoom;
-                this.dragged.y += e.movementY / APP_STATE.view.zoom;
-            } else if (this.isPanning) {
-                APP_STATE.view.x += e.clientX - this.lx; APP_STATE.view.y += e.clientY - this.ly;
-                this.lx = e.clientX; this.ly = e.clientY;
+            if (!this.dragged) { 
+                this.isPanning = true; 
+                this.lx = clientX; this.ly = clientY; 
             }
-        });
-        window.addEventListener('mouseup', () => {
+        };
+
+        const handleInputMove = (clientX, clientY, movementX, movementY) => {
+            if (this.dragged) {
+                this.dragged.x += movementX / APP_STATE.view.zoom;
+                this.dragged.y += movementY / APP_STATE.view.zoom;
+            } else if (this.isPanning) {
+                APP_STATE.view.x += clientX - this.lx; APP_STATE.view.y += clientY - this.ly;
+                this.lx = clientX; this.ly = clientY;
+            }
+        };
+
+        const handleInputEnd = () => {
              if (this.dragged) this.checkCollisions(this.dragged);
              this.dragged = null; this.isPanning = false;
-        });
+        };
+
+        // Mouse Events
+        window.addEventListener('mousedown', (e) => handleInputStart(e.clientX, e.clientY, e.target));
+        window.addEventListener('mousemove', (e) => handleInputMove(e.clientX, e.clientY, e.movementX, e.movementY));
+        window.addEventListener('mouseup', handleInputEnd);
+
+        // Touch Events
+        window.addEventListener('touchstart', (e) => {
+            const touch = e.touches[0];
+            handleInputStart(touch.clientX, touch.clientY, e.target);
+            // Prevent scrolling when interacting with atoms
+            if(this.dragged) e.preventDefault();
+        }, { passive: false });
+
+        window.addEventListener('touchmove', (e) => {
+            const touch = e.touches[0];
+            const moveX = touch.clientX - this.lx;
+            const moveY = touch.clientY - this.ly;
+            handleInputMove(touch.clientX, touch.clientY, moveX, moveY);
+            if(this.dragged || this.isPanning) e.preventDefault();
+        }, { passive: false });
+
+        window.addEventListener('touchend', handleInputEnd);
+
         window.addEventListener('wheel', (e) => {
+
             e.preventDefault();
             APP_STATE.view.zoom = Math.max(0.1, Math.min(3, APP_STATE.view.zoom * (e.deltaY > 0 ? 0.9 : 1.1)));
         }, { passive: false });
