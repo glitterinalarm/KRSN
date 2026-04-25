@@ -1,5 +1,5 @@
-// Typography Lab - Omniverse Engine v29.0 (ULTRA-DIVERSITY)
-console.log("TypoLab Engine v29.0 - INFINITE BIOLOGICAL ENTROPY");
+// Typography Lab - Universal Synthesis Engine v30.0
+console.log("TypoLab Engine v30.0 - MATHEMATICS | PHYSICS | BIOLOGY | ART HISTORY");
 
 const APP_STATE = { atoms: [], view: { x: 0, y: 0, zoom: 1 }, isRecording: false };
 
@@ -16,49 +16,44 @@ const FONT_SOURCES = [
 ];
 const FONTS = [];
 
-function powerRand(power = 3) { return Math.pow(Math.random(), power); }
+function powerRand(p = 3) { return Math.pow(Math.random(), p); }
 
 class Genome {
     static createRandom() {
         return {
-            // BEHAVIOR / PHYSICS
-            g_fluid: powerRand(3),
-            g_mycelium: powerRand(4),
-            g_swarm: powerRand(3),
-            g_orbit: powerRand(2),
-            g_pulse: powerRand(3),
-            g_gravity: (Math.random()-0.5) * 2, // Drift up/down
-            g_magnet: powerRand(2), // Attraction to center
+            // --- PILLAR 1: MATHEMATICS (Geometry & Harmonics) ---
+            m_fractal: powerRand(4), // Recursive vertex offsets
+            m_harmonic: powerRand(2), // Lissajous interference
+            m_geometry: Math.random() > 0.7, // Bias towards perfect shapes
             
-            g_speed: Math.random() * 4 + 0.1, 
-            g_amplitude: Math.random() * 3 + 0.5, 
-            g_friction: 0.7 + Math.random() * 0.25,
-            cohesion: Math.random() * 0.5 + 0.5, 
-
-            // TOPOLOGY
-            v_resolution: Math.random() * 0.18 + 0.015,
-            v_roughness: powerRand(3) * 100,
-
-            // RENDER PHENOTYPES (The Richness)
-            v_neural: powerRand(2),
-            v_membrane: powerRand(2),
-            v_spine: powerRand(2),
-            v_spores: powerRand(2),
-            v_sharp: powerRand(2),
-            v_echo: powerRand(3), // Ghostly duplicates
-            v_glitch: powerRand(4), // Digital artifacts
-            v_chromatic: powerRand(2), // Color aberrations
-            v_stencil: Math.random() > 0.8, // Outline only mode
-
-            // STROKE & COLOR
-            v_strokeW: Math.random() * 10 + 0.1,
-            v_dashA: powerRand(2) * 80,
-            v_dashB: powerRand(1.5) * 80,
+            // --- PILLAR 2: PHYSICS (Forces & Entropy) ---
+            p_entropy: powerRand(2), // Dissolution of form
+            p_plasma: powerRand(3), // Fluid vertex flow
+            p_charge: (Math.random()-0.5) * 2, // Repulsion/Attraction
+            g_friction: 0.8 + Math.random() * 0.15,
+            
+            // --- PILLAR 3: BIOLOGY (Growth & Metabolism) ---
+            b_mitosis: powerRand(4), // Splitting behavior
+            b_metabolism: Math.random(), // Pulse/Speed link
+            b_nerves: powerRand(2), // Neural connectivity
+            
+            // --- PILLAR 4: ART HISTORY (Aesthetics) ---
+            a_suprematist: powerRand(3), // Geometric reduction (Malevich)
+            a_baroque: powerRand(3), // Excessive ornamentation 
+            a_futurist: powerRand(2), // Dynamic speed lines
+            a_dada: powerRand(5), // Chaos & Collage
+            
+            // CORE GENETICS
+            g_speed: Math.random() * 3 + 0.1,
+            g_amplitude: Math.random() * 2 + 0.5,
+            cohesion: Math.random() * 0.6 + 0.4,
+            v_resolution: Math.random() * 0.15 + 0.02,
+            v_roughness: powerRand(3) * 80,
+            
+            v_strokeW: Math.random() * 8 + 0.2,
             v_alphaF: Math.random() * 180,
             v_alphaS: Math.random() * 200 + 55,
-            
-            blend_additive: Math.random() > 0.6,
-            
+            blend_additive: Math.random() > 0.7,
             colorR: Math.random()*255, colorG: Math.random()*255, colorB: Math.random()*255
         };
     }
@@ -66,16 +61,16 @@ class Genome {
     static merge(A, B) {
         let child = {};
         for(let k in (Object.keys(A).length ? A : B)) {
-            if (k === 'blend_additive' || k === 'v_stencil') child[k] = Math.random() > 0.5 ? A[k] : B[k];
+            if (typeof A[k] === 'boolean') child[k] = Math.random() > 0.5 ? A[k] : B[k];
             else {
                 child[k] = ((A[k]||0) + (B[k]||0)) / 2;
-                child[k] += (Math.random()-0.5) * (child[k]||1) * 0.8; // High mutation factor
+                child[k] += (Math.random()-0.5) * (child[k]||1) * 1.2; // Extreme mutation
                 if(k.startsWith('v_alpha') || k.startsWith('color')) child[k] = Math.max(0, Math.min(255, child[k]));
                 if(k.startsWith('g_friction')) child[k] = Math.max(0.5, Math.min(0.99, child[k]));
-                if(k.startsWith('g_') || k.startsWith('v_')) child[k] = Math.max(0, child[k]); 
+                child[k] = Math.max(0, child[k]); 
             }
         }
-        child.cohesion = (A.cohesion + B.cohesion) / 2 * 0.45; // Degradation
+        child.cohesion *= 0.5; // Always decay form complexity
         return child;
     }
 }
@@ -92,15 +87,13 @@ const sketch = (p) => {
     };
 
     p.draw = () => {
-        p.background(5, 5, 8); // Deeper black
-        p.push(); p.translate(p.width/2 + APP_STATE.view.x, p.height/2 + APP_STATE.view.y); p.scale(APP_STATE.view.zoom);
-        
+        p.background(8, 8, 10);
+        p.push(); 
+        p.translate(p.width/2 + APP_STATE.view.x, p.height/2 + APP_STATE.view.y); 
+        p.scale(APP_STATE.view.zoom);
         APP_STATE.atoms.forEach(atom => { atom.update(); atom.draw(); });
-        
         p.pop();
-        if (APP_STATE.isRecording) {
-            p.push(); p.fill(255,0,0); p.circle(50, 50, 20); p.fill(255); p.textSize(16); p.textAlign(p.LEFT, p.CENTER); p.text("REC", 70, 50); p.pop();
-        }
+        if (APP_STATE.isRecording) { p.push(); p.fill(255,0,0); p.circle(50, 50, 20); p.fill(255); p.text("REC", 70, 50); p.pop(); }
     };
     p.windowResized = () => p.resizeCanvas(window.innerWidth, window.innerHeight);
 };
@@ -110,23 +103,24 @@ class LivingTypo {
         this.p = p;
         this.id = Math.random();
         this.vertices = [];
+        this.age = 0;
 
         if (parentData) {
             this.x = parentData.x; this.y = parentData.y;
             this.char = parentData.char; this.fontName = parentData.fontName;
             this.dna = parentData.dna; this.gen = parentData.gen;
             parentData.vertices.forEach(v => this.vertices.push({ pos: v.pos.copy(), basePos: p.createVector(v.pos.x, v.pos.y), vel: p.createVector(0,0) }));
-            while(this.vertices.length > 400) this.vertices.splice(Math.floor(Math.random()*this.vertices.length), 1);
+            while(this.vertices.length > 500) this.vertices.splice(Math.floor(Math.random()*this.vertices.length), 1);
         } else {
             this.x = (Math.random()-0.5)*1200; this.y = (Math.random()-0.5)*1200;
-            const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!?#@&";
-            this.char = alphabet[Math.floor(Math.random() * alphabet.length)];
+            const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!?#$@";
+            this.char = char || alphabet[Math.floor(Math.random() * alphabet.length)];
             this.fontName = fontData.name;
             this.gen = 1;
             this.dna = Genome.createRandom();
 
             let b = fontData.obj.textBounds(this.char, 0, 0, 500);
-            let rawPoints = fontData.obj.textToPoints(this.char, -b.x - b.w/2, -b.y - b.h/2, 500, { sampleFactor: Math.min(0.2, this.dna.v_resolution), simplifyThreshold: 0 });
+            let rawPoints = fontData.obj.textToPoints(this.char, -b.x - b.w/2, -b.y - b.h/2, 500, { sampleFactor: this.dna.v_resolution });
             rawPoints.forEach(pt => {
                 let nx = pt.x + (Math.random() - 0.5) * this.dna.v_roughness;
                 let ny = pt.y + (Math.random() - 0.5) * this.dna.v_roughness;
@@ -136,52 +130,77 @@ class LivingTypo {
     }
 
     update() {
+        this.age++;
         let t = this.p.frameCount * 0.01 * this.dna.g_speed;
         let d = this.dna; let amp = d.g_amplitude;
         
+        // Biology: Metabolism speed oscillation
+        if (d.b_metabolism > 0.5) t *= (1 + Math.sin(this.p.frameCount * 0.05) * 0.5);
+
         let cmX=0, cmY=0;
         this.vertices.forEach(v => { cmX+=v.pos.x; cmY+=v.pos.y; });
-        if(this.vertices.length>0) { cmX/=this.vertices.length; cmY/=this.vertices.length; }
-        let center = this.p.createVector(cmX, cmY);
+        let center = this.p.createVector(cmX/this.vertices.length, cmY/this.vertices.length);
 
         for (let i = 0; i < this.vertices.length; i++) {
             let v = this.vertices[i];
-            let force = this.p.createVector(0, d.g_gravity * amp); // Gravity
-            
-            if (d.g_fluid > 0.01) {
+            let force = this.p.createVector(0, 0);
+
+            // Physics: Potential field
+            if (d.p_plasma > 0.1) {
                 let a = this.p.noise(v.pos.x*0.005 + t, v.pos.y*0.005) * this.p.TWO_PI * 4;
-                force.add(p5.Vector.fromAngle(a).mult(d.g_fluid * amp));
+                force.add(p5.Vector.fromAngle(a).mult(d.p_plasma * amp));
             }
-            if (d.g_orbit > 0.01) {
-                let toCenter = p5.Vector.sub(center, v.pos);
-                force.add(this.p.createVector(-toCenter.y, toCenter.x).normalize().mult(d.g_orbit * amp));
+
+            // Math: Harmonics (Lissajous)
+            if (d.m_harmonic > 0.1) {
+                force.x += Math.sin(t * 2.1 + i * 0.1) * d.m_harmonic * amp;
+                force.y += Math.cos(t * 1.7 + i * 0.1) * d.m_harmonic * amp;
             }
-            if (d.g_pulse > 0.01) {
-                let outward = p5.Vector.sub(v.pos, center).normalize();
-                force.add(outward.mult(Math.sin(t * 8 - p5.Vector.dist(center, v.pos)*0.03) * d.g_pulse * amp));
+
+            // Physics: Electromagnetic Charge
+            if (Math.abs(d.p_charge) > 0.1) {
+                let toCenter = p5.Vector.sub(v.pos, center).normalize();
+                force.add(toCenter.mult(d.p_charge * amp));
             }
-            if (d.g_swarm > 0.01) {
-                let n = this.vertices[(i+1)%this.vertices.length];
-                force.add(p5.Vector.sub(n.pos, v.pos).normalize().mult(d.g_swarm * amp));
+
+            // Math: Fractal Jitter
+            if (d.m_fractal > 0.1) {
+                let level = Math.floor(Math.sin(t)*3)+2;
+                force.add((Math.random()-0.5)*d.m_fractal*10*level, (Math.random()-0.5)*d.m_fractal*10*level);
             }
-            if (d.g_magnet > 0.01) {
-                force.add(p5.Vector.sub(center, v.pos).normalize().mult(d.g_magnet * amp));
-            }
-            
+
             v.vel.add(force);
-            if (d.g_mycelium > 0.01) {
-                let snap = Math.round(v.vel.heading() / this.p.HALF_PI) * this.p.HALF_PI;
-                v.vel.rotate((snap - v.vel.heading()) * d.g_mycelium * 0.6);
+            
+            // Physics: Entropy (form dissolution)
+            if (d.p_entropy > 0.1) {
+                v.vel.add((Math.random()-0.5)*d.p_entropy*10, (Math.random()-0.5)*d.p_entropy*10);
             }
 
             v.vel.add(p5.Vector.sub(v.basePos, v.pos).mult(d.cohesion * 0.05));
             v.vel.mult(d.g_friction);
             v.pos.add(v.vel);
-            
+
+            // Biology: Genetic Drift
             if (d.cohesion < 1) {
-                 v.basePos.add(this.p.createVector(Math.random()-0.5, Math.random()-0.5).mult((1 - d.cohesion) * amp));
+                v.basePos.add(this.p.createVector(Math.random()-0.5, Math.random()-0.5).mult((1-d.cohesion)*amp));
             }
         }
+        
+        // Biology: Mitosis (Rare split)
+        if (d.b_mitosis > 0.98 && this.vertices.length > 200 && Math.random() < 0.001) {
+            this.split();
+        }
+    }
+
+    split() {
+        let childDNA = JSON.parse(JSON.stringify(this.dna));
+        childDNA.colorR = Math.min(255, childDNA.colorR + 20);
+        let child = new LivingTypo(this.p, this.char, null, {
+            x: this.x + 50, y: this.y + 50, char: this.char, fontName: this.fontName, dna: childDNA, gen: this.gen + 1,
+            vertices: this.vertices.slice(0, Math.floor(this.vertices.length/2))
+        });
+        APP_STATE.atoms.push(child);
+        this.vertices = this.vertices.slice(Math.floor(this.vertices.length/2));
     }
 
     draw() {
@@ -189,76 +208,50 @@ class LivingTypo {
         p.push(); p.translate(this.x, this.y);
         if (d.blend_additive) p.blendMode(p.ADD);
 
-        const renderBatch = (offX=0, offY=0, scl=1, alphaMult=1) => {
-            p.push(); p.translate(offX, offY); p.scale(scl);
-            
-            let glitchX = (Math.random() < d.v_glitch*0.1) ? (Math.random()-0.5)*100 : 0;
-            p.translate(glitchX, 0);
+        // --- ART HISTORY PHILOSOPHY ---
 
-            // MEMBRANE
-            if (d.v_membrane > 0.01 && !d.v_stencil) {
-                p.noStroke(); p.fill(d.colorR, d.colorG, d.colorB, d.v_alphaF * d.v_membrane * alphaMult);
+        // 1. BAROQUE: Excessive ornamentation (Echoes + Spirals)
+        if (d.a_baroque > 0.1) {
+            p.noFill(); p.stroke(d.colorR, d.colorG, d.colorB, d.v_alphaS * 0.2);
+            for(let k=1; k<5; k++) {
+                p.push(); p.rotate(k*0.1); p.scale(1 + k*0.05);
                 p.beginShape(); this.vertices.forEach(v => p.curveVertex(v.pos.x, v.pos.y)); p.endShape();
-            }
-
-            // SPINE
-            if (d.v_spine > 0.01) {
-                p.noFill(); p.stroke(d.colorR, d.colorG, d.colorB, d.v_alphaS * d.v_spine * alphaMult);
-                p.strokeWeight(d.v_strokeW * d.v_spine);
-                if (d.v_dashA > 2) p.drawingContext.setLineDash([d.v_dashA, d.v_dashB]);
-                p.beginShape(); this.vertices.forEach(v => p.vertex(v.pos.x, v.pos.y)); p.endShape();
-                p.drawingContext.setLineDash([]);
-            }
-
-            // NEURAL
-            if (d.v_neural > 0.01) {
-                p.stroke(d.colorR, d.colorG, d.colorB, d.v_alphaS * d.v_neural * 0.4 * alphaMult);
-                p.strokeWeight(Math.max(0.1, d.v_strokeW * 0.3));
-                let distLimit = d.v_neural * 150;
-                for(let i=0; i<this.vertices.length; i+=3) {
-                    for(let j=i+1; j<this.vertices.length; j+=8) {
-                        if (this.vertices[i].pos.dist(this.vertices[j].pos) < distLimit) {
-                            p.line(this.vertices[i].pos.x, this.vertices[i].pos.y, this.vertices[j].pos.x, this.vertices[j].pos.y);
-                        }
-                    }
-                }
-            }
-
-            // SHARP
-            if (d.v_sharp > 0.01) {
-                p.noStroke(); p.fill(d.colorR, d.colorG, d.colorB, d.v_alphaF * d.v_sharp * alphaMult);
-                p.beginShape(p.TRIANGLES);
-                for(let i=0; i<this.vertices.length-2; i+=4) {
-                    if (this.vertices[i].pos.dist(this.vertices[i+1].pos) < d.v_sharp * 200) {
-                        p.vertex(this.vertices[i].pos.x, this.vertices[i].pos.y);
-                        p.vertex(this.vertices[i+1].pos.x, this.vertices[i+1].pos.y);
-                        p.vertex(this.vertices[i+2].pos.x, this.vertices[i+2].pos.y);
-                    }
-                }
-                p.endShape();
-            }
-
-            // SPORES
-            if (d.v_spores > 0.01) {
-                p.noStroke(); p.fill(d.colorR, d.colorG, d.colorB, d.v_alphaS * d.v_spores * alphaMult);
-                for(let v of this.vertices) {
-                    let s = d.v_spores * 20;
-                    p.push(); p.translate(v.pos.x, v.pos.y); p.rotate(v.vel.heading());
-                    if(d.v_chromatic > 0.5) p.rect(0, 0, s, s); else p.circle(0, 0, s);
-                    p.pop();
-                }
-            }
-            p.pop();
-        };
-
-        // Main Draw + ECHOES
-        renderBatch();
-        if (d.v_echo > 0.1) {
-            for(let k=1; k<3; k++) {
-                let off = k * d.v_echo * 20;
-                renderBatch(off, off, 1 - k*0.05, 0.4);
+                p.pop();
             }
         }
+
+        // 2. SUPREMATIST: Geometric reduction
+        if (d.a_suprematist > 0.1) {
+            p.noStroke(); p.fill(d.colorR, d.colorG, d.colorB, d.v_alphaF * d.a_suprematist);
+            for(let i=0; i<this.vertices.length; i+=10) {
+                let v = this.vertices[i];
+                if (i%20==0) p.rect(v.pos.x, v.pos.y, d.v_strokeW*10, d.v_strokeW*5);
+                else p.circle(v.pos.x, v.pos.y, d.v_strokeW*8);
+            }
+        }
+
+        // 3. FUTURIST: Kinetic Speed Lines
+        if (d.a_futurist > 0.1) {
+            p.stroke(d.colorR, d.colorG, d.colorB, d.v_alphaS * d.a_futurist);
+            p.strokeWeight(1);
+            this.vertices.forEach(v => {
+                p.line(v.pos.x, v.pos.y, v.pos.x - v.vel.x*10, v.pos.y - v.vel.y*10);
+            });
+        }
+
+        // 4. BIOLOGY: Nerve connections
+        if (d.b_nerves > 0.1) {
+            p.stroke(d.colorR, d.colorG, d.colorB, d.v_alphaS * 0.3);
+            p.strokeWeight(0.5);
+            for(let i=0; i<this.vertices.length; i+=5) {
+                let nearest = this.vertices[(i+1)%this.vertices.length];
+                p.line(this.vertices[i].pos.x, this.vertices[i].pos.y, nearest.pos.x, nearest.pos.y);
+            }
+        }
+
+        // MAIN MEMBRANE
+        p.noStroke(); p.fill(d.colorR, d.colorG, d.colorB, d.v_alphaF);
+        p.beginShape(); this.vertices.forEach(v => p.curveVertex(v.pos.x, v.pos.y)); p.endShape();
         
         p.blendMode(p.BLEND);
         p.pop();
@@ -266,123 +259,79 @@ class LivingTypo {
 }
 
 class TypoUniverse {
-    constructor(pInstance) {
-        this.p = pInstance;
-        this.initInteraction();
+    constructor(p) {
+        this.p = p; this.initInteraction();
         document.getElementById('add-atom').onclick = () => this.addAtom();
         for(let i=0; i<8; i++) this.addAtom();
     }
-
     addAtom() {
         const fontData = FONTS[Math.floor(Math.random() * FONTS.length)];
         APP_STATE.atoms.push(new LivingTypo(this.p, '', fontData));
         this.updateUI();
     }
-
     checkCollisions(a) {
         const other = APP_STATE.atoms.find(o => o !== a && Math.hypot(a.x - o.x, a.y - o.y) < 180);
         if (other) {
-            let childData = {
-                x: (a.x + other.x) / 2, y: (a.y + other.y) / 2,
-                char: "?", fontName: `${a.fontName}/${other.fontName}`,
-                gen: Math.max(a.gen, other.gen) + 1,
-                dna: Genome.merge(a.dna, other.dna),
-                vertices: [...a.vertices, ...other.vertices]
-            };
+            let childDNA = Genome.merge(a.dna, other.dna);
+            let child = new LivingTypo(this.p, '', null, {
+                x: (a.x + other.x)/2, y: (a.y + other.y)/2, char: "?", fontName: `${a.fontName}/${other.fontName}`,
+                gen: Math.max(a.gen, other.gen)+1, dna: childDNA, vertices: [...a.vertices, ...other.vertices]
+            });
             APP_STATE.atoms = APP_STATE.atoms.filter(at => at !== a && at !== other);
-            APP_STATE.atoms.push(new LivingTypo(this.p, '', null, childData));
+            APP_STATE.atoms.push(child);
             this.updateUI();
         }
     }
-
     initInteraction() {
         const toggle = document.getElementById('menu-toggle');
         const overlay = document.querySelector('.ui-overlay');
-        if (toggle) {
-            toggle.onclick = () => {
-                overlay.classList.toggle('active');
-                toggle.innerText = overlay.classList.contains('active') ? '✕' : '☰';
-            };
-        }
-
-        const handleInputStart = (clientX, clientY, target) => {
+        if (toggle) toggle.onclick = () => { overlay.classList.toggle('active'); toggle.innerText = overlay.classList.contains('active') ? '✕' : '☰'; };
+        const handleStart = (cx, cy, target) => {
             if (target.tagName === 'BUTTON' || target.closest('#molecule-list')) return;
-            const mx = (clientX - (window.innerWidth/2) - APP_STATE.view.x) / APP_STATE.view.zoom;
-            const my = (clientY - (window.innerHeight/2) - APP_STATE.view.y) / APP_STATE.view.zoom;
+            const mx = (cx - window.innerWidth/2 - APP_STATE.view.x) / APP_STATE.view.zoom;
+            const my = (cy - window.innerHeight/2 - APP_STATE.view.y) / APP_STATE.view.zoom;
             this.dragged = APP_STATE.atoms.find(a => Math.hypot(a.x - mx, a.y - my) < 250);
-            if (!this.dragged) { this.isPanning = true; this.lx = clientX; this.ly = clientY; }
+            if (!this.dragged) { this.isPanning = true; this.lx = cx; this.ly = cy; }
         };
-
-        const handleInputMove = (clientX, clientY, movementX, movementY) => {
-            if (this.dragged) {
-                this.dragged.x += movementX / APP_STATE.view.zoom;
-                this.dragged.y += movementY / APP_STATE.view.zoom;
-            } else if (this.isPanning) {
-                APP_STATE.view.x += clientX - this.lx; APP_STATE.view.y += clientY - this.ly;
-                this.lx = clientX; this.ly = clientY;
-            }
+        const handleMove = (cx, cy, mx, my) => {
+            if (this.dragged) { this.dragged.x += mx / APP_STATE.view.zoom; this.dragged.y += my / APP_STATE.view.zoom; }
+            else if (this.isPanning) { APP_STATE.view.x += cx - this.lx; APP_STATE.view.y += cy - this.ly; this.lx = cx; this.ly = cy; }
         };
-
-        window.addEventListener('mousedown', (e) => handleInputStart(e.clientX, e.clientY, e.target));
-        window.addEventListener('mousemove', (e) => handleInputMove(e.clientX, e.clientY, e.movementX, e.movementY));
+        window.addEventListener('mousedown', (e) => handleStart(e.clientX, e.clientY, e.target));
+        window.addEventListener('mousemove', (e) => handleMove(e.clientX, e.clientY, e.movementX, e.movementY));
         window.addEventListener('mouseup', () => { if (this.dragged) this.checkCollisions(this.dragged); this.dragged = null; this.isPanning = false; });
-
-        window.addEventListener('touchstart', (e) => {
-            const touch = e.touches[0];
-            handleInputStart(touch.clientX, touch.clientY, e.target);
-            if(this.dragged) e.preventDefault();
-        }, { passive: false });
-
-        window.addEventListener('touchmove', (e) => {
-            const touch = e.touches[0];
-            handleInputMove(touch.clientX, touch.clientY, touch.clientX - this.lx, touch.clientY - this.ly);
-            if(this.dragged || this.isPanning) e.preventDefault();
-        }, { passive: false });
-
+        window.addEventListener('touchstart', (e) => { const t = e.touches[0]; handleStart(t.clientX, t.clientY, e.target); if(this.dragged) e.preventDefault(); }, { passive: false });
+        window.addEventListener('touchmove', (e) => { const t = e.touches[0]; handleMove(t.clientX, t.clientY, t.clientX - this.lx, t.clientY - this.ly); if(this.dragged || this.isPanning) e.preventDefault(); }, { passive: false });
         window.addEventListener('touchend', () => { if (this.dragged) this.checkCollisions(this.dragged); this.dragged = null; this.isPanning = false; });
-
-        window.addEventListener('wheel', (e) => {
-            e.preventDefault();
-            APP_STATE.view.zoom = Math.max(0.1, Math.min(3, APP_STATE.view.zoom * (e.deltaY > 0 ? 0.9 : 1.1)));
-        }, { passive: false });
+        window.addEventListener('wheel', (e) => { e.preventDefault(); APP_STATE.view.zoom = Math.max(0.1, Math.min(4, APP_STATE.view.zoom * (e.deltaY > 0 ? 0.9 : 1.1))); }, { passive: false });
     }
-
     updateUI() {
         const ml = document.getElementById('molecule-list');
         if (ml) ml.innerHTML = APP_STATE.atoms.map(a => `<li class="molecule-item" style="display:flex; flex-direction:column; gap:4px">
-            <span style="font-weight:bold; color: rgb(${a.dna.colorR}, ${a.dna.colorG}, ${a.dna.colorB})">
-                Gen ${a.gen} | DNA#${Math.floor(a.id*10000)} ${a.gen===1 ? '['+a.char+']' : ''}
-            </span>
-            <span style="font-size:0.75rem; opacity:0.8; font-family:'Inter'">Bases: ${a.fontName}</span>
+            <span style="font-weight:bold; color: rgb(${a.dna.colorR}, ${a.dna.colorG}, ${a.dna.colorB})">DNA#${Math.floor(a.id*10000)} | G${a.gen}</span>
+            <span style="font-size:0.65rem; opacity:0.7">Hist: ${a.fontName}</span>
         </li>`).join('');
     }
 }
 
 function injectExportUI(p) {
-    const parent = document.querySelector('.side-panel');
-    if(!parent) return;
-    const wrapper = document.createElement('div');
-    wrapper.style.marginTop = 'auto'; wrapper.style.borderTop = '1px solid rgba(255,255,255,0.1)'; wrapper.style.paddingTop = '1rem';
-    wrapper.innerHTML = `
-        <h4 style="margin-bottom:10px; opacity:0.8; font-family:'Outfit'">EXPORT LABORATOIRE</h4>
-        <div style="display:flex; gap:10px;">
-            <button id="btn-snap" class="btn-primary" style="flex:1; background:rgba(255,255,255,0.1)">📸 Image</button>
-            <button id="btn-vid" class="btn-primary" style="flex:1; background:rgba(255,0,0,0.4)">🎥 Video (3s)</button>
+    const parent = document.querySelector('.side-panel'); if(!parent) return;
+    const wrapper = document.createElement('div'); wrapper.style.marginTop = 'auto'; wrapper.innerHTML = `
+        <h4 style="margin-bottom:10px; opacity:0.6; font-size:0.7rem; tracking:2px">CAPSULE TEMPORELLE</h4>
+        <div style="display:flex; gap:5px;">
+            <button id="btn-snap" style="flex:1; background:rgba(255,255,255,0.05); color:#fff; border:1px solid rgba(255,255,255,0.1); padding:8px; cursor:pointer">IMAGE</button>
+            <button id="btn-vid" style="flex:1; background:rgba(255,0,0,0.2); color:#fff; border:1px solid rgba(255,255,255,0.1); padding:8px; cursor:pointer">VIDEO</button>
         </div>
     `;
     parent.appendChild(wrapper);
-
-    document.getElementById('btn-snap').onclick = () => p.saveCanvas('mutation_graphique', 'png');
-    let mediaRecorder; let recordedChunks = [];
+    document.getElementById('btn-snap').onclick = () => p.saveCanvas('mutation', 'png');
+    let mediaRecorder, recordedChunks = [];
     document.getElementById('btn-vid').onclick = () => {
-        if(APP_STATE.isRecording) return;
-        APP_STATE.isRecording = true;
-        const canvas = document.querySelector('canvas');
-        try { mediaRecorder = new MediaRecorder(canvas.captureStream(60), { mimeType: 'video/webm' }); } catch (e) { APP_STATE.isRecording = false; return; }
-        mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedChunks.push(e.data); };
+        if(APP_STATE.isRecording) return; APP_STATE.isRecording = true;
+        try { mediaRecorder = new MediaRecorder(document.querySelector('canvas').captureStream(60), { mimeType: 'video/webm' }); } catch (e) { APP_STATE.isRecording = false; return; }
+        mediaRecorder.ondataavailable = e => recordedChunks.push(e.data);
         mediaRecorder.onstop = () => {
-            const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(recordedChunks, { type: 'video/webm' }));
-            a.download = 'mutation_laboratoire.webm'; a.click();
+            const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(recordedChunks, { type: 'video/webm' })); a.download = 'mutation.webm'; a.click();
             recordedChunks = []; APP_STATE.isRecording = false;
         };
         mediaRecorder.start(); setTimeout(() => mediaRecorder.stop(), 3000);
