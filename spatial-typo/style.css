@@ -60,15 +60,28 @@ ul { list-style: none; margin-top: 1rem; }
     background: rgba(255,255,255,0.03); border: 1px solid var(--border); 
     border-radius: 12px; padding: 0.8rem; margin-bottom: 0.5rem; 
     cursor: pointer; font-size: 0.8rem;
+    display: flex; align-items: center; gap: 12px;
 }
 .molecule-item:hover { border-color: var(--accent); background: rgba(255,255,255,0.06); }
+
+.status-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; box-shadow: 0 0 10px rgba(255,255,255,0.2); }
+.molecule-info .name { font-weight: 700; color: #fff; }
+.molecule-info .meta { font-size: 0.6rem; color: var(--text-dim); }
 
 .btn-primary { 
     width: 100%; background: #fff; color: #000; border: none; 
     border-radius: 15px; padding: 1rem; font-weight: 800; 
     text-transform: uppercase; cursor: pointer; transition: 0.2s; 
+    box-shadow: 0 4px 15px rgba(255,255,255,0.1);
 }
-.btn-primary:hover { background: var(--accent); transform: scale(1.02); }
+.btn-primary:hover { background: var(--accent); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 242, 255, 0.3); }
+
+.luxury-btn {
+    background: transparent; color: #fff; border: 1px solid var(--border);
+    padding: 0.8rem; border-radius: 10px; width: 100%; cursor: pointer;
+    font-size: 0.7rem; letter-spacing: 2px; transition: 0.3s;
+}
+.luxury-btn:hover { border-color: #fff; background: rgba(255,255,255,0.1); }
 
 .loader { position: fixed; top:0; left:0; width:100%; height:100%; background: #000; z-index: 10000; display: flex; align-items: center; justify-content: center; }
 .hidden { display: none !important; }

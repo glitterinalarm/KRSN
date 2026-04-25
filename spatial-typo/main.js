@@ -1,7 +1,8 @@
-// Typography Lab - Omniverse Engine v49.2
-// THE "TOTAL STABILITY" UPDATE
-// Focus: Fixing potential crashes in ES modules and ensuring the loader ALWAYS closes.
-console.log("TypoLab v49.2 — STABILITY FIXES | EXCLUSION | CLEAN BIRTH");
+// Typography Lab - Spore "Ecosystem" Engine v50.0
+// THE "SPORE" REVOLUTION: Organic, Diverse, Mathematical, and Biological.
+// Focus: Deep morphological evolution, explosive diversity, and biological coherence.
+
+console.log("TypoLab v50.0 — SPORE ECOSYSTEM REVOLUTION | QUANTUM EVOLUTION");
 
 let _uid = 0;
 
@@ -11,7 +12,6 @@ const APP_STATE = {
     isRecording: false
 };
 
-// Simplified fonts for stability - using only the most reliable cdn links
 const FONT_SOURCES = [
     { name: 'Roboto', url: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-black-webfont.ttf' }
 ];
@@ -19,93 +19,85 @@ const FONTS = [];
 
 function rand(a, b)   { return Math.random() * (b - a) + a; }
 function clamp(v,a,b) { return Math.max(a, Math.min(b, v)); }
+const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
 // ═══════════════════════════════════════════════════════════
-// GENOME
+// BIOCONTROL / GENOME
 // ═══════════════════════════════════════════════════════════
-class Genome {
+class BioGenome {
+    static TYPES = ['CRYSTAL', 'FLUID', 'NEURAL', 'MECHANIC', 'GASEOUS', 'FRAGMENTED', 'LIGHT'];
+    static MATERIALS = ['MATTE', 'NEON', 'GLASS', 'MEAT', 'METAL'];
+
     static createRandom() {
-        // Clean birth, but we seed a modest amount of physics so later generations can evolve.
         return {
-            // Geometry – start neutral
-            v_scaleX: 1, v_scaleY: 1, v_rotation: 0,
-            // Physics – moderate forces for smoother motion
-            g_fluid: rand(0.05, 0.15),
-            g_mycelium: rand(0.02, 0.08),
-            g_swarm: rand(0.05, 0.12),
-            g_orbit: rand(0.03, 0.09),
-            g_pulse: rand(0.04, 0.1),
-            g_vortex: rand(0.05, 0.12),
-            g_gravity: rand(0.03, 0.09),
-            g_speed: 0.2, // modest flow
-            g_amplitude: 0.4,
-            cohesion: 0.95, // high cohesion but not absolute
-            // Topology – subtle jitter
+            // Discrete Genes (Spore Style)
+            type: pick(BioGenome.TYPES),
+            material: pick(BioGenome.MATERIALS),
+            
+            // Physics Genes
+            g_speed: rand(0.05, 0.2),
+            g_amplitude: rand(0.1, 0.5),
+            g_viscosity: rand(0.5, 0.95), // How much it drags
+            g_vortex: rand(0, 0.1),
+            g_drift: rand(0.01, 0.05),
+            
+            // Morphology Genes
+            v_complexity: 0.1,
+            v_fragmentation: 0,
+            v_scale: 1.0,
+            v_strokeW: rand(1, 3),
             v_resolution: 0.15,
-            v_roughness: rand(0.0, 0.2),
-            v_fisheye: rand(0.0, 0.1),
-            v_shear: rand(0.0, 0.1),
-            v_complexity: rand(0.1, 0.3),
-            // Archetype selection
-            v_archetype: Math.floor(Math.random() * 4),
-            // Phenotype activation (probabilistic, but at least one is always on)
-            v_neural: Math.random() > 0.5 ? 1 : 0,
-            v_membrane: Math.random() > 0.7 ? 1 : 0,
-            v_spine: 1,
-            v_spores: Math.random() > 0.6 ? 1 : 0,
-            v_sharp: Math.random() > 0.85 ? 1 : 0,
-            v_liquid: 0,
-            v_glitch: 0,
-            // Element scales – base values that will be mutated later
-            v_elementScale: rand(0.5, 1.2),
-            v_elementCount: rand(0.4, 0.9),
-            // Style
-            v_strokeW: rand(1.2, 2.5), v_dashA: 0, v_dashB: 0,
-            v_alphaF: 80, v_alphaS: 220,
-            blend_additive: false,
-            // Random colour seed
+            
+            // Biological Traits
+            cohesion: 1.0, 
+            breathing: rand(0.01, 0.05),
+            pulsation: rand(0.01, 0.1),
+            
+            // Aesthetic
             colorR: Math.random() * 255,
             colorG: Math.random() * 255,
-            colorB: Math.random() * 255
+            colorB: Math.random() * 255,
+            alpha: 220,
+            
+            mutationRate: 0.1
         };
     }
 
     static merge(A, B) {
         const child = {};
-        // 50 % chance to inherit a dominant set of traits from one parent (pure) – keeps lineage recognizable.
-        const pureInheritance = Math.random() < 0.5;
         const dominant = Math.random() > 0.5 ? A : B;
-        const EXCLUSIVE = ['v_archetype', 'v_scaleX', 'v_scaleY', 'v_strokeW', 'blend_additive'];
-        const ACCUM = ['g_fluid','g_mycelium','g_swarm','g_orbit','g_pulse','g_vortex','g_gravity','v_roughness','v_glitch'];
+        const recessive = dominant === A ? B : A;
+
         for (const k in A) {
-            if (EXCLUSIVE.includes(k)) {
-                child[k] = pureInheritance ? dominant[k] : (Math.random() > 0.5 ? A[k] : B[k]);
-            } else if (ACCUM.includes(k)) {
-                // Accumulate forces with a modest mutation boost
-                const base = ((A[k]||0)+(B[k]||0))/2;
-                const boost = Math.random() < 0.3 ? rand(0.05, 0.2) : 0;
-                child[k] = clamp(base + boost, 0, 5);
-            } else if (k === 'cohesion') {
-                child[k] = clamp(((A[k]||1)+(B[k]||1))/2 * 0.92, 0.1, 0.98);
+            // Inheritance Logic
+            if (typeof A[k] === 'string') {
+                // Dominant/Recessive inheritance (Spore behavior)
+                child[k] = Math.random() > 0.8 ? recessive[k] : dominant[k];
+            } else if (k === 'v_complexity') {
+                child[k] = clamp((A[k] + B[k]) / 2 + 0.15, 0.1, 1.0);
             } else if (k.startsWith('color')) {
-                // Allow occasional dramatic colour jumps (lower chance)
-                child[k] = Math.random() < 0.15 ? Math.random()*255 : clamp(((A[k]||128)+(B[k]||128))/2 + rand(-30,30), 0, 255);
-            } else if (k.startsWith('v_alpha')) {
-                child[k] = ((A[k]||100)+(B[k]||100))/2;
+                child[k] = clamp((A[k] + B[k]) / 2 + rand(-40, 40), 0, 255);
             } else {
-                child[k] = pureInheritance ? dominant[k] : ((A[k]||0)+(B[k]||0))/2;
+                // Crossover with mutation
+                child[k] = (A[k] + B[k]) / 2;
+                if (Math.random() < A.mutationRate) child[k] += rand(-0.2, 0.2);
             }
         }
-        // Moderate increase of complexity and speed after fusion
-        child.v_complexity = clamp((A.v_complexity + B.v_complexity)/2 + rand(0.05, 0.15), 0.1, 1.0);
-        child.g_speed = clamp((A.g_speed + B.g_speed)/2 + rand(0.02, 0.1), 0.05, 2.0);
-        child.g_amplitude = clamp((A.g_amplitude + B.g_amplitude)/2 + rand(0.02, 0.1), 0.1, 2.5);
+
+        // Radical Mutations (Mutations "Sauteuses")
+        if (Math.random() < 0.1) child.type = pick(BioGenome.TYPES);
+        if (child.v_complexity > 0.4) child.v_fragmentation += rand(0.1, 0.3);
+        
+        child.cohesion = clamp(dominant.cohesion * 0.9, 0.1, 0.98);
+        child.g_speed += rand(0, 0.1);
+        child.g_amplitude += rand(0, 0.3);
+
         return child;
     }
 }
 
 // ═══════════════════════════════════════════════════════════
-// SKETCH
+// ECOSYSTEM SKETCH
 // ═══════════════════════════════════════════════════════════
 const sketch = (p) => {
     p.preload = () => {
@@ -118,170 +110,442 @@ const sketch = (p) => {
         p.createCanvas(window.innerWidth, window.innerHeight).parent('stage');
         const hide = () => { const l = document.getElementById('loader'); if (l) l.classList.add('hidden'); };
         hide();
-        setTimeout(hide, 1000);
+        setTimeout(hide, 2000);
         window.TU = new TypoUniverse(p);
         injectExportUI(p);
-        for (let i = 0; i < 7; i++) window.TU.addAtom();
+        for (let i = 0; i < 6; i++) window.TU.addAtom();
     };
 
     p.draw = () => {
-        p.background(5, 5, 7);
-        APP_STATE.view.x += (APP_STATE.view.targetX - APP_STATE.view.x) * 0.1;
-        APP_STATE.view.y += (APP_STATE.view.targetY - APP_STATE.view.y) * 0.1;
+        p.background(5, 6, 8); // Deep deep space
+        
+        // Dynamic Viewport move
+        APP_STATE.view.x += (APP_STATE.view.targetX - APP_STATE.view.x) * 0.05;
+        APP_STATE.view.y += (APP_STATE.view.targetY - APP_STATE.view.y) * 0.05;
+        
         p.push();
         p.translate(p.width/2 + APP_STATE.view.x, p.height/2 + APP_STATE.view.y);
         p.scale(APP_STATE.view.zoom);
-        APP_STATE.atoms.forEach(a => { a.update(); a.draw(); });
+        
+        // Draw Ecosystem
+        APP_STATE.atoms.forEach(a => {
+            a.update();
+            a.draw();
+        });
         p.pop();
+
+        // Overlay info
+        p.fill(255, 30);
+        p.noStroke();
+        p.textSize(10);
+        p.text(`SPORE ENGINE v50.0 | MOLECULES: ${APP_STATE.atoms.length}`, 20, p.height - 20);
     };
 
     p.windowResized = () => p.resizeCanvas(window.innerWidth, window.innerHeight);
 };
 
 // ═══════════════════════════════════════════════════════════
-// LIVING TYPO
+// LIVING ORGANIC TYPO
 // ═══════════════════════════════════════════════════════════
 class LivingTypo {
     constructor(p, char, fontData, parentData = null) {
-        this.p = p; this.atomId = _uid++; this.vertices = [];
+        this.p = p;
+        this.atomId = _uid++;
+        this.vertices = [];
+        this.particles = []; // For fragmented/gaseous types
+        this.breathingStage = Math.random() * p.TWO_PI;
+        this.gen = 1;
+
         if (parentData) {
-            this.x = parentData.x; this.y = parentData.y; this.char = parentData.char;
-            this.fontName = parentData.fontName; this.dna = parentData.dna; this.gen = parentData.gen;
-            parentData.vertices.forEach((v, i) => {
-                const step = Math.max(1, Math.floor(1.2 / (this.dna.v_complexity + 0.2)));
-                if (i % step === 0) this.vertices.push({ pos: v.pos.copy(), basePos: v.pos.copy(), vel: p.createVector(0,0), seed: v.seed || Math.random() });
+            this.x = parentData.x;
+            this.y = parentData.y;
+            this.char = parentData.char;
+            this.fontName = parentData.fontName;
+            this.dna = parentData.dna;
+            this.gen = parentData.gen;
+            
+            // Re-sample or inherit vertices
+            parentData.vertices.forEach(v => {
+                this.vertices.push({
+                    pos: v.pos.copy(),
+                    basePos: v.pos.copy(),
+                    vel: p.createVector(0,0),
+                    seed: v.seed || Math.random()
+                });
             });
-            const MAX_VERTICES = 500;
-            if (this.vertices.length > MAX_VERTICES) this.vertices = this.vertices.slice(0, MAX_VERTICES);
+            
+            // If fragmented, inherit particles
+            if (this.dna.type === 'FRAGMENTED' || this.dna.type === 'GASEOUS') {
+                for (let i = 0; i < 100 * this.dna.v_complexity; i++) {
+                    const v = pick(this.vertices);
+                    this.particles.push({
+                        pos: v.pos.copy(),
+                        vel: p.createVector(rand(-1,1), rand(-1,1)),
+                        sz: rand(2, 10),
+                        life: rand(0.5, 1.0)
+                    });
+                }
+            }
         } else {
-            this.x = (Math.random()-0.5)*1400; this.y = (Math.random()-0.5)*1000;
-            this.char = char || "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"[Math.floor(Math.random()*36)];
-            this.gen = 1; this.dna = Genome.createRandom();
+            this.x = (Math.random() - 0.5) * 1200;
+            this.y = (Math.random() - 0.5) * 800;
+            this.char = char || pick("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
+            this.dna = BioGenome.createRandom();
             const font = fontData || (FONTS.length ? FONTS[0] : null);
             this.fontName = font ? font.name : 'System';
             if (font && font.obj) {
                 const b = font.obj.textBounds(this.char, 0, 0, 400);
                 const pts = font.obj.textToPoints(this.char, -b.x - b.w/2, -b.y - b.h/2, 400, { sampleFactor: this.dna.v_resolution });
-                pts.forEach(pt => { this.vertices.push({ pos: p.createVector(pt.x, pt.y), basePos: p.createVector(pt.x, pt.y), vel: p.createVector(0,0), seed: Math.random() }); });
+                pts.forEach(pt => {
+                    this.vertices.push({
+                        pos: p.createVector(pt.x, pt.y),
+                        basePos: p.createVector(pt.x, pt.y),
+                        vel: p.createVector(0, 0),
+                        seed: Math.random()
+                    });
+                });
             }
         }
     }
 
     update() {
-        const d = this.dna; const t = this.p.frameCount * 0.01 * d.g_speed; const amp = d.g_amplitude;
-        let cmX = 0, cmY = 0; this.vertices.forEach(v => { cmX += v.pos.x; cmY += v.pos.y; });
-        if (this.vertices.length) { cmX /= this.vertices.length; cmY /= this.vertices.length; }
-        const center = this.p.createVector(cmX, cmY);
+        const d = this.dna;
+        const p = this.p;
+        const t = p.frameCount * 0.01 * d.g_speed;
+        this.breathingStage += d.breathing;
+
+        const noiseScale = 0.005;
+        const drift = d.g_drift * 10;
+
+        // Biological Physics Loop
         this.vertices.forEach((v, i) => {
-            const force = this.p.createVector(0,0);
-            if (d.g_fluid > 0.01) force.add(p5.Vector.fromAngle(this.p.noise(v.pos.x*0.006+t, v.pos.y*0.006)*this.p.TWO_PI*4).mult(d.g_fluid*amp));
-            if (d.g_gravity > 0.01) force.y += d.g_gravity * 12;
-            v.vel.add(force); v.vel.add(p5.Vector.sub(v.basePos, v.pos).mult(d.cohesion*0.1));
-            // Cap velocity magnitude for performance stability
-            const MAX_FORCE = 5;
-            if (v.vel.mag() > MAX_FORCE) v.vel.setMag(MAX_FORCE);
-            v.vel.mult(0.8); v.pos.add(v.vel);
-            if (d.cohesion < 1) v.basePos.add(this.p.createVector(Math.random()-0.5, Math.random()-0.5).mult(0.6*(1-d.cohesion)*amp));
+            const force = p.createVector(0, 0);
+            
+            // Vortex force (Quantum/Spore drift)
+            const ang = p.noise(v.pos.x * noiseScale, v.pos.y * noiseScale, t) * p.TWO_PI * 4;
+            force.add(p5.Vector.fromAngle(ang).mult(d.g_amplitude));
+            
+            // Swarm behavior
+            if (d.type === 'FRAGMENTED') {
+                force.add(p.createVector(rand(-drift, drift), rand(-drift, drift)));
+            }
+
+            // Cohesion (The elastic glue of the typo)
+            const home = p5.Vector.sub(v.basePos, v.pos);
+            force.add(home.mult(d.cohesion * 0.15));
+
+            // Applied velocity
+            v.vel.add(force);
+            v.vel.mult(d.g_viscosity);
+            v.pos.add(v.vel);
+
+            // Breathing effect
+            const breath = 1 + Math.sin(this.breathingStage + v.seed * p.TWO_PI) * 0.05;
+            v.pos.mult(breath);
+        });
+
+        // Particle System Update (for Gaseous/Fragmented)
+        this.particles.forEach(pt => {
+            pt.pos.add(pt.vel);
+            pt.vel.add(p.createVector(rand(-0.1, 0.1), rand(-0.1, 0.1)));
+            pt.life -= 0.01;
+            if (pt.life <= 0) {
+                const target = pick(this.vertices);
+                if (target) {
+                    pt.pos = target.pos.copy();
+                    pt.life = 1.0;
+                }
+            }
         });
     }
 
     draw() {
-        const p = this.p; const d = this.dna; const R = d.colorR, G = d.colorG, B = d.colorB;
+        const p = this.p;
+        const d = this.dna;
+        const col = [d.colorR, d.colorG, d.colorB];
+        
         p.push();
-        // Position & basic scale with a random rotation offset for depth perception
         p.translate(this.x, this.y);
-        // Apply a subtle rotation based on complexity to give a 3‑D twist
-        const rotOffset = (d.v_complexity - 0.5) * 0.3; // range approx -0.15..0.15 rad
-        p.rotate(rotOffset);
-        // Depth scaling amplified for richer visual hierarchy
-        const depthScale = 1 + d.v_complexity * 0.6;
-        p.scale(d.v_scaleX * depthScale, d.v_scaleY * depthScale);
-        if (d.blend_additive) p.blendMode(p.ADD);
-        // Base spine – always drawn for legibility, thicker for higher complexity
-        p.noFill(); p.stroke(R, G, B, d.v_alphaS); p.strokeWeight(d.v_strokeW * (1 + d.v_complexity * 0.5));
-        p.beginShape(); this.vertices.forEach(v => p.vertex(v.pos.x, v.pos.y)); p.endShape();
-        // Archetype‑specific overlays
-        if (d.v_archetype === 0 && d.v_membrane > 0.1) {
-            p.noStroke(); p.fill(R, G, B, d.v_alphaF);
+        
+        // Depth / Volume logic
+        const volume = 1 + d.v_complexity * 0.5;
+        p.scale(volume);
+
+        // Material Setting
+        if (d.material === 'NEON') p.blendMode(p.ADD);
+        if (d.material === 'GLASS') p.drawingContext.shadowBlur = 15;
+        p.drawingContext.shadowColor = `rgba(${col[0]},${col[1]},${col[2]}, 0.5)`;
+
+        // RENDER TYPES
+        switch (d.type) {
+            case 'CRYSTAL':
+                this.drawCrystal(p, col, d);
+                break;
+            case 'FLUID':
+                this.drawFluid(p, col, d);
+                break;
+            case 'NEURAL':
+                this.drawNeural(p, col, d);
+                break;
+            case 'MECHANIC':
+                this.drawMechanic(p, col, d);
+                break;
+            case 'GASEOUS':
+                this.drawGaseous(p, col, d);
+                break;
+            case 'FRAGMENTED':
+                this.drawFragmented(p, col, d);
+                break;
+            case 'LIGHT':
+                this.drawLight(p, col, d);
+                break;
+            default:
+                this.drawDefault(p, col, d);
+        }
+
+        p.blendMode(p.BLEND);
+        p.pop();
+    }
+
+    // --- RENDERING MODULES ---
+
+    drawDefault(p, col, d) {
+        p.noFill();
+        p.stroke(col[0], col[1], col[2], d.alpha);
+        p.strokeWeight(d.v_strokeW);
+        p.beginShape();
+        this.vertices.forEach(v => p.vertex(v.pos.x, v.pos.y));
+        p.endShape();
+    }
+
+    drawCrystal(p, col, d) {
+        // Faceted polygons for volume
+        p.noStroke();
+        for (let i = 0; i < this.vertices.length - 3; i += 4) {
+            p.fill(col[0], col[1], col[2], d.alpha * 0.3);
             p.beginShape();
-            if (this.vertices.length > 3) this.vertices.forEach(v => p.curveVertex(v.pos.x, v.pos.y));
-            else this.vertices.forEach(v => p.vertex(v.pos.x, v.pos.y));
+            p.vertex(this.vertices[i].pos.x, this.vertices[i].pos.y);
+            p.vertex(this.vertices[i+1].pos.x, this.vertices[i+1].pos.y);
+            p.vertex(this.vertices[i+2].pos.x, this.vertices[i+2].pos.y);
             p.endShape(p.CLOSE);
+            p.stroke(255, 40);
+            p.line(this.vertices[i].pos.x, this.vertices[i].pos.y, this.vertices[i+2].pos.x, this.vertices[i+2].pos.y);
         }
-        if (d.v_archetype === 1 && d.v_sharp > 0.1) {
-            p.noStroke(); p.beginShape(p.TRIANGLES);
-            for (let i = 0; i < this.vertices.length - 2; i += 4) {
-                const shade = 0.7 + 0.3 * Math.sin(p.frameCount * 0.02 + i);
-                p.fill(R * shade, G * shade, B * shade, d.v_alphaF * 1.5);
-                p.vertex(this.vertices[i].pos.x, this.vertices[i].pos.y);
-                p.vertex(this.vertices[i + 1].pos.x, this.vertices[i + 1].pos.y);
-                p.vertex(this.vertices[i + 2].pos.x, this.vertices[i + 2].pos.y);
+    }
+
+    drawFluid(p, col, d) {
+        // Thick organic membrane
+        p.fill(col[0], col[1], col[2], d.alpha * 0.4);
+        p.stroke(col[0], col[1], col[2], d.alpha);
+        p.strokeWeight(d.v_strokeW * 2);
+        p.beginShape();
+        if (this.vertices.length > 3) {
+            this.vertices.forEach(v => p.curveVertex(v.pos.x, v.pos.y));
+        } else {
+            this.vertices.forEach(v => p.vertex(v.pos.x, v.pos.y));
+        }
+        p.endShape(p.CLOSE);
+    }
+
+    drawNeural(p, col, d) {
+        // Connections and tendrils
+        p.stroke(col[0], col[1], col[2], d.alpha * 0.8);
+        p.strokeWeight(d.v_strokeW * 0.5);
+        for (let i = 0; i < this.vertices.length; i += 8) {
+            for (let j = i + 1; j < this.vertices.length; j += 20) {
+                const dist = this.vertices[i].pos.dist(this.vertices[j].pos);
+                if (dist < 100 * (1 + d.v_complexity)) {
+                    p.line(this.vertices[i].pos.x, this.vertices[i].pos.y, this.vertices[j].pos.x, this.vertices[j].pos.y);
+                }
             }
-            p.endShape();
         }
-        if (d.v_archetype === 2 && d.v_spores > 0.1) {
-            p.noStroke(); p.fill(R, G, B, d.v_alphaS);
-            // Increase spore density based on elementCount and complexity
-            const sporeStep = Math.max(1, Math.floor(2 / (d.v_elementCount * (1 + d.v_complexity))));
-            for (let i = 0; i < this.vertices.length; i += sporeStep) {
-                const v = this.vertices[i];
-                const sz = (10 + v.seed * 35) * d.v_elementScale * (1 + d.v_complexity * 0.3);
-                p.push(); p.translate(v.pos.x, v.pos.y); p.rotate(v.vel.heading() + v.seed * p.TWO_PI);
-                if (i % 3 === 0) p.rect(-sz / 2, -sz / 2, sz, sz);
-                else p.circle(0, 0, sz);
+    }
+
+    drawMechanic(p, col, d) {
+        // Joints and segments (tripods)
+        p.stroke(col[0], col[1], col[2], d.alpha);
+        p.strokeWeight(d.v_strokeW);
+        for (let i = 0; i < this.vertices.length; i += 10) {
+            const v = this.vertices[i];
+            p.rect(v.pos.x - 2, v.pos.y - 2, 4, 4);
+            if (i > 0) {
+                p.line(v.pos.x, v.pos.y, this.vertices[i-1].pos.x, this.vertices[i-1].pos.y);
+            }
+            // Tripod legs
+            if (v.seed > 0.8) {
+                p.line(v.pos.x, v.pos.y, v.pos.x + 20, v.pos.y + 40);
+            }
+        }
+    }
+
+    drawGaseous(p, col, d) {
+        // Particle trails and clouds
+        p.noStroke();
+        this.particles.forEach(pt => {
+            p.fill(col[0], col[1], col[2], d.alpha * pt.life * 0.5);
+            p.circle(pt.pos.x, pt.pos.y, pt.sz * pt.life);
+        });
+    }
+
+    drawFragmented(p, col, d) {
+        // Exploding blocks
+        p.fill(col[0], col[1], col[2], d.alpha);
+        p.noStroke();
+        this.vertices.forEach((v, i) => {
+            if (i % 5 === 0) {
+                const sz = 10 * v.seed * (1 + d.v_complexity);
+                p.push();
+                p.translate(v.pos.x, v.pos.y);
+                p.rotate(v.seed * p.TWO_PI + p.frameCount * 0.05);
+                p.rect(-sz/2, -sz/2, sz, sz);
                 p.pop();
             }
-        }
-        if (d.v_archetype === 3 && d.v_neural > 0.1) {
-            p.stroke(R, G, B, d.v_alphaS * 0.5); p.strokeWeight(d.v_strokeW * 0.5);
-            const limit = 120 * d.v_elementScale;
-            for (let i=0; i<this.vertices.length; i+=10) { for (let j=i+1; j<this.vertices.length; j+=25) { if (this.vertices[i].pos.dist(this.vertices[j].pos) < limit) p.line(this.vertices[i].pos.x, this.vertices[i].pos.y, this.vertices[j].pos.x, this.vertices[j].pos.y); } }
-        }
-        p.blendMode(p.BLEND); p.pop();
+        });
+    }
+
+    drawLight(p, col, d) {
+        // Glowing paths and neon light
+        p.blendMode(p.ADD);
+        p.noFill();
+        p.strokeWeight(d.v_strokeW * 3);
+        p.stroke(col[0], col[1], col[2], 50);
+        p.beginShape();
+        this.vertices.forEach(v => p.vertex(v.pos.x, v.pos.y));
+        p.endShape();
+        
+        p.strokeWeight(d.v_strokeW);
+        p.stroke(255, d.alpha);
+        p.beginShape();
+        this.vertices.forEach(v => p.vertex(v.pos.x, v.pos.y));
+        p.endShape();
     }
 }
 
 // ═══════════════════════════════════════════════════════════
-// TYPO UNIVERSE
+// ECOSYSTEM MANAGER
 // ═══════════════════════════════════════════════════════════
 class TypoUniverse {
-    constructor(p) { this.p = p; this.history = []; this.initUI(); this.initInteraction(); }
-    addAtom() { this.history.push([...APP_STATE.atoms]); APP_STATE.atoms.push(new LivingTypo(this.p, '', null)); this.updateMoleculeList(); }
-    undo() { if (this.history.length) { APP_STATE.atoms = this.history.pop(); this.updateMoleculeList(); } }
-    focusOn(atomId) { const a = APP_STATE.atoms.find(o => o.atomId === atomId); if (a) { APP_STATE.view.targetX = -a.x * APP_STATE.view.zoom; APP_STATE.view.targetY = -a.y * APP_STATE.view.zoom; } }
-    checkFusion(moved) {
-        const other = APP_STATE.atoms.find(o => o !== moved && Math.hypot(o.x-moved.x, o.y-moved.y) < 200);
-        if (!other) return;
-        const child = new LivingTypo(this.p, moved.char, null, { x: (moved.x+other.x)/2, y: (moved.y+other.y)/2, char: moved.char, fontName: moved.fontName, gen: Math.max(moved.gen, other.gen)+1, dna: Genome.merge(moved.dna, other.dna), vertices: [...moved.vertices, ...other.vertices] });
-        APP_STATE.atoms = APP_STATE.atoms.filter(a => a!==moved && a!==other); APP_STATE.atoms.push(child); this.updateMoleculeList();
+    constructor(p) {
+        this.p = p;
+        this.history = [];
+        this.initUI();
+        this.initInteraction();
     }
+
+    addAtom() {
+        this.history.push([...APP_STATE.atoms]);
+        APP_STATE.atoms.push(new LivingTypo(this.p, '', null));
+        this.updateMoleculeList();
+    }
+
+    undo() {
+        if (this.history.length > 0) {
+            APP_STATE.atoms = this.history.pop();
+            this.updateMoleculeList();
+        }
+    }
+
+    focusOn(atomId) {
+        const a = APP_STATE.atoms.find(o => o.atomId === atomId);
+        if (a) {
+            APP_STATE.view.targetX = -a.x * APP_STATE.view.zoom;
+            APP_STATE.view.targetY = -a.y * APP_STATE.view.zoom;
+        }
+    }
+
+    checkFusion(moved) {
+        const other = APP_STATE.atoms.find(o => o !== moved && Math.hypot(o.x - moved.x, o.y - moved.y) < 150);
+        if (!other) return;
+
+        console.log("🧬 CELLULAR FUSION DETECTED");
+        const childDna = BioGenome.merge(moved.dna, other.dna);
+        
+        const child = new LivingTypo(this.p, moved.char, null, {
+            x: (moved.x + other.x) / 2,
+            y: (moved.y + other.y) / 2,
+            char: pick([moved.char, other.char]),
+            fontName: moved.fontName,
+            gen: Math.max(moved.gen, other.gen) + 1,
+            dna: childDna,
+            vertices: [...moved.vertices, ...other.vertices]
+        });
+
+        APP_STATE.atoms = APP_STATE.atoms.filter(a => a !== moved && a !== other);
+        APP_STATE.atoms.push(child);
+        this.updateMoleculeList();
+    }
+
     initUI() {
         document.getElementById('add-atom').onclick = () => this.addAtom();
         document.getElementById('undo-btn').onclick = () => this.undo();
-        document.getElementById('molecule-list').onclick = (e) => { const li = e.target.closest('[data-atom-id]'); if (li) this.focusOn(parseInt(li.dataset.atomId, 10)); };
+        document.getElementById('molecule-list').onclick = (e) => {
+            const li = e.target.closest('[data-atom-id]');
+            if (li) this.focusOn(parseInt(li.dataset.atomId, 10));
+        };
     }
+
     initInteraction() {
-        let dragged=null, panning=false, lx=0, ly=0;
-        const toWorld = (cx,cy) => ({ wx: (cx-this.p.width/2-APP_STATE.view.x)/APP_STATE.view.zoom, wy: (cy-this.p.height/2-APP_STATE.view.y)/APP_STATE.view.zoom });
-        const onStart = (cx,cy,target) => { if (target.closest('.ui-overlay')) return; const {wx,wy} = toWorld(cx,cy); dragged = APP_STATE.atoms.find(a => Math.hypot(a.x-wx, a.y-wy) < 300/APP_STATE.view.zoom)||null; if (!dragged) { panning=true; lx=cx; ly=cy; } };
-        const onMove = (cx,cy,dx,dy) => { if (dragged) { dragged.x+=dx/APP_STATE.view.zoom; dragged.y+=dy/APP_STATE.view.zoom; } else if (panning) { APP_STATE.view.targetX+=(cx-lx); APP_STATE.view.targetY+=(cy-ly); APP_STATE.view.x=APP_STATE.view.targetX; APP_STATE.view.y=APP_STATE.view.targetY; lx=cx; ly=cy; } };
-        const onEnd = () => { if (dragged) this.checkFusion(dragged); dragged=null; panning=false; };
-        window.addEventListener('mousedown', e=>onStart(e.clientX,e.clientY,e.target));
-        window.addEventListener('mousemove', e=>onMove(e.clientX,e.clientY,e.movementX,e.movementY));
-        window.addEventListener('mouseup', onEnd);
-        window.addEventListener('wheel', e=>{ e.preventDefault(); APP_STATE.view.zoom = clamp(APP_STATE.view.zoom*(e.deltaY>0?0.9:1.1), 0.05, 10); }, {passive:false});
+        let dragged = null, panning = false, lx = 0, ly = 0;
+        const toWorld = (cx, cy) => ({
+            wx: (cx - this.p.width/2 - APP_STATE.view.x) / APP_STATE.view.zoom,
+            wy: (cy - this.p.height/2 - APP_STATE.view.y) / APP_STATE.view.zoom
+        });
+
+        window.addEventListener('mousedown', e => {
+            if (e.target.closest('.ui-overlay')) return;
+            const { wx, wy } = toWorld(e.clientX, e.clientY);
+            dragged = APP_STATE.atoms.find(a => Math.hypot(a.x - wx, a.y - wy) < 200 / APP_STATE.view.zoom) || null;
+            if (!dragged) { panning = true; lx = e.clientX; ly = e.clientY; }
+        });
+
+        window.addEventListener('mousemove', e => {
+            if (dragged) {
+                dragged.x += (e.movementX) / APP_STATE.view.zoom;
+                dragged.y += (e.movementY) / APP_STATE.view.zoom;
+            } else if (panning) {
+                APP_STATE.view.targetX += (e.clientX - lx);
+                APP_STATE.view.targetY += (e.clientY - ly);
+                APP_STATE.view.x = APP_STATE.view.targetX;
+                APP_STATE.view.y = APP_STATE.view.targetY;
+                lx = e.clientX; ly = e.clientY;
+            }
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (dragged) this.checkFusion(dragged);
+            dragged = null; panning = false;
+        });
+
+        window.addEventListener('wheel', e => {
+            e.preventDefault();
+            const factor = e.deltaY > 0 ? 0.9 : 1.1;
+            APP_STATE.view.zoom = clamp(APP_STATE.view.zoom * factor, 0.05, 5);
+        }, { passive: false });
     }
+
     updateMoleculeList() {
-        const ml = document.getElementById('molecule-list'); if (!ml) return;
-        ml.innerHTML = APP_STATE.atoms.map(a => `<li class="molecule-item" data-atom-id="${a.atomId}"><span style="color:rgb(${a.dna.colorR},${a.dna.colorG},${a.dna.colorB})">○</span> [${a.char}] G${a.gen}</li>`).join('');
+        const ml = document.getElementById('molecule-list');
+        if (!ml) return;
+        ml.innerHTML = APP_STATE.atoms.map(a => `
+            <li class="molecule-item" data-atom-id="${a.atomId}">
+                <span class="status-dot" style="background:rgb(${a.dna.colorR},${a.dna.colorG},${a.dna.colorB})"></span>
+                <div class="molecule-info">
+                   <div class="name">${a.char} [${a.dna.type}]</div>
+                   <div class="meta">GEN ${a.gen} | ${a.dna.material}</div>
+                </div>
+            </li>
+        `).join('');
     }
 }
 
 function injectExportUI(p) {
-    const parent = document.querySelector('.side-panel'); if (!parent) return;
-    const div = document.createElement('div'); div.innerHTML = `<button id="btn-snap">IMAGE</button>`;
+    const parent = document.querySelector('.side-panel');
+    if (!parent) return;
+    const div = document.createElement('div');
+    div.className = 'export-group';
+    div.innerHTML = `<button id="btn-snap" class="luxury-btn">SNAPSHOT</button>`;
     parent.appendChild(div);
-    document.getElementById('btn-snap').onclick = () => p.saveCanvas('krsn','png');
+    document.getElementById('btn-snap').onclick = () => p.saveCanvas('spore_typo', 'png');
 }
 
 new p5(sketch);
