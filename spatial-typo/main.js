@@ -1,10 +1,8 @@
-// Typography Lab - Alchemy Engine v38.0
-// ═══════════════════════════════════════════════════════════
-//  GEN 1  → p5 canvas text rendering (PERFECT, no crossing lines)
-//         → Only visual FX: shadow, glow, color, alpha
-//  FUSION → Vertex particle system (chaos unlocked)
-// ═══════════════════════════════════════════════════════════
-console.log("TypoLab Engine v38.0 - PERFECT TEXT RENDERING | CLEAN GEN1");
+// Typography Lab - Alchemy Engine v40.0
+// PORT FROM v25.1 (the version that actually worked)
+// KEY INSIGHT: Phenotypes are ADDITIVE weights (0→1), not mutually exclusive styles
+// Gen 1: letters stay as text (clean). Fusion: vertex physics + additive phenotypes
+console.log("TypoLab Engine v40.0 - ADDITIVE PHENOTYPES | REAL FILIATION | DIVERSITY");
 
 let _uid = 0;
 
@@ -15,68 +13,106 @@ const APP_STATE = {
 };
 
 const FONT_SOURCES = [
-    { name: 'Roboto Black',    url: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-black-webfont.ttf' },
-    { name: 'Source Sans Pro', url: 'https://cdnjs.cloudflare.com/ajax/libs/topcoat/0.8.0/font/SourceSansPro-Black.otf' },
-    { name: 'Source Code Pro', url: 'https://cdnjs.cloudflare.com/ajax/libs/topcoat/0.8.0/font/SourceCodePro-Bold.otf' },
-    { name: 'Roboto Light',    url: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-light-webfont.ttf' }
+    { name: 'Roboto',       url: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-black-webfont.ttf' },
+    { name: 'Source Sans',  url: 'https://cdnjs.cloudflare.com/ajax/libs/topcoat/0.8.0/font/SourceSansPro-Black.otf' },
+    { name: 'Source Code',  url: 'https://cdnjs.cloudflare.com/ajax/libs/topcoat/0.8.0/font/SourceCodePro-Bold.otf' },
+    { name: 'Roboto Mono',  url: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-mediumitalic-webfont.ttf' }
 ];
 const FONTS = [];
 
-function rand(a, b)    { return Math.random() * (b - a) + a; }
-function pick(arr)     { return arr[Math.floor(Math.random() * arr.length)]; }
-function clamp(v,a,b)  { return Math.max(a, Math.min(b, v)); }
+function rPow(p = 3) { return Math.pow(Math.random(), p); }
+function rand(a, b)   { return Math.random() * (b - a) + a; }
+function clamp(v,a,b) { return Math.max(a, Math.min(b, v)); }
+function pick(arr)    { return arr[Math.floor(Math.random() * arr.length)]; }
 
 // ─────────────────────────────────────────────────────────────
-// GENOME
+// GENOME — ADDITIVE MULTI-PHENOTYPE SYSTEM
+// Each trait is a 0→1 weight. Multiple can be non-zero at once.
+// This is WHY the old version had diversity: combinations, not exclusions.
 // ─────────────────────────────────────────────────────────────
 class Genome {
     static gen1() {
         return {
             isStable: true,
-            fontSize: rand(80, 380),
 
-            // Visual style for text rendering
-            textStyle: pick(['solid','outline','dual','shadow','glow','outline_thick']),
+            // Visual style for Gen 1 text rendering
+            textStyle:  pick(['solid','outline','dual','shadow','glow','outline_thick']),
+            fxStyle:    pick(['breathe','pulse','shift','static','static','static']),
+            fxSpeed:    rand(0.3, 2.5),
+            fontSize:   rand(100, 400),
 
-            // Subtle life animation (color/alpha only — no shape change)
-            fxStyle: pick(['breathe', 'pulse', 'shift', 'static', 'static', 'static']),
-            fxSpeed: rand(0.3, 2.5),
+            // Colors & stroke
+            v_strokeW: rand(1, 10),
+            v_alphaFill: rand(60, 230),
+            v_alphaStr:  rand(140, 255),
 
-            v_strokeW:   rand(1, 12),
-            v_alphaFill: rand(50, 220),
-            v_alphaStr:  rand(150, 255),
-
-            blend_additive: false,
             colorR: Math.random() * 255,
             colorG: Math.random() * 255,
             colorB: Math.random() * 255
         };
     }
 
-    static fuse(A, B, childGen) {
-        const chaos = Math.min(0.95, (childGen - 1) * 0.3);
+    // For fusion children: full additive phenotype genome
+    static gen1_vertex() {
+        // This is what gets attached as the "vertex genome" when creating the letter's vertex data
+        // Used when building vertex arrays for future fusion
         return {
-            isStable:   false,
-            gen:        childGen,
-            animType:   pick(['liquid','frenetic','orbit','piston','nebula','mycelium','vortex','shimmer']),
-            g_speed:    rand(0.4, 4 + chaos * 4),
-            g_amplitude:rand(0.3, 2 + chaos * 6),
-            g_friction: clamp(rand(0.82, 0.97) - chaos * 0.15, 0.70, 0.99),
-            v_noiseScale: rand(0.002, 0.015),
-            cohesion:   clamp(1.0 - chaos * rand(0.5, 1.0), 0.04, 0.88),
-            visualStyle: pick(['membrane','outline','neural','spores','contour_fill','glowing','fragmented','wireframe']),
-            accentStyle: pick(['none','none','none','futurist','glitch','echo','baroque','ghost']),
-            fontSize: clamp(((A.fontSize||200) + (B.fontSize||200)) / 2 + rand(-80,80), 80, 500),
-            v_strokeW:   rand(0.4, 14) * (1 + chaos * 0.5),
-            v_dashGap:   Math.random() > 0.45 ? rand(1, 55) : 0,
-            v_alphaFill: clamp(rand(30, 230) * (1 - chaos * 0.2), 20, 230),
-            v_alphaStr:  rand(60, 255),
-            fxSpeed:     rand(0.5, 3),
-            blend_additive: Math.random() > clamp(0.85 - chaos * 0.4, 0.3, 0.9),
-            colorR: clamp(Math.random() < chaos * 0.5 ? Math.random()*255 : (A.colorR+B.colorR)/2 + rand(-60,60), 0, 255),
-            colorG: clamp(Math.random() < chaos * 0.5 ? Math.random()*255 : (A.colorG+B.colorG)/2 + rand(-60,60), 0, 255),
-            colorB: clamp(Math.random() < chaos * 0.5 ? Math.random()*255 : (A.colorB+B.colorB)/2 + rand(-60,60), 0, 255),
+            // PHYSICS
+            g_fluid:    rPow(3),
+            g_mycelium: rPow(4),
+            g_swarm:    rPow(3),
+            g_orbit:    rPow(2),
+            g_pulse:    rPow(3),
+            g_speed:    rand(0.2, 3),
+            g_amplitude:rand(0.5, 2.5),
+            cohesion:   rand(0.6, 1.0),  // Gen 1: high cohesion
+
+            // VERTEX TOPOLOGY
+            v_roughness: rPow(3) * 50,   // scramble at birth
+            v_resolution: rand(0.04, 0.18),
+
+            // PHENOTYPE WEIGHTS (additive — all can coexist)
+            v_neural:   rPow(2),
+            v_membrane: rPow(2),
+            v_spine:    rPow(2),
+            v_spores:   rPow(2),
+            v_sharp:    rPow(2),
+
+            // STROKE
+            v_strokeW: rand(0.3, 7),
+            v_dashA:   rPow(2) * 50,
+            v_dashB:   rPow(1.5) * 50,
+            v_alphaF:  rand(40, 180),
+            v_alphaS:  rand(100, 255),
+
+            blend_additive: Math.random() > 0.72,
+            colorR: Math.random() * 255,
+            colorG: Math.random() * 255,
+            colorB: Math.random() * 255
         };
+    }
+
+    // Fusion: averages parent genomes + random mutation
+    // This ensures REAL filiation — child looks like parents
+    static fuse(A, B) {
+        const child = {};
+        for (const k in A) {
+            if (k === 'blend_additive') {
+                child[k] = Math.random() > 0.5 ? A[k] : B[k];
+            } else if (typeof A[k] === 'boolean' || typeof A[k] === 'string') {
+                child[k] = Math.random() > 0.5 ? A[k] : B[k];
+            } else {
+                const av = A[k] || 0, bv = B[k] || 0;
+                // Average of parents + 60% random mutation
+                child[k] = (av + bv) / 2 + (Math.random() - 0.5) * ((av + bv) / 2) * 0.7;
+                if (k.startsWith('v_alpha') || k.startsWith('color')) child[k] = clamp(child[k], 0, 255);
+                if (k === 'cohesion') child[k] = clamp(child[k] * 0.55, 0.05, 0.95); // decay over generations
+                else if (k.startsWith('g_') || k.startsWith('v_')) child[k] = Math.max(0, child[k]);
+            }
+        }
+        child.isStable  = false;
+        child.fontSize  = clamp(((A.fontSize||250) + (B.fontSize||250)) / 2 + rand(-80, 80), 80, 500);
+        return child;
     }
 }
 
@@ -95,7 +131,7 @@ const sketch = (p) => {
     };
 
     p.draw = () => {
-        p.background(5, 5, 8);
+        p.background(10, 10, 12);
         APP_STATE.view.x += (APP_STATE.view.targetX - APP_STATE.view.x) * 0.1;
         APP_STATE.view.y += (APP_STATE.view.targetY - APP_STATE.view.y) * 0.1;
         p.push();
@@ -117,125 +153,131 @@ const sketch = (p) => {
 // ─────────────────────────────────────────────────────────────
 class LivingTypo {
     constructor(p, char, fontData, parentData = null) {
-        this.p        = p;
-        this.atomId   = _uid++;
-        this.age      = 0;
+        this.p       = p;
+        this.atomId  = _uid++;
+        this.age     = 0;
         this.vertices = [];
-        this.fontObj  = null; // stored for text() rendering
+        this.fontObj  = null;
+        this.vDna     = null; // vertex genome (separate from display genome)
 
         if (parentData) {
+            // ── Fusion child ──
             this.x        = parentData.x;
             this.y        = parentData.y;
             this.char     = parentData.char;
             this.fontName = parentData.fontName;
-            this.dna      = parentData.dna;
+            this.dna      = parentData.dna;   // fused vertex genome
             this.gen      = parentData.gen;
-            this.fontObj  = parentData.fontObj || null;
+            this.vDna     = this.dna;
             parentData.vertices.forEach(v => this.vertices.push({
                 pos:     v.pos.copy(),
                 basePos: p.createVector(v.pos.x, v.pos.y),
                 vel:     p.createVector(0, 0)
             }));
+            while (this.vertices.length > 450) this.vertices.splice(Math.floor(Math.random() * this.vertices.length), 1);
         } else {
-            this.x    = (Math.random() - 0.5) * 1800;
+            // ── Fresh Gen-1 atom ──
+            this.x    = (Math.random() - 0.5) * 1600;
             this.y    = (Math.random() - 0.5) * 1200;
-            const CH  = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!?#@&';
+            const CH  = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
             this.char = char || CH[Math.floor(Math.random() * CH.length)];
             this.gen  = 1;
-            this.dna  = Genome.gen1();
+            this.dna  = Genome.gen1();              // display genome
+            this.vDna = Genome.gen1_vertex();        // vertex genome for future fusions
 
             const font = fontData || (FONTS.length ? FONTS[Math.floor(Math.random() * FONTS.length)] : null);
             this.fontName = font ? font.name : 'System';
             this.fontObj  = font ? font.obj : null;
 
-            // For fusion children, we still need vertices from the font
-            // For Gen1, vertices are only used if they become fusion parents
+            // Build vertex cloud from font outlines (used when fusing, not for Gen1 display)
             if (font && font.obj) {
-                const fs  = this.dna.fontSize;
+                const fs  = this.vDna.fontSize || 300;
                 const b   = font.obj.textBounds(this.char, 0, 0, fs);
-                const pts = font.obj.textToPoints(this.char, -b.x - b.w / 2, -b.y - b.h / 2, fs, { sampleFactor: 0.14 });
-                pts.forEach(pt => this.vertices.push({
-                    pos:     p.createVector(pt.x, pt.y),
-                    basePos: p.createVector(pt.x, pt.y),
-                    vel:     p.createVector(0, 0)
-                }));
+                const pts = font.obj.textToPoints(
+                    this.char, -b.x - b.w / 2, -b.y - b.h / 2, fs,
+                    { sampleFactor: Math.min(0.18, this.vDna.v_resolution), simplifyThreshold: 0 }
+                );
+                pts.forEach(pt => {
+                    // Apply roughness at birth for vertex data
+                    const nx = pt.x + (Math.random() - 0.5) * this.vDna.v_roughness;
+                    const ny = pt.y + (Math.random() - 0.5) * this.vDna.v_roughness;
+                    this.vertices.push({
+                        pos:     p.createVector(nx, ny),
+                        basePos: p.createVector(nx, ny),
+                        vel:     p.createVector(0, 0)
+                    });
+                });
+                // Store font size for Gen1 display
+                this.dna.fontSize = this.vDna.fontSize || fs;
+                // Sync colors between genomes
+                this.vDna.colorR = this.dna.colorR;
+                this.vDna.colorG = this.dna.colorG;
+                this.vDna.colorB = this.dna.colorB;
             }
         }
-        while (this.vertices.length > 800) this.vertices.splice(Math.floor(Math.random() * this.vertices.length), 1);
     }
 
-    // ── PHYSICS (Fusion children only) ──
+    // ── PHYSICS (fusion children only) ──
     update() {
         this.age++;
-        const d = this.dna;
-        if (d.isStable) return; // ← GEN 1: ZERO physics. DONE.
+        const d = this.vDna || this.dna;
+        if (!d || d.isStable) return;
 
-        const t   = this.p.frameCount * 0.01 * d.g_speed;
-        const amp = d.g_amplitude;
-        if (this.vertices.length === 0) return;
+        const t   = this.p.frameCount * 0.01 * (d.g_speed || 1);
+        const amp = d.g_amplitude || 1;
 
         let cmX = 0, cmY = 0;
         this.vertices.forEach(v => { cmX += v.pos.x; cmY += v.pos.y; });
-        const center = this.p.createVector(cmX / this.vertices.length, cmY / this.vertices.length);
+        if (this.vertices.length > 0) { cmX /= this.vertices.length; cmY /= this.vertices.length; }
+        const center = this.p.createVector(cmX, cmY);
 
-        this.vertices.forEach((v, i) => {
+        for (let i = 0; i < this.vertices.length; i++) {
+            const v     = this.vertices[i];
             const force = this.p.createVector(0, 0);
-            switch (d.animType) {
-                case 'liquid':
-                    force.add(p5.Vector.fromAngle(
-                        this.p.noise(v.pos.x * d.v_noiseScale + t, v.pos.y * d.v_noiseScale) * this.p.TWO_PI * 4
-                    ).mult(amp));
-                    break;
-                case 'frenetic':
-                    force.add((Math.random()-0.5)*amp*5, (Math.random()-0.5)*amp*5);
-                    break;
-                case 'orbit': {
-                    const diff = p5.Vector.sub(v.pos, center);
-                    force.add(new p5.Vector(-diff.y, diff.x).normalize().mult(amp * 0.8));
-                    break;
-                }
-                case 'piston':
-                    force.x += Math.sin(t*2 + i*0.1) * amp * 2.5;
-                    force.y += Math.cos(t*1.5 + i*0.08) * amp;
-                    break;
-                case 'nebula': {
-                    const outward = p5.Vector.sub(v.pos, center).normalize();
-                    force.add(outward.mult(Math.sin(t*4 - p5.Vector.dist(v.pos, center)*0.04) * amp*2));
-                    break;
-                }
-                case 'mycelium': {
-                    const ang = Math.round(this.p.atan2(v.vel.y||0, v.vel.x||0.001) / (Math.PI/4)) * (Math.PI/4);
-                    force.add(Math.cos(ang)*amp*0.7, Math.sin(ang)*amp*0.7);
-                    break;
-                }
-                case 'vortex': {
-                    const perp = p5.Vector.sub(v.pos, center);
-                    const ang  = this.p.atan2(perp.y, perp.x) + 0.06;
-                    force.add(Math.cos(ang)*amp*0.8, Math.sin(ang)*amp*0.8);
-                    force.add(p5.Vector.sub(center, v.pos).normalize().mult(amp*0.15));
-                    break;
-                }
-                case 'shimmer':
-                    force.x += Math.sin(t*8 + i*0.4) * amp * 0.6;
-                    force.y += Math.cos(t*8 + i*0.4) * amp * 0.6;
-                    break;
+
+            if (d.g_fluid > 0.01) {
+                const a = this.p.noise(v.pos.x * 0.005 + t, v.pos.y * 0.005) * this.p.TWO_PI * 4;
+                force.add(p5.Vector.fromAngle(a).mult(d.g_fluid * amp));
             }
-            force.add(p5.Vector.sub(v.basePos, v.pos).mult(d.cohesion * 0.1));
+            if (d.g_orbit > 0.01) {
+                const toCenter = p5.Vector.sub(center, v.pos);
+                const perp     = this.p.createVector(-toCenter.y, toCenter.x).normalize();
+                force.add(perp.mult(d.g_orbit * amp));
+            }
+            if (d.g_pulse > 0.01) {
+                const outward = p5.Vector.sub(v.pos, center).normalize();
+                force.add(outward.mult(Math.sin(t * 8 - p5.Vector.dist(center, v.pos) * 0.02) * d.g_pulse * amp));
+            }
+            if (d.g_swarm > 0.01) {
+                const n = this.vertices[(i + 1) % this.vertices.length];
+                force.add(p5.Vector.sub(n.pos, v.pos).normalize().mult(d.g_swarm * amp));
+            }
+
             v.vel.add(force);
-            v.vel.mult(d.g_friction);
-            v.pos.add(v.vel);
-            if (d.cohesion < 0.75) {
-                const e = (0.75 - d.cohesion) * amp * 0.3;
-                v.basePos.add((Math.random()-0.5)*e, (Math.random()-0.5)*e);
+
+            if (d.g_mycelium > 0.01) {
+                const heading = v.vel.heading();
+                const snap    = Math.round(heading / this.p.HALF_PI) * this.p.HALF_PI;
+                v.vel.rotate((snap - heading) * d.g_mycelium * 0.6);
             }
-        });
+
+            // Spring back to base
+            v.vel.add(p5.Vector.sub(v.basePos, v.pos).mult((d.cohesion || 0.5) * 0.05));
+            v.vel.mult(0.85);
+            v.pos.add(v.vel);
+
+            // Base drift (erosion for low-cohesion)
+            if ((d.cohesion || 1) < 0.9) {
+                v.basePos.add(this.p.createVector(Math.random()-0.5, Math.random()-0.5).mult(0.5 * (1 - d.cohesion) * amp));
+            }
+        }
     }
 
     // ── RENDERING ──
     draw() {
-        const p  = this.p;
-        const d  = this.dna;
-        const t  = p.frameCount * 0.015 * (d.fxSpeed || 1);
+        const p    = this.p;
+        const d    = this.dna;
+        const t    = p.frameCount * 0.015 * (d.fxSpeed || 1);
         const pulse  = 0.5 + 0.5 * Math.sin(t);
         const pulse2 = 0.5 + 0.5 * Math.cos(t * 1.3);
 
@@ -245,244 +287,127 @@ class LivingTypo {
             G = clamp(G + Math.sin(t*0.5)*30, 0, 255);
             B = clamp(B + Math.sin(t*0.9)*30, 0, 255);
         }
-        const alphaF = d.v_alphaFill * (d.fxStyle === 'breathe' ? (0.55 + pulse * 0.45) : 1);
-        const alphaS = d.v_alphaStr  * (d.fxStyle === 'pulse'   ? (0.5 + pulse2 * 0.5) : 1);
+        const alphaF = (d.v_alphaFill || d.v_alphaF || 140) * (d.fxStyle === 'breathe' ? (0.55 + pulse * 0.45) : 1);
+        const alphaS = (d.v_alphaStr  || d.v_alphaS || 200) * (d.fxStyle === 'pulse'   ? (0.5 + pulse2 * 0.5) : 1);
 
-        // ══════════════════════════════════════════
-        //  GEN 1 — PURE CANVAS TEXT RENDERING
-        //  No vertices, no crossing lines, perfect
-        // ══════════════════════════════════════════
+        // ════════════════════════════════════════════
+        //  GEN 1 — PURE CANVAS TEXT (no vertex chaos)
+        // ════════════════════════════════════════════
         if (d.isStable && this.fontObj) {
             p.push();
             p.translate(this.x, this.y);
             p.textAlign(p.CENTER, p.CENTER);
             p.textFont(this.fontObj);
-            p.textSize(d.fontSize);
-
+            p.textSize(d.fontSize || 250);
             const ctx = p.drawingContext;
 
             switch (d.textStyle) {
                 case 'solid':
-                    p.noStroke();
-                    p.fill(R, G, B, alphaF);
-                    p.text(this.char, 0, 0);
-                    break;
-
+                    p.noStroke(); p.fill(R, G, B, alphaF); p.text(this.char, 0, 0); break;
                 case 'outline':
-                    p.noFill();
-                    p.stroke(R, G, B, alphaS);
-                    p.strokeWeight(d.v_strokeW);
-                    p.text(this.char, 0, 0);
-                    break;
-
+                    p.noFill(); p.stroke(R, G, B, alphaS); p.strokeWeight(d.v_strokeW); p.text(this.char, 0, 0); break;
                 case 'outline_thick':
-                    // Double outline
                     p.noFill();
-                    p.stroke(R, G, B, alphaS * 0.3);
-                    p.strokeWeight(d.v_strokeW * 4);
-                    p.text(this.char, 0, 0);
-                    p.stroke(R, G, B, alphaS);
-                    p.strokeWeight(d.v_strokeW);
-                    p.text(this.char, 0, 0);
+                    p.stroke(R, G, B, alphaS * 0.25); p.strokeWeight(d.v_strokeW * 4); p.text(this.char, 0, 0);
+                    p.stroke(R, G, B, alphaS); p.strokeWeight(d.v_strokeW); p.text(this.char, 0, 0);
                     break;
-
                 case 'dual':
-                    // Filled + stroke
-                    p.fill(R, G, B, alphaF * 0.6);
-                    p.stroke(R, G, B, alphaS);
-                    p.strokeWeight(d.v_strokeW * 0.6);
-                    p.text(this.char, 0, 0);
-                    break;
-
+                    p.fill(R, G, B, alphaF * 0.6); p.stroke(R, G, B, alphaS); p.strokeWeight(d.v_strokeW * 0.5); p.text(this.char, 0, 0); break;
                 case 'shadow':
-                    // Glow via shadow
-                    ctx.shadowColor = `rgba(${R},${G},${B},0.9)`;
-                    ctx.shadowBlur  = 20;
-                    p.noStroke();
-                    p.fill(R, G, B, alphaF);
-                    p.text(this.char, 0, 0);
-                    ctx.shadowBlur = 0;
-                    break;
-
+                    ctx.shadowColor = `rgba(${R},${G},${B},0.9)`; ctx.shadowBlur = 25;
+                    p.noStroke(); p.fill(R, G, B, alphaF); p.text(this.char, 0, 0);
+                    ctx.shadowBlur = 0; break;
                 case 'glow':
-                    // Multi-pass glow
                     for (let pass = 4; pass >= 0; pass--) {
-                        ctx.shadowColor = `rgba(${R},${G},${B},${0.8 - pass*0.12})`;
-                        ctx.shadowBlur  = 60 - pass * 10;
-                        p.noStroke();
-                        p.fill(R, G, B, pass === 0 ? alphaF : alphaF * 0.2);
-                        p.text(this.char, 0, 0);
+                        ctx.shadowColor = `rgba(${R},${G},${B},${0.8 - pass*0.12})`; ctx.shadowBlur = 60 - pass*10;
+                        p.noStroke(); p.fill(R, G, B, pass === 0 ? alphaF : alphaF * 0.15); p.text(this.char, 0, 0);
                     }
-                    ctx.shadowBlur = 0;
-                    break;
+                    ctx.shadowBlur = 0; break;
             }
-
             p.pop();
-            return; // Done — no vertex rendering for Gen 1
+            return;
         }
 
-        // ══════════════════════════════════════════
-        //  FUSION CHILDREN — point-cloud rendering
-        //  NEVER connect all vertices as one path
-        //  Each style is a totally different visual
-        // ══════════════════════════════════════════
-        const vs = this.vertices;
+        // ════════════════════════════════════════════
+        //  FUSION — ADDITIVE MULTI-PHENOTYPE RENDERING
+        //  Multiple phenotypes can layer simultaneously
+        //  This is the secret of v25.1's diversity
+        // ════════════════════════════════════════════
+        const vd = this.vDna || d;
+        const vs  = this.vertices;
         if (vs.length < 3) return;
 
         p.push();
         p.translate(this.x, this.y);
-        if (d.blend_additive) p.blendMode(p.ADD);
+        if (vd.blend_additive) p.blendMode(p.ADD);
 
-        // Minimal accent — no full-path curveVertex
-        if (d.accentStyle === 'futurist') {
-            p.stroke(R, G, B, 50); p.strokeWeight(0.5);
-            vs.forEach(v => { if (v.vel && v.vel.mag() > 0.3) p.line(v.pos.x, v.pos.y, v.pos.x-v.vel.x*8, v.pos.y-v.vel.y*8); });
-        }
-        if (d.accentStyle === 'glitch' && p.frameCount % 14 < 2) {
-            p.noStroke(); p.fill(R, G, B, 60);
-            const sub = vs.filter((_,i) => i % 20 === 0);
-            p.push(); p.translate((Math.random()-0.5)*30, 0);
-            p.beginShape(); sub.forEach(v => p.vertex(v.pos.x, v.pos.y)); p.endShape(p.CLOSE);
-            p.pop();
+        // PHENOTYPE 1: MEMBRANE (soft blobby fill, weighted by v_membrane)
+        if (vd.v_membrane > 0.05) {
+            p.noStroke();
+            p.fill(R, G, B, vd.v_alphaF * vd.v_membrane);
+            p.beginShape();
+            this.vertices.forEach(v => p.curveVertex(v.pos.x, v.pos.y));
+            p.endShape();
         }
 
-        // ── POINT-CLOUD DOMINANT STYLES ──
-        // Each one treats vertex positions as DATA, not as a connected path
-        switch (d.visualStyle) {
+        // PHENOTYPE 2: SPINE (continuous stroke trace, weighted by v_spine)
+        if (vd.v_spine > 0.05) {
+            p.noFill();
+            p.stroke(R, G, B, vd.v_alphaS * vd.v_spine);
+            p.strokeWeight(vd.v_strokeW * vd.v_spine);
+            if (vd.v_dashA > 2) p.drawingContext.setLineDash([vd.v_dashA, vd.v_dashB]);
+            p.beginShape();
+            this.vertices.forEach(v => p.vertex(v.pos.x, v.pos.y));
+            p.endShape();
+            p.drawingContext.setLineDash([]);
+        }
 
-            case 'membrane':
-                // Soft gaussian blob: overlapping transparent circles = organic cloud
-                p.noStroke();
-                p.fill(R, G, B, Math.min(alphaF / 8, 22));
-                vs.forEach(v => p.circle(v.pos.x, v.pos.y, d.v_strokeW * 7));
-                // Bright dots on top
-                p.fill(R, G, B, Math.min(alphaF, 190));
-                vs.forEach((v, i) => { if (i % 7 === 0) p.circle(v.pos.x, v.pos.y, d.v_strokeW * 0.9); });
-                break;
-
-            case 'outline':
-                // Simplified skeleton: only every Nth point drawn as a polygon
-                {
-                    const step = Math.max(6, Math.floor(vs.length / 40));
-                    const pts  = vs.filter((_, i) => i % step === 0);
-                    p.noFill(); p.stroke(R, G, B, alphaS); p.strokeWeight(d.v_strokeW);
-                    if (d.v_dashGap > 0) p.drawingContext.setLineDash([d.v_strokeW*2, d.v_dashGap]);
-                    p.beginShape(); pts.forEach(v => p.curveVertex(v.pos.x, v.pos.y)); p.endShape(p.CLOSE);
-                    p.drawingContext.setLineDash([]);
-                }
-                break;
-
-            case 'neural':
-                // Connection network — proximity-based links, opacity by distance
-                {
-                    const lim = 55;
-                    for (let i = 0; i < vs.length; i += 6) {
-                        for (let j = i + 1; j < vs.length; j += 10) {
-                            const d2 = vs[i].pos.dist(vs[j].pos);
-                            if (d2 < lim) {
-                                p.stroke(R, G, B, alphaS * (1 - d2/lim) * 0.55); p.strokeWeight(0.7);
-                                p.line(vs[i].pos.x, vs[i].pos.y, vs[j].pos.x, vs[j].pos.y);
-                            }
-                        }
-                    }
-                    // Node dots
-                    p.noStroke(); p.fill(R, G, B, alphaS);
-                    vs.forEach((v, i) => { if (i % 14 === 0) p.circle(v.pos.x, v.pos.y, 2.5); });
-                }
-                break;
-
-            case 'spores':
-                // Dot colony — varying sizes, bacterial feel
-                p.noStroke();
-                vs.forEach((v, i) => {
-                    if (i % 3 === 0) {
-                        const sz = d.v_strokeW * rand(0.4, 1.9);
-                        p.fill(R, G, B, alphaS * rand(0.3, 1.0));
-                        p.circle(v.pos.x, v.pos.y, sz);
-                    }
-                });
-                break;
-
-            case 'contour_fill':
-                // Radial streak field — each vertex draws a line toward its centroid
-                {
-                    let cmX = 0, cmY = 0;
-                    vs.forEach(v => { cmX += v.pos.x; cmY += v.pos.y; });
-                    const cx = cmX / vs.length, cy = cmY / vs.length;
-                    p.strokeWeight(d.v_strokeW * 0.4);
-                    vs.forEach((v, i) => {
-                        if (i % 5 === 0) {
-                            const mix = rand(0.1, 0.65);
-                            p.stroke(R, G, B, alphaS * rand(0.2, 0.6));
-                            p.line(v.pos.x, v.pos.y, cx + (v.pos.x-cx)*mix, cy + (v.pos.y-cy)*mix);
-                        }
-                    });
-                    // Accent dots
-                    p.noStroke(); p.fill(R, G, B, alphaF * 0.7);
-                    vs.forEach((v, i) => { if (i % 9 === 0) p.circle(v.pos.x, v.pos.y, d.v_strokeW * 1.4); });
-                }
-                break;
-
-            case 'glowing':
-                // Concentric rings (simplified polygon at different scales)
-                {
-                    const step = Math.max(8, Math.floor(vs.length / 30));
-                    const pts  = vs.filter((_, i) => i % step === 0);
-                    for (let sc = 0.7; sc <= 1.4; sc += 0.15) {
-                        const a = alphaS * (1 - Math.abs(sc - 1.0) * 1.5) * 0.45;
-                        p.noFill(); p.stroke(R, G, B, a); p.strokeWeight(d.v_strokeW * (1 - Math.abs(sc-1)*1.3));
-                        p.push(); p.scale(sc);
-                        p.beginShape(); pts.forEach(v => p.curveVertex(v.pos.x, v.pos.y)); p.endShape(p.CLOSE);
-                        p.pop();
-                    }
-                    // Glowing dots
-                    const ctx = p.drawingContext;
-                    ctx.shadowColor = `rgba(${R},${G},${B},0.85)`; ctx.shadowBlur = 10;
-                    p.noStroke(); p.fill(R, G, B, alphaF);
-                    vs.forEach((v, i) => { if (i % 10 === 0) p.circle(v.pos.x, v.pos.y, 3.5); });
-                    ctx.shadowBlur = 0;
-                }
-                break;
-
-            case 'fragmented':
-                // Shattered triangles — crystal / shatter effect
-                p.noStroke();
-                for (let i = 0; i < vs.length - 8; i += 14) {
-                    const shade = rand(0.4, 1.0);
-                    p.fill(R*shade, G*shade, B*shade, alphaF * rand(0.5, 1.0));
-                    p.triangle(
-                        vs[i].pos.x, vs[i].pos.y,
-                        vs[i+1].pos.x, vs[i+1].pos.y,
-                        vs[Math.min(i+7, vs.length-1)].pos.x, vs[Math.min(i+7, vs.length-1)].pos.y
-                    );
-                }
-                // Thin edges
-                p.noFill(); p.stroke(R, G, B, alphaS * 0.3); p.strokeWeight(0.5);
-                for (let i = 0; i < vs.length - 1; i += 20) {
-                    p.line(vs[i].pos.x, vs[i].pos.y, vs[i+1].pos.x, vs[i+1].pos.y);
-                }
-                break;
-
-            case 'wireframe':
-                // Stride lattice — connect vertex[i] to vertex[i+N] for two strides
-                {
-                    const s1 = Math.max(3, Math.floor(vs.length / 30));
-                    const s2 = Math.max(7, Math.floor(vs.length / 12));
-                    p.stroke(R, G, B, alphaS * 0.55); p.strokeWeight(d.v_strokeW * 0.35);
-                    for (let i = 0; i < vs.length; i += 4) {
-                        p.line(vs[i].pos.x, vs[i].pos.y, vs[(i+s1)%vs.length].pos.x, vs[(i+s1)%vs.length].pos.y);
-                    }
-                    p.stroke(R, G, B, alphaS * 0.22); p.strokeWeight(d.v_strokeW * 0.6);
-                    for (let i = 0; i < vs.length; i += 8) {
-                        p.line(vs[i].pos.x, vs[i].pos.y, vs[(i+s2)%vs.length].pos.x, vs[(i+s2)%vs.length].pos.y);
+        // PHENOTYPE 3: NEURAL (proximity mesh, weighted by v_neural)
+        if (vd.v_neural > 0.05) {
+            p.stroke(R, G, B, vd.v_alphaS * vd.v_neural * 0.6);
+            p.strokeWeight(Math.max(0.2, vd.v_strokeW * 0.5));
+            const distLimit = vd.v_neural * 120;
+            if (vd.v_dashA > 5) p.drawingContext.setLineDash([vd.v_dashA / 2, vd.v_dashB]);
+            for (let i = 0; i < vs.length; i += 2) {
+                for (let j = i + 1; j < vs.length; j += 4) {
+                    if (vs[i].pos.dist(vs[j].pos) < distLimit) {
+                        p.line(vs[i].pos.x, vs[i].pos.y, vs[j].pos.x, vs[j].pos.y);
                     }
                 }
-                break;
+            }
+            p.drawingContext.setLineDash([]);
+        }
+
+        // PHENOTYPE 4: SHARP (crystal shards, weighted by v_sharp)
+        if (vd.v_sharp > 0.05) {
+            p.noStroke();
+            p.fill(R, G, B, vd.v_alphaF * vd.v_sharp);
+            p.beginShape(p.TRIANGLES);
+            for (let i = 0; i < vs.length - 2; i += 3) {
+                if (vs[i].pos.dist(vs[i+1].pos) < vd.v_sharp * 150) {
+                    p.vertex(vs[i].pos.x,   vs[i].pos.y);
+                    p.vertex(vs[i+1].pos.x, vs[i+1].pos.y);
+                    p.vertex(vs[i+2].pos.x, vs[i+2].pos.y);
+                }
+            }
+            p.endShape();
+        }
+
+        // PHENOTYPE 5: SPORES (floating nodes, weighted by v_spores)
+        if (vd.v_spores > 0.05) {
+            p.noStroke();
+            p.fill(R, G, B, vd.v_alphaS * vd.v_spores);
+            const sz = vd.v_spores * 15;
+            for (const v of vs) {
+                p.push(); p.translate(v.pos.x, v.pos.y); p.rotate(v.vel?.heading() || 0);
+                if (vd.g_mycelium > 0.5) p.rect(0, 0, sz, sz);
+                else p.circle(0, 0, sz);
+                p.pop();
+            }
         }
 
         p.blendMode(p.BLEND);
         p.pop();
-
     }
 }
 
@@ -514,20 +439,26 @@ class TypoUniverse {
     }
 
     checkFusion(moved) {
-        const other = APP_STATE.atoms.find(o => o !== moved && Math.hypot(o.x-moved.x, o.y-moved.y) < 220);
+        const other = APP_STATE.atoms.find(o => o !== moved && Math.hypot(o.x - moved.x, o.y - moved.y) < 200);
         if (!other) return;
         this.history.push([...APP_STATE.atoms]);
         const childGen = Math.max(moved.gen, other.gen) + 1;
+
+        // Fuse the VERTEX genomes (not display genomes)
+        const fusedVDna = Genome.fuse(moved.vDna || moved.dna, other.vDna || other.dna);
+        fusedVDna.isStable = false;
+
+        // Sync colors to fused dna
         const child = new LivingTypo(this.p, '?', null, {
-            x: (moved.x+other.x)/2, y: (moved.y+other.y)/2,
-            char: '?', fontName: `${moved.fontName}×${other.fontName}`,
-            gen: childGen,
-            dna: Genome.fuse(moved.dna, other.dna, childGen),
-            vertices: [...moved.vertices, ...other.vertices],
-            fontObj: moved.fontObj || other.fontObj
+            x: (moved.x + other.x) / 2,
+            y: (moved.y + other.y) / 2,
+            char: '?',
+            fontName: `${moved.fontName} × ${other.fontName}`,
+            gen:  childGen,
+            dna:  fusedVDna,
+            vertices: [...moved.vertices, ...other.vertices]
         });
-        while (child.vertices.length > 900) child.vertices.splice(Math.floor(Math.random()*child.vertices.length),1);
-        APP_STATE.atoms = APP_STATE.atoms.filter(a => a!==moved && a!==other);
+        APP_STATE.atoms = APP_STATE.atoms.filter(a => a !== moved && a !== other);
         APP_STATE.atoms.push(child);
         this.updateMoleculeList();
     }
@@ -548,42 +479,51 @@ class TypoUniverse {
             overlay.classList.toggle('active');
             toggle.innerText = overlay.classList.contains('active') ? '✕' : '☰';
         });
-        let dragged=null, panning=false, lx=0, ly=0;
-        const toWorld = (cx,cy) => ({
-            wx: (cx - this.p.width/2 - APP_STATE.view.x) / APP_STATE.view.zoom,
-            wy: (cy - this.p.height/2 - APP_STATE.view.y) / APP_STATE.view.zoom
+
+        let dragged = null, panning = false, lx = 0, ly = 0;
+        const toWorld = (cx, cy) => ({
+            wx: (cx - this.p.width  / 2 - APP_STATE.view.x) / APP_STATE.view.zoom,
+            wy: (cy - this.p.height / 2 - APP_STATE.view.y) / APP_STATE.view.zoom
         });
-        const onStart = (cx,cy,target) => {
+        const onStart = (cx, cy, target) => {
             if (target.closest('.ui-overlay')) return;
-            const {wx,wy} = toWorld(cx,cy);
-            dragged = APP_STATE.atoms.find(a => Math.hypot(a.x-wx, a.y-wy) < 320/APP_STATE.view.zoom) || null;
-            if (!dragged) { panning=true; lx=cx; ly=cy; }
+            const { wx, wy } = toWorld(cx, cy);
+            dragged = APP_STATE.atoms.find(a => Math.hypot(a.x - wx, a.y - wy) < 300 / APP_STATE.view.zoom) || null;
+            if (!dragged) { panning = true; lx = cx; ly = cy; }
         };
-        const onMove = (cx,cy,dx,dy) => {
-            if (dragged) { dragged.x+=dx/APP_STATE.view.zoom; dragged.y+=dy/APP_STATE.view.zoom; }
+        const onMove = (cx, cy, dx, dy) => {
+            if (dragged) { dragged.x += dx / APP_STATE.view.zoom; dragged.y += dy / APP_STATE.view.zoom; }
             else if (panning) {
-                APP_STATE.view.targetX+=(cx-lx); APP_STATE.view.x=APP_STATE.view.targetX;
-                APP_STATE.view.targetY+=(cy-ly); APP_STATE.view.y=APP_STATE.view.targetY;
-                lx=cx; ly=cy;
+                APP_STATE.view.targetX += (cx - lx); APP_STATE.view.x = APP_STATE.view.targetX;
+                APP_STATE.view.targetY += (cy - ly); APP_STATE.view.y = APP_STATE.view.targetY;
+                lx = cx; ly = cy;
             }
         };
-        const onEnd = () => { if (dragged) this.checkFusion(dragged); dragged=null; panning=false; };
+        const onEnd = () => { if (dragged) this.checkFusion(dragged); dragged = null; panning = false; };
+
         window.addEventListener('mousedown',  e => onStart(e.clientX, e.clientY, e.target));
         window.addEventListener('mousemove',  e => onMove(e.clientX, e.clientY, e.movementX, e.movementY));
         window.addEventListener('mouseup',    onEnd);
-        window.addEventListener('touchstart', e => { const t=e.touches[0]; onStart(t.clientX, t.clientY, e.target); if(dragged) e.preventDefault(); }, {passive:false});
-        window.addEventListener('touchmove',  e => { const t=e.touches[0]; onMove(t.clientX, t.clientY, t.clientX-lx, t.clientY-ly); lx=t.clientX; ly=t.clientY; if(dragged||panning) e.preventDefault(); }, {passive:false});
+        window.addEventListener('touchstart', e => { const t=e.touches[0]; onStart(t.clientX,t.clientY,e.target); if(dragged) e.preventDefault(); }, {passive:false});
+        window.addEventListener('touchmove',  e => { const t=e.touches[0]; onMove(t.clientX,t.clientY,t.clientX-lx,t.clientY-ly); lx=t.clientX; ly=t.clientY; if(dragged||panning) e.preventDefault(); }, {passive:false});
         window.addEventListener('touchend',   onEnd);
-        window.addEventListener('wheel', e => { e.preventDefault(); APP_STATE.view.zoom=Math.max(0.1,Math.min(6,APP_STATE.view.zoom*(e.deltaY>0?0.92:1.09))); }, {passive:false});
+        window.addEventListener('wheel', e => {
+            e.preventDefault();
+            APP_STATE.view.zoom = Math.max(0.1, Math.min(6, APP_STATE.view.zoom * (e.deltaY > 0 ? 0.92 : 1.09)));
+        }, { passive: false });
     }
 
     updateMoleculeList() {
         const ml = document.getElementById('molecule-list');
         if (!ml) return;
         ml.innerHTML = APP_STATE.atoms.map(a => {
-            const R=Math.round(a.dna.colorR), G=Math.round(a.dna.colorG), B=Math.round(a.dna.colorB);
-            const fusion = !a.dna.isStable;
-            const sub = fusion ? `${a.dna.visualStyle} · ${a.dna.animType}` : `${a.dna.textStyle} · ${a.dna.fxStyle}`;
+            const d = a.dna;
+            const R = Math.round(d.colorR), G = Math.round(d.colorG), B = Math.round(d.colorB);
+            const fusion = !d.isStable;
+            // Show phenotype weights for fusion children
+            let sub = fusion
+                ? `M:${((a.vDna||d).v_membrane||0).toFixed(1)} N:${((a.vDna||d).v_neural||0).toFixed(1)} Sp:${((a.vDna||d).v_spine||0).toFixed(1)}`
+                : `${d.textStyle} · ${d.fxStyle}`;
             return `<li class="molecule-item" data-atom-id="${a.atomId}"
                 style="cursor:pointer;display:flex;align-items:center;gap:10px;padding:8px 6px;border-bottom:1px solid rgba(255,255,255,0.05);transition:background 0.2s"
                 onmouseenter="this.style.background='rgba(255,255,255,0.07)'"
@@ -593,7 +533,7 @@ class TypoUniverse {
                     <div style="font-weight:700;font-size:0.82rem;color:${fusion?`rgb(${R},${G},${B})`:'#eee'}">
                         ${fusion?'⚡':'○'} [${a.char}] G${a.gen}
                     </div>
-                    <div style="opacity:0.4;font-size:0.6rem;margin-top:2px">${sub}</div>
+                    <div style="opacity:0.4;font-size:0.58rem;margin-top:2px">${sub}</div>
                 </div>
             </li>`;
         }).join('');
@@ -614,17 +554,17 @@ function injectExportUI(p) {
     </div>`;
     parent.appendChild(div);
     document.getElementById('btn-snap').onclick = () => p.saveCanvas('typolab','png');
-    let recorder, chunks=[];
+    let recorder, chunks = [];
     document.getElementById('btn-vid').onclick = () => {
-        if (APP_STATE.isRecording) return; APP_STATE.isRecording=true;
-        try { recorder=new MediaRecorder(document.querySelector('canvas').captureStream(60),{mimeType:'video/webm'}); }
-        catch(_){ APP_STATE.isRecording=false; return; }
+        if (APP_STATE.isRecording) return; APP_STATE.isRecording = true;
+        try { recorder = new MediaRecorder(document.querySelector('canvas').captureStream(60), {mimeType:'video/webm'}); }
+        catch (_) { APP_STATE.isRecording = false; return; }
         recorder.ondataavailable = e => chunks.push(e.data);
         recorder.onstop = () => {
-            const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob(chunks,{type:'video/webm'}));
-            a.download='typolab.webm'; a.click(); chunks=[]; APP_STATE.isRecording=false;
+            const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(chunks, {type:'video/webm'}));
+            a.download = 'typolab.webm'; a.click(); chunks = []; APP_STATE.isRecording = false;
         };
-        recorder.start(); setTimeout(()=>recorder.stop(),4000);
+        recorder.start(); setTimeout(() => recorder.stop(), 4000);
     };
 }
 
