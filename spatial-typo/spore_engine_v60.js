@@ -103,18 +103,6 @@ class BioGenome {
     }
 }
 
-            v_speed: rand(0.5, 2.5),
-            alpha: 255,
-            cohesion: rand(0.1, 0.5),
-            breathing: rand(0.01, 0.05),
-            anim_offset: new p5.Vector(0,0),
-            colorR: Math.random() * 255,
-            colorG: Math.random() * 255,
-            colorB: Math.random() * 255
-        };
-    }
-}
-
 // ═══════════════════════════════════════════════════════════
 // LIVING ORGANISM
 // ═══════════════════════════════════════════════════════════
