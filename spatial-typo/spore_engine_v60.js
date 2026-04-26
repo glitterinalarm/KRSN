@@ -1,45 +1,47 @@
-// Typography Lab - Spore Engine v67.0
-// THE ENCYCLOPEDIA OF SPECIES: STATIC, DIVERSE & RADICAL. NO MORE WATER EFFECT.
+// Typography Lab - Spore Engine v68.0
+// THE SILHOUETTE SALVATION: PROTECTING THE TYPOGRAPHIC SOUL. NO MORE CENTER CLUTTER.
 
-console.log("TypoLab v67.0 — THE ENCYCLOPEDIA UPDATE");
+console.log("TypoLab v68.0 — TYPOGRAPHIC INTEGRITY RESTORED");
 
 let _uid = 0;
 let GLOBAL_FONT = null;
-const APP_STATE = { atoms: [], view: { x: 0, y: 0, zoom: 0.6 } };
+const APP_STATE = { atoms: [], view: { x: 0, y: 0, zoom: 0.7 } };
 const pick = (arr) => arr[arr.length * Math.random() | 0];
 
 // ═══════════════════════════════════════════════════════════════
-// VERTEX GEN
+// VERTEX GEN: PRECISE CENTERING
 // ═══════════════════════════════════════════════════════════════
 function getVertices(p, char) {
     if(GLOBAL_FONT) {
         try {
-            const pts = GLOBAL_FONT.textToPoints(char, -80, 80, 180, { sampleFactor: 0.35 });
-            if(pts && pts.length > 20) return pts.map(pt => ({pos:p.createVector(pt.x,pt.y), base:p.createVector(pt.x,pt.y)}));
+            // Precise bounds centering
+            const fSize = 200;
+            const pts = GLOBAL_FONT.textToPoints(char, 0, 0, fSize, { sampleFactor: 0.4 });
+            if(pts && pts.length > 20) {
+                let minX=Infinity, maxX=-Infinity, minY=Infinity, maxY=-Infinity;
+                pts.forEach(pt=>{ minX=Math.min(minX,pt.x); maxX=Math.max(maxX,pt.x); minY=Math.min(minY,pt.y); maxY=Math.max(maxY,pt.y); });
+                const offX = (minX+maxX)/2; const offY = (minY+maxY)/2;
+                return pts.map(pt => ({pos:p.createVector(pt.x-offX,pt.y-offY), base:p.createVector(pt.x-offX,pt.y-offY), ordered: true}));
+            }
         } catch(e) {}
     }
-    const sz=120; const pg=p.createGraphics(sz,sz);
+    const sz=150; const pg=p.createGraphics(sz,sz);
     pg.background(0); pg.fill(255); pg.textAlign(p.CENTER, p.CENTER); pg.textSize(sz*0.8); pg.text(char,sz/2,sz/2);
     pg.loadPixels(); const pts=[];
     for(let y=0;y<sz;y+=2)for(let x=0;x<sz;x+=2)if(pg.pixels[(x+y*sz)*4]>127)pts.push({x:x-sz/2,y:y-sz/2});
-    return pts.map(pt=>({pos:p.createVector(pt.x*1.5,pt.y*1.5), base:p.createVector(pt.x*1.5,pt.y*1.5)}));
+    return pts.map(pt=>({pos:p.createVector(pt.x*1.5,pt.y*1.5), base:p.createVector(pt.x*1.5,pt.y*1.5), ordered: false}));
 }
 
 // ═══════════════════════════════════════════════════════════════
-// GENOME: ALL FAMILIES DEFINED
+// GENOME
 // ═══════════════════════════════════════════════════════════════
 class BioGenome {
-    static FAMILIES = [
-        'NEON', 'CRYSTAL', 'VORONOI', 'MECHANIC', 'VOXEL', 'CARBON', 'GLITCH', 'DNA_HELIX',
-        'BUBBLE', 'PLASMA', 'NEURAL', 'QUANTUM', 'SCANLINE', 'OP_ART', 'MANDELBROT', 'INK',
-        'BRUSH', 'CHROME', 'VECTOR', 'SPIRAL', 'GRID', 'BINARY', 'FIBONACCI', 'HOLOGRAPH'
-    ];
+    static FAMILIES = ['NEON', 'CHROME', 'CRYSTAL', 'NEURAL', 'BUBBLE', 'GLITCH', 'SCANLINE', 'QUANTUM', 'OP_ART', 'INK', 'MECHANIC', 'DNA_HELIX', 'MANDELBROT', 'PRISM'];
     static createRandom(forcedType = null) {
-        const type = forcedType || pick(this.FAMILIES);
         return {
-            type,
-            color: [Math.random()*155+100, Math.random()*155+100, Math.random()*155+100],
-            sw: Math.random()*8+2,
+            type: forcedType || pick(this.FAMILIES),
+            color: [rand(120,255), rand(120,255), rand(120,255)],
+            sw: rand(3, 8),
             seed: Math.random()*1000
         };
     }
@@ -57,61 +59,53 @@ class LivingTypo {
         this.vertices = []; this.rebuild();
     }
     rebuild() { this.vertices = getVertices(this.p, this.char); }
-    update() { 
-        // NO MOVEMENT BY DEFAULT IN v67.0 - ELEGANT STATIC SCULPTURE
-    }
+    update() { }
     draw() {
         const p=this.p; const d=this.dna; const v=this.vertices;
         p.push(); p.translate(this.x, this.y);
-        p.stroke(d.color[0], d.color[1], d.color[2]); p.strokeWeight(d.sw); p.noFill();
+        p.stroke(d.color[0], d.color[1], d.color[2]); p.noFill();
         
+        // MAPPING DES FAMILLES - CLEAN & LOCAL ONLY
         switch(d.type) {
             case 'NEON':
-                p.strokeWeight(d.sw*3); p.stroke(d.color[0],d.color[1],d.color[2],40); this.path(p,v);
+                p.strokeWeight(d.sw*3); p.stroke(d.color[0],d.color[1],d.color[2],30); this.path(p,v);
                 p.strokeWeight(d.sw); p.stroke(255); this.path(p,v);
                 break;
-            case 'CRYSTAL':
-                p.strokeWeight(1); p.fill(d.color[0],d.color[1],d.color[2],60);
-                for(let i=0; i<v.length-5; i+=10) p.triangle(v[i].pos.x, v[i].pos.y, v[i+5].pos.x, v[i+5].pos.y, 0,0);
+            case 'CHROME':
+                p.strokeWeight(d.sw); p.stroke(255); this.path(p,v);
+                p.strokeWeight(1); p.stroke(0); this.path(p,v);
                 break;
-            case 'VORONOI':
-                p.strokeWeight(1.5); for(let i=0; i<v.length-2; i+=6) { p.fill(d.color[0],d.color[1],d.color[2],30); p.triangle(v[i].pos.x, v[i].pos.y, v[i+1].pos.x, v[i+1].pos.y, v[i+2].pos.x, v[i+2].pos.y); }
+            case 'CRYSTAL':
+                p.strokeWeight(1); p.fill(d.color[0],d.color[1],d.color[2],40);
+                for(let i=0; i<v.length-2; i+=4) p.triangle(v[i].pos.x, v[i].pos.y, v[i+1].pos.x, v[i+1].pos.y, v[i+2].pos.x, v[i+2].pos.y);
                 break;
             case 'BUBBLE':
-                p.noStroke(); p.fill(d.color[0],d.color[1],d.color[2],180);
+                p.noStroke(); p.fill(d.color[0],d.color[1],d.color[2],200);
                 v.forEach((vt,i)=>{ if(i%8===0) p.circle(vt.pos.x, vt.pos.y, d.sw*4); });
                 break;
-            case 'MECHANIC':
-                p.strokeWeight(2); v.forEach((vt,i)=>{ if(i%15===0) { p.rect(vt.pos.x, vt.pos.y, 10, 10); p.line(vt.pos.x, vt.pos.y, 0, 0); } });
+            case 'NEURAL':
+                p.strokeWeight(0.5); for(let i=0; i<v.length; i+=15) for(let j=i+15; j<v.length; j+=40) if(p.dist(v[i].pos.x,v[i].pos.y,v[j].pos.x,v[j].pos.y)<40) p.line(v[i].pos.x,v[i].pos.y,v[j].pos.x,v[j].pos.y);
                 break;
             case 'GLITCH':
-                p.strokeWeight(d.sw); v.forEach((vt,i)=>{ if(p.random(100)>95) { p.stroke(255); p.line(vt.pos.x-50, vt.pos.y, vt.pos.x+50, vt.pos.y); } p.stroke(d.color[0],d.color[1],d.color[2]); p.point(vt.pos.x, vt.pos.y); });
-                break;
-            case 'DNA_HELIX':
-                for(let i=0; i<v.length-1; i+=12) { p.strokeWeight(1); p.line(v[i].pos.x-20, v[i].pos.y, v[i].pos.x+20, v[i].pos.y); p.fill(255); p.circle(v[i].pos.x-20, v[i].pos.y, 6); p.circle(v[i].pos.x+20, v[i].pos.y, 6); }
-                break;
-            case 'NEURAL':
-                p.strokeWeight(0.5); for(let i=0; i<v.length; i+=15) for(let j=i+15; j<v.length; j+=40) if(p.dist(v[i].pos.x, v[i].pos.y, v[j].pos.x, v[j].pos.y)<50) p.line(v[i].pos.x, v[i].pos.y, v[j].pos.x, v[j].pos.y);
-                break;
-            case 'QUANTUM':
-                p.strokeWeight(1); v.forEach(vt=>p.line(vt.pos.x, vt.pos.y, vt.pos.x+p.random(-30,30), vt.pos.y+p.random(-30,30)));
-                break;
-            case 'OP_ART':
-                p.strokeWeight(1); for(let k=0; k<6; k++) { p.push(); p.scale(1+k*0.1); this.path(p,v); p.pop(); }
+                p.strokeWeight(d.sw); v.forEach(vt=>{ if(p.random(100)>96) p.line(vt.pos.x-40, vt.pos.y, vt.pos.x+40, vt.pos.y); p.point(vt.pos.x, vt.pos.y); });
                 break;
             case 'SCANLINE':
-                p.strokeWeight(3); v.forEach(vt=>{ if(Math.floor(vt.pos.y/10)%2==0) p.line(vt.pos.x-60, vt.pos.y, vt.pos.x+60, vt.pos.y); });
+                p.strokeWeight(d.sw); v.forEach(vt=>{ if(Math.floor(vt.pos.y/12)%2==0) p.line(vt.pos.x-40, vt.pos.y, vt.pos.x+40, vt.pos.y); });
                 break;
-            case 'MANDELBROT':
-                for(let k=1; k<5; k++){ p.push(); p.translate(k*10, k*5); p.strokeWeight(d.sw/k); this.path(p,v); p.pop(); }
+            case 'QUANTUM':
+                p.strokeWeight(0.8); v.forEach(vt=>p.line(vt.pos.x, vt.pos.y, vt.pos.x+p.random(-30,30), vt.pos.y+p.random(-30,30)));
                 break;
-            case 'INK':
-                p.strokeWeight(d.sw*2); p.beginShape(); v.forEach(vt=>p.curveVertex(vt.pos.x+p.noise(vt.pos.y*0.1)*20, vt.pos.y)); p.endShape();
+            case 'MECHANIC':
+                p.strokeWeight(1); v.forEach((vt,i)=>{ if(i%20===0) { p.rect(vt.pos.x, vt.pos.y, 8, 8); p.line(vt.pos.x, vt.pos.y, vt.pos.x+20, vt.pos.y+20); } });
+                break;
+            case 'DNA_HELIX':
+                for(let i=0; i<v.length-1; i+=12) { p.strokeWeight(1); p.line(v[i].pos.x-15, v[i].pos.y, v[i].pos.x+15, v[i].pos.y); p.fill(255); p.circle(v[i].pos.x-15, v[i].pos.y, 5); }
+                break;
+            case 'OP_ART':
+                p.strokeWeight(1); for(let k=0; k<5; k++) { p.push(); p.scale(1+k*0.08); this.path(p,v); p.pop(); }
                 break;
             default:
-                // UNIQUE DEFAULT: MULTI-STROKE BOLD
                 p.strokeWeight(d.sw); this.path(p,v);
-                p.strokeWeight(1); p.stroke(255,100); this.path(p,v);
         }
         p.pop();
     }
@@ -119,7 +113,7 @@ class LivingTypo {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// UNIVERSE: THE ENCYCLOPEDIA GRID
+// UNIVERSE
 // ═══════════════════════════════════════════════════════════════
 class TypoUniverse {
     constructor(p) { this.p=p; this.initUI(); this.initNav(); }
@@ -170,11 +164,10 @@ const sketch = (p) => {
         TU = new TypoUniverse(p);
         p.loadFont('https://fonts.gstatic.com/s/outfit/v11/QGYtz_MV_NIiAd7uPTufnjU.ttf', (f)=>{GLOBAL_FONT=f; APP_STATE.atoms.forEach(a=>a.rebuild());});
         
-        // v67.0: THE ENCYCLOPEDIA GRID (24 Species at once)
         const fams = BioGenome.FAMILIES;
-        for(let i=0; i<24; i++) {
+        for(let i=0; i<18; i++) {
             let row = Math.floor(i/6); let col = i%6;
-            TU.addAtom((col-2.5)*300, (row-1.5)*350, pick("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), BioGenome.createRandom(fams[i%fams.length]));
+            TU.addAtom((col-2.5)*300, (row-1)*350, pick("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), BioGenome.createRandom(fams[i%fams.length]));
         }
         document.getElementById('loader').style.display='none';
     };
@@ -183,8 +176,8 @@ const sketch = (p) => {
         p.translate(p.width/2+APP_STATE.view.x, p.height/2+APP_STATE.view.y); p.scale(APP_STATE.view.zoom);
         APP_STATE.atoms.forEach(a=>{ a.update(); a.draw(); });
         p.pop();
-        p.resetMatrix(); p.fill(255,60); p.textSize(10);
-        p.text(`v67.0 | SPECIES ENCYCLOPEDIA | STATIC SCULPTURE MODE`, 20, p.height-20);
+        p.resetMatrix(); p.fill(255,40); p.textSize(10);
+        p.text(`v68.0 | THE SILHOUETTE SALVATION | TYPOGRAPHIC INTEGRITY FOUND`, 20, p.height-20);
     };
 };
 new p5(sketch);
