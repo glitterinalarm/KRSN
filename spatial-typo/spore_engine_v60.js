@@ -8,7 +8,7 @@ let _uid = 0;
 
 const APP_STATE = {
     atoms: [],
-    view: { x: 0, y: 0, zoom: 1, targetX: 0, targetY: 0 },
+    view: { x: 0, y: 0, zoom: 1, targetX: 0, targetY: 0, targetZoom: 1 },
     isRecording: false
 };
 
@@ -927,6 +927,12 @@ class TypoUniverse {
     initUI() {
         document.getElementById('add-atom').onclick = () => this.addAtom();
         document.getElementById('undo-btn').onclick = () => { if (this.history.length) APP_STATE.atoms = this.history.pop(); this.updateMoleculeList(); };
+        
+        const toggle = document.getElementById('sidebar-toggle');
+        const container = document.getElementById('ui-container');
+        if (toggle && container) {
+            toggle.onclick = () => container.classList.toggle('collapsed');
+        }
     }
 
     initInteraction() {
@@ -952,14 +958,24 @@ class TypoUniverse {
 
     updateMoleculeList() {
         const ml = document.getElementById('molecule-list');
-        if (ml) ml.innerHTML = APP_STATE.atoms.map(a => `
-            <li class="molecule-item" data-atom-id="${a.atomId}">
+        if (!ml) return;
+        ml.innerHTML = APP_STATE.atoms.map(a => `
+            <li class="molecule-item" onclick="window.focusAtom(${a.atomId})">
                 <span class="status-dot" style="background:rgb(${a.dna.colorR},${a.dna.colorG},${a.dna.colorB})"></span>
                 <div class="molecule-info"><div class="name">${a.char} [${a.dna.type}]</div><div class="meta">GEN ${a.gen} | ${a.dna.material}</div></div>
             </li>
         `).join('');
     }
 }
+
+window.focusAtom = (id) => {
+    const atom = APP_STATE.atoms.find(a => a.atomId === id);
+    if (atom) {
+        APP_STATE.view.targetX = -atom.x;
+        APP_STATE.view.targetY = -atom.y;
+        APP_STATE.view.targetZoom = 3.0; // Deep zoom
+    }
+};
 
 const sketch = (p) => {
     let TU;
@@ -977,9 +993,17 @@ const sketch = (p) => {
     };
     p.draw = () => {
         p.background(5, 5, 10);
+        
+        // Smooth camera lerping
+        APP_STATE.view.x = p.lerp(APP_STATE.view.x, APP_STATE.view.targetX, 0.1);
+        APP_STATE.view.y = p.lerp(APP_STATE.view.y, APP_STATE.view.targetY, 0.1);
+        APP_STATE.view.zoom = p.lerp(APP_STATE.view.zoom, APP_STATE.view.targetZoom, 0.1);
+
         p.push();
-        p.translate(p.width/2 + APP_STATE.view.x, p.height/2 + APP_STATE.view.y);
+        p.translate(p.width/2, p.height/2);
         p.scale(APP_STATE.view.zoom);
+        p.translate(APP_STATE.view.x, APP_STATE.view.y);
+
         TU.update();
         TU.drawParticles();
         APP_STATE.atoms.forEach(a => { a.update(); a.draw(); });
