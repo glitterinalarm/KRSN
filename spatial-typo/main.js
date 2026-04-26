@@ -32,7 +32,9 @@ class BioGenome {
         'QUANTUM', 'FRACTAL', 'GRID', 'ARTISTIC', 'LIQUID_METAL', 'GHOST',
         'VOXEL', 'FUNGAL', 'GLITCH', 'VECTOR', 'STRING',
         'OP_ART', 'KINETIC', 'STIPPLE', 'AURA', 'FLUX',
-        'MITOSIS', 'DNA', 'PHOTOSYNTHESIS', 'LYMPHOCYTE', 'GLOBULE'
+        'MITOSIS', 'DNA', 'PHOTOSYNTHESIS', 'LYMPHOCYTE', 'GLOBULE',
+        'TRIGONOMETRY', 'GOLDEN_RATIO', 'DERIVATIVE', 'INTEGRAL', 'COMPLEX_PLANE',
+        'STATISTICS', 'GEOMETRY', 'LOGIC', 'EXPONENTIAL'
     ];
     static MATERIALS = ['MATTE', 'NEON', 'GLASS', 'MEAT', 'METAL', 'CHROME', 'PLASMA', 'GOLIGHT', 'DARKMATTER'];
 
@@ -160,7 +162,7 @@ const sketch = (p) => {
         p.fill(255, 30);
         p.noStroke();
         p.textSize(10);
-        p.text(`SPORE ENGINE v51.1 | FAMILIES: ${BioGenome.TYPES.length} | MOLECULES: ${APP_STATE.atoms.length}`, 20, p.height - 20);
+        p.text(`SPORE ENGINE v51.2 | FAMILIES: ${BioGenome.TYPES.length} | MOLECULES: ${APP_STATE.atoms.length}`, 20, p.height - 20);
     };
 
     p.windowResized = () => p.resizeCanvas(window.innerWidth, window.innerHeight);
@@ -337,6 +339,15 @@ class LivingTypo {
             case 'PHOTOSYNTHESIS': this.drawPhotosynthesis(p, col, d); break;
             case 'LYMPHOCYTE':  this.drawLymphocyte(p, col, d); break;
             case 'GLOBULE':     this.drawGlobule(p, col, d); break;
+            case 'TRIGONOMETRY': this.drawTrig(p, col, d); break;
+            case 'GOLDEN_RATIO': this.drawGolden(p, col, d); break;
+            case 'DERIVATIVE':   this.drawDeriv(p, col, d); break;
+            case 'INTEGRAL':     this.drawIntegral(p, col, d); break;
+            case 'COMPLEX_PLANE': this.drawComplex(p, col, d); break;
+            case 'STATISTICS':   this.drawStats(p, col, d); break;
+            case 'GEOMETRY':     this.drawGeometry(p, col, d); break;
+            case 'LOGIC':        this.drawLogic(p, col, d); break;
+            case 'EXPONENTIAL':  this.drawExpr(p, col, d); break;
             default:            this.drawDefault(p, col, d);
         }
 
@@ -679,6 +690,127 @@ class LivingTypo {
                 p.circle(v.pos.x - 3, v.pos.y - 3, 3);
             }
         });
+    }
+
+    drawTrig(p, col, d) {
+        // Sine & Cosine waves
+        p.noFill();
+        p.stroke(col[0], col[1], col[2], d.alpha);
+        p.beginShape();
+        this.vertices.forEach((v, i) => {
+            const wave = Math.sin(p.frameCount * 0.1 + i * 0.2) * 20;
+            p.vertex(v.pos.x, v.pos.y + wave);
+        });
+        p.endShape();
+    }
+
+    drawGolden(p, col, d) {
+        // Fibonacci Spirals
+        p.noFill();
+        p.stroke(col[0], col[1], col[2], d.alpha * 0.5);
+        this.vertices.forEach((v, i) => {
+            if (i % 40 === 0) {
+                p.push();
+                p.translate(v.pos.x, v.pos.y);
+                let a = 0, r = 0;
+                p.beginShape();
+                for (let k = 0; k < 20; k++) {
+                    p.vertex(Math.cos(a)*r, Math.sin(a)*r);
+                    a += 1.618; r += 2;
+                }
+                p.endShape();
+                p.pop();
+            }
+        });
+        this.drawDefault(p, col, d);
+    }
+
+    drawDeriv(p, col, d) {
+        // Tangent lines (Derivatives)
+        p.stroke(col[0], col[1], col[2], d.alpha);
+        this.vertices.forEach((v, i) => {
+            if (i % 15 === 0 && i < this.vertices.length - 1) {
+                const next = this.vertices[i+1];
+                const dx = next.pos.x - v.pos.x;
+                const dy = next.pos.y - v.pos.y;
+                p.line(v.pos.x - dx*2, v.pos.y - dy*2, v.pos.x + dx*2, v.pos.y + dy*2);
+                p.circle(v.pos.x, v.pos.y, 3);
+            }
+        });
+    }
+
+    drawIntegral(p, col, d) {
+        // Sums and areas
+        p.stroke(col[0], col[1], col[2], d.alpha * 0.4);
+        this.vertices.forEach((v, i) => {
+            if (i % 10 === 0) {
+                p.line(v.pos.x, v.pos.y, v.pos.x, v.pos.y + 40 * v.seed);
+            }
+        });
+        this.drawDefault(p, col, d);
+    }
+
+    drawComplex(p, col, d) {
+        // Fractal noise maps
+        p.noStroke();
+        this.vertices.forEach((v, i) => {
+            if (i % 5 === 0) {
+                const noise = p.noise(v.pos.x * 0.05, v.pos.y * 0.05, p.frameCount * 0.01);
+                p.fill(col[0], col[1], col[2], d.alpha * noise);
+                p.rect(v.pos.x - 5, v.pos.y - 5, 10, 10);
+            }
+        });
+    }
+
+    drawStats(p, col, d) {
+        // Bar charts & Distributions
+        p.fill(col[0], col[1], col[2], d.alpha);
+        this.vertices.forEach((v, i) => {
+            if (i % 20 === 0) {
+                const h = 30 * v.seed;
+                p.rect(v.pos.x - 2, v.pos.y - h, 4, h);
+            }
+        });
+    }
+
+    drawGeometry(p, col, d) {
+        // Euclidean shapes
+        p.noFill();
+        p.stroke(col[0], col[1], col[2], d.alpha);
+        this.vertices.forEach((v, i) => {
+            if (i % 30 === 0) {
+                if (v.seed > 0.5) p.circle(v.pos.x, v.pos.y, 20);
+                else p.triangle(v.pos.x, v.pos.y - 10, v.pos.x - 10, v.pos.y + 10, v.pos.x + 10, v.pos.y + 10);
+            }
+        });
+        this.drawDefault(p, col, d);
+    }
+
+    drawLogic(p, col, d) {
+        // Binary logic
+        p.fill(col[0], col[1], col[2], d.alpha);
+        p.textSize(8);
+        this.vertices.forEach((v, i) => {
+            if (i % 12 === 0) {
+                p.text(v.seed > 0.5 ? "1" : "0", v.pos.x, v.pos.y);
+            }
+        });
+    }
+
+    drawExpr(p, col, d) {
+        // Exponential growth curves
+        p.noFill();
+        p.stroke(col[0], col[1], col[2], d.alpha);
+        this.vertices.forEach((v, i) => {
+            if (i % 40 === 0) {
+                p.beginShape();
+                for (let x = 0; x < 30; x++) {
+                    p.vertex(v.pos.x + x, v.pos.y - Math.exp(x * 0.1) * 2);
+                }
+                p.endShape();
+            }
+        });
+        this.drawDefault(p, col, d);
     }
 
     drawDefault(p, col, d) {
