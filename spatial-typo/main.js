@@ -123,7 +123,18 @@ const sketch = (p) => {
         setTimeout(hide, 2000);
         window.TU = new TypoUniverse(p);
         injectExportUI(p);
-        for (let i = 0; i < 6; i++) window.TU.addAtom();
+        
+        // Initial Showroom - Spawn all families in a grid
+        const types = BioGenome.TYPES;
+        const cols = 5;
+        const spacing = 600;
+        types.forEach((type, i) => {
+            const ix = i % cols;
+            const iy = Math.floor(i / cols);
+            const x = (ix - (cols-1)/2) * spacing;
+            const y = (iy - (Math.ceil(types.length/cols)-1)/2) * spacing;
+            window.TU.addAtom(type, x, y);
+        });
     };
 
     p.draw = () => {
@@ -709,9 +720,13 @@ class TypoUniverse {
         this.initInteraction();
     }
 
-    addAtom() {
+    addAtom(forcedType = null, x = null, y = null) {
         this.history.push([...APP_STATE.atoms]);
-        APP_STATE.atoms.push(new LivingTypo(this.p, '', null));
+        const atom = new LivingTypo(this.p, '', null);
+        if (forcedType) atom.dna.type = forcedType;
+        if (x !== null) atom.x = x;
+        if (y !== null) atom.y = y;
+        APP_STATE.atoms.push(atom);
         this.updateMoleculeList();
     }
 
