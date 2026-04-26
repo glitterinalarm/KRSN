@@ -45,15 +45,15 @@ class BioGenome {
             type: pick(this.TYPES),
             material: pick(this.MATERIALS),
             alpha: 255,
-            v_resolution: 0.15,
-            v_speed: rand(0.5, 2.0),
-            v_complexity: rand(0.3, 1.2),
-            v_strokeW: rand(1, 3),
-            g_amplitude: rand(1, 4), // Reduced from 2-10
-            g_speed: rand(0.5, 2),
-            g_drift: rand(-0.2, 0.2),
-            g_viscosity: rand(0.92, 0.98),
-            cohesion: rand(0.4, 0.8), // Increased from 0.1-0.5
+            v_resolution: 0.25, // Increased resolution for better fills
+            v_speed: rand(0.3, 1.2),
+            v_complexity: rand(0.5, 1.5),
+            v_strokeW: rand(1.5, 4),
+            g_amplitude: rand(1, 3.5),
+            g_speed: rand(0.5, 1.5),
+            g_drift: rand(-0.1, 0.1),
+            g_viscosity: rand(0.94, 0.98),
+            cohesion: rand(0.3, 0.6),
             breathing: rand(0.01, 0.03),
             anim_offset: p ? p.createVector(0,0) : { x: 0, y: 0, copy: () => ({ x: 0, y: 0 }) },
             colorR: Math.random() * 255,
@@ -302,51 +302,56 @@ class LivingTypo {
 
     // --- ENGINES ---
     drawDefault(p, col, d, v) {
-        p.noFill(); p.stroke(col[0], col[1], col[2], d.alpha); p.strokeWeight(d.v_strokeW);
+        p.fill(col[0], col[1], col[2], d.alpha * 0.25); 
+        p.stroke(col[0], col[1], col[2], d.alpha * 0.9); 
+        p.strokeWeight(d.v_strokeW);
         p.beginShape();
         if (v.length > 3) {
             p.curveVertex(v[0].pos.x, v[0].pos.y);
             v.forEach(vt => p.curveVertex(vt.pos.x, vt.pos.y));
             p.curveVertex(v[v.length-1].pos.x, v[v.length-1].pos.y);
         } else { v.forEach(vt => p.vertex(vt.pos.x, vt.pos.y)); }
-        p.endShape();
+        p.endShape(p.CLOSE);
     }
 
     drawCrystal(p, col, d, v) {
-        p.stroke(col[0], col[1], col[2], d.alpha * 0.6); p.noFill();
-        const limit = 40 * (1 + d.v_complexity);
-        for (let i = 0; i < v.length; i += 8) {
-            const v1 = v[i];
-            for (let j = i + 1; j < Math.min(i + 15, v.length); j++) {
-                const v2 = v[j];
-                if (p5.Vector.dist(v1.pos, v2.pos) < limit) {
-                    p.strokeWeight(0.5);
-                    p.line(v1.pos.x, v1.pos.y, v2.pos.x, v2.pos.y);
-                }
-            }
+        p.fill(col[0], col[1], col[2], d.alpha * 0.2); 
+        p.stroke(col[0], col[1], col[2], d.alpha * 0.4);
+        p.beginShape(p.TRIANGLES);
+        for(let i=0; i<v.length-2; i+=3) {
+            p.vertex(v[i].pos.x, v[i].pos.y);
+            p.vertex(v[i+1].pos.x, v[i+1].pos.y);
+            p.vertex(v[i+2].pos.x, v[i+2].pos.y);
         }
+        p.endShape();
         this.drawDefault(p, col, d, v);
     }
 
     drawFluid(p, col, d, v) {
-        p.fill(col[0], col[1], col[2], d.alpha * 0.4); p.stroke(col[0], col[1], col[2], d.alpha);
-        p.strokeWeight(d.v_strokeW * 2);
+        p.fill(col[0], col[1], col[2], d.alpha * 0.4); 
+        p.stroke(col[0], col[1], col[2], d.alpha * 0.8);
+        p.strokeWeight(d.v_strokeW * 1.5);
         p.beginShape();
         v.forEach(vt => p.curveVertex(vt.pos.x, vt.pos.y));
         p.endShape(p.CLOSE);
     }
 
     drawNeural(p, col, d, v) {
-        p.stroke(col[0], col[1], col[2], d.alpha * 0.8); p.strokeWeight(d.v_strokeW * 0.5);
-        const limit = 100 * (1 + d.v_complexity);
-        const step = Math.max(12, Math.floor(20 / (1 + d.v_complexity)));
+        p.fill(col[0], col[1], col[2], d.alpha * 0.1);
+        p.stroke(col[0], col[1], col[2], d.alpha * 0.7); 
+        p.strokeWeight(0.5);
+        const limit = 80 * (1 + d.v_complexity);
+        const step = Math.max(8, Math.floor(15 / (1 + d.v_complexity)));
         for (let i = 0; i < v.length; i += step) {
             const v1 = v[i];
             for (let j = i + step; j < v.length; j += step * 2) {
                 const v2 = v[j];
-                if (p5.Vector.dist(v1.pos, v2.pos) < limit) p.line(v1.pos.x, v1.pos.y, v2.pos.x, v2.pos.y);
+                if (p5.Vector.dist(v1.pos, v2.pos) < limit) {
+                    p.line(v1.pos.x, v1.pos.y, v2.pos.x, v2.pos.y);
+                }
             }
         }
+        this.drawDefault(p, col, d, v);
     }
 
     drawMechanic(p, col, d, v) {
