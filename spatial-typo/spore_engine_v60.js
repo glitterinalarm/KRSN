@@ -115,28 +115,18 @@ class LivingTypo {
         
         if (config.dna) {
             this.dna = config.dna;
-            this.char = config.char || char;
-            this.x = config.x;
-            this.y = config.y;
-            this.fontName = config.fontName;
-            
-            // Clone vertices if provided, otherwise we'll generate them below
-            if (config.vertices) {
-                config.vertices.forEach(v => {
-                    this.vertices.push({
-                        pos: v.pos.copy(),
-                        basePos: v.basePos.copy(),
-                        vel: v.vel.copy(),
-                        seed: v.seed
-                    });
-                });
-            }
+            this.char = config.char || char || pick("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
+            this.x = config.x !== null ? config.x : (Math.random() - 0.5) * 800;
+            this.y = config.y !== null ? config.y : (Math.random() - 0.5) * 600;
         } else {
-            this.x = (Math.random() - 0.5) * 800;
-            this.y = (Math.random() - 0.5) * 600;
-            this.char = char || pick("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
             this.dna = BioGenome.createRandom();
+            this.char = char || pick("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
+            this.x = config.x !== null ? config.x : (Math.random() - 0.5) * 800;
+            this.y = config.y !== null ? config.y : (Math.random() - 0.5) * 600;
         }
+
+        this.leftV = [];
+        this.rightV = [];
 
         // Failsafe: if no vertices were cloned, generate them now
         if (this.vertices.length === 0) {
@@ -148,15 +138,24 @@ class LivingTypo {
                 const pts = font.obj.textToPoints(this.char, -b.x - b.w/2, -b.y - b.h/2, 400, { sampleFactor });
                 pts.forEach(pt => {
                     if (this.vertices.length < 300) {
-                        this.vertices.push({
+                        const vt = {
                             pos: p.createVector(pt.x, pt.y),
                             basePos: p.createVector(pt.x, pt.y),
                             vel: p.createVector(0, 0),
                             seed: Math.random()
-                        });
+                        };
+                        this.vertices.push(vt);
+                        if (pt.x <= 0) this.leftV.push(vt);
+                        else this.rightV.push(vt);
                     }
                 });
             }
+        } else {
+            // Pre-split cloned vertices as well
+            this.vertices.forEach(vt => {
+                if (vt.basePos.x <= 0) this.leftV.push(vt);
+                else this.rightV.push(vt);
+            });
         }
 
         // Particle initialization for specific types
@@ -217,21 +216,17 @@ class LivingTypo {
         if (d.material === 'GLASS') p.drawingContext.shadowBlur = d.isSuper ? 30 : 15;
         p.drawingContext.shadowColor = `rgba(${col[0]},${col[1]},${col[2]}, 0.5)`;
 
-        // Split vertices into two halves for the "Chimera" effect
-        const leftV = this.vertices.filter(v => v.basePos.x <= 0);
-        const rightV = this.vertices.filter(v => v.basePos.x > 0);
-
         if (d.isSuper) p.strokeWeight(d.v_strokeW * 1.5);
 
-        // Render Left Half with Primary Type
-        this.renderDNA(p, col, d, d.type, leftV);
+        // Render Left Half
+        this.renderDNA(p, col, d, d.type, this.leftV);
 
-        // Render Right Half with Secondary Type (or Primary if Dominant)
-        if (d.secondaryType) {
+        // Render Right Half
+        if (d.secondaryType && d.secondaryType !== d.type) {
             const rightCol = d.isSuper ? col : [255, 255, 255, 180];
-            this.renderDNA(p, rightCol, d, d.secondaryType, rightV);
+            this.renderDNA(p, rightCol, d, d.secondaryType, this.rightV);
         } else {
-            this.renderDNA(p, col, d, d.type, rightV);
+            this.renderDNA(p, col, d, d.type, this.rightV);
         }
 
         p.blendMode(p.BLEND);
@@ -881,7 +876,6 @@ class TypoUniverse {
 
         const nx = (moved.x + other.x) / 2;
         const ny = (moved.y + other.y) / 2;
-        this.explode(nx, ny, [childDNA.colorR, childDNA.colorG, childDNA.colorB]);
         this.addAtom(childDNA.type, nx, ny, childChar, childDNA);
         this.removeAtom(moved.atomId);
         this.removeAtom(other.atomId);
