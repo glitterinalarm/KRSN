@@ -36,7 +36,9 @@ class BioGenome {
         'TRIGONOMETRY', 'GOLDEN_RATIO', 'DERIVATIVE', 'INTEGRAL', 'COMPLEX_PLANE',
         'STATISTICS', 'GEOMETRY', 'LOGIC', 'EXPONENTIAL',
         'RELATIVITY', 'QUANTUM_WAVE', 'THERMODYNAMICS', 'ELECTROMAGNETISM',
-        'GRAVITY_WELL', 'KINETICS', 'FLUID_DYNAMICS', 'OPTICS', 'ASTROPHYSICS'
+        'GRAVITY_WELL', 'KINETICS', 'FLUID_DYNAMICS', 'OPTICS', 'ASTROPHYSICS',
+        'CELLULAR_AUTOMATA', 'VORONOI', 'ASCII_ART', 'PIXEL_SORT', 'TURING',
+        'DELAUNAY', 'FLOW_FIELD', 'ATTRACTOR', 'PARAMETRIC'
     ];
     static MATERIALS = ['MATTE', 'NEON', 'GLASS', 'MEAT', 'METAL', 'CHROME', 'PLASMA', 'GOLIGHT', 'DARKMATTER'];
 
@@ -170,7 +172,7 @@ const sketch = (p) => {
         p.fill(255, 30);
         p.noStroke();
         p.textSize(10);
-        p.text(`SPORE ENGINE v51.6 | FAMILIES: ${BioGenome.TYPES.length} | MOLECULES: ${APP_STATE.atoms.length}`, 20, p.height - 20);
+        p.text(`SPORE ENGINE v51.7 | FAMILIES: ${BioGenome.TYPES.length} | MOLECULES: ${APP_STATE.atoms.length}`, 20, p.height - 20);
     };
 
     p.windowResized = () => p.resizeCanvas(window.innerWidth, window.innerHeight);
@@ -365,6 +367,15 @@ class LivingTypo {
             case 'FLUID_DYNAMICS': this.drawFluidDyn(p, col, d); break;
             case 'OPTICS':       this.drawOptics(p, col, d); break;
             case 'ASTROPHYSICS': this.drawAstrophys(p, col, d); break;
+            case 'CELLULAR_AUTOMATA': this.drawCellular(p, col, d); break;
+            case 'VORONOI':      this.drawVoronoi(p, col, d); break;
+            case 'ASCII_ART':    this.drawASCII(p, col, d); break;
+            case 'PIXEL_SORT':   this.drawPixelSort(p, col, d); break;
+            case 'TURING':       this.drawTuring(p, col, d); break;
+            case 'DELAUNAY':     this.drawDelaunay(p, col, d); break;
+            case 'FLOW_FIELD':   this.drawFlowField(p, col, d); break;
+            case 'ATTRACTOR':    this.drawAttractor(p, col, d); break;
+            case 'PARAMETRIC':   this.drawParametric(p, col, d); break;
             default:            this.drawDefault(p, col, d);
         }
 
@@ -957,6 +968,146 @@ class LivingTypo {
                 p.pop();
             }
         });
+    }
+
+    drawCellular(p, col, d) {
+        // Grid-based growth
+        p.noStroke();
+        p.fill(col[0], col[1], col[2], d.alpha * 0.6);
+        this.vertices.forEach((v, i) => {
+            if (i % 10 === 0) {
+                const sz = 6;
+                p.rect(Math.round(v.pos.x / sz) * sz, Math.round(v.pos.y / sz) * sz, sz-1, sz-1);
+            }
+        });
+    }
+
+    drawVoronoi(p, col, d) {
+        // Cellular partition
+        p.stroke(col[0], col[1], col[2], d.alpha * 0.4);
+        p.noFill();
+        this.vertices.forEach((v, i) => {
+            if (i % 30 === 0) {
+                p.beginShape();
+                for (let a = 0; a < p.TWO_PI; a += p.PI/3) {
+                    p.vertex(v.pos.x + p.cos(a) * 20, v.pos.y + p.sin(a) * 20);
+                }
+                p.endShape(p.CLOSE);
+            }
+        });
+        this.drawDefault(p, col, d);
+    }
+
+    drawASCII(p, col, d) {
+        // Textual representation
+        p.fill(col[0], col[1], col[2], d.alpha);
+        p.textSize(9);
+        const chars = "@#S%?*+;:,.";
+        this.vertices.forEach((v, i) => {
+            if (i % 12 === 0) {
+                const c = chars[Math.floor(v.seed * chars.length)];
+                p.text(c, v.pos.x, v.pos.y);
+            }
+        });
+    }
+
+    drawPixelSort(p, col, d) {
+        // Vertical melting
+        p.stroke(col[0], col[1], col[2], d.alpha * 0.5);
+        this.vertices.forEach((v, i) => {
+            if (i % 10 === 0) {
+                const len = p.noise(v.pos.x * 0.1, p.frameCount * 0.05) * 60;
+                p.line(v.pos.x, v.pos.y, v.pos.x, v.pos.y + len);
+            }
+        });
+        this.drawDefault(p, col, d);
+    }
+
+    drawTuring(p, col, d) {
+        // Reaction-Diffusion spots
+        p.noStroke();
+        this.vertices.forEach((v, i) => {
+            if (i % 5 === 0) {
+                const n = p.noise(v.pos.x * 0.04, v.pos.y * 0.04, p.frameCount * 0.02);
+                if (n > 0.6) {
+                    p.fill(255, d.alpha * n);
+                    p.circle(v.pos.x, v.pos.y, 8);
+                }
+            }
+        });
+    }
+
+    drawDelaunay(p, col, d) {
+        // Triangulation mesh
+        p.stroke(col[0], col[1], col[2], d.alpha * 0.3);
+        p.noFill();
+        for (let i = 0; i < this.vertices.length; i += 20) {
+            const v1 = this.vertices[i];
+            const v2 = this.vertices[(i + 40) % this.vertices.length];
+            const v3 = this.vertices[(i + 80) % this.vertices.length];
+            p.triangle(v1.pos.x, v1.pos.y, v2.pos.x, v2.pos.y, v3.pos.x, v3.pos.y);
+        }
+    }
+
+    drawFlowField(p, col, d) {
+        // Streamlines
+        p.noFill();
+        p.stroke(col[0], col[1], col[2], d.alpha * 0.6);
+        this.vertices.forEach((v, i) => {
+            if (i % 15 === 0) {
+                p.beginShape();
+                let x = v.pos.x, y = v.pos.y;
+                for (let k = 0; k < 5; k++) {
+                    const ang = p.noise(x * 0.01, y * 0.01, p.frameCount * 0.01) * p.TWO_PI * 2;
+                    x += p.cos(ang) * 10;
+                    y += p.sin(ang) * 10;
+                    p.vertex(x, y);
+                }
+                p.endShape();
+            }
+        });
+    }
+
+    drawAttractor(p, col, d) {
+        // Strange attractors (simulated)
+        p.noFill();
+        p.stroke(col[0], col[1], col[2], d.alpha * 0.4);
+        this.vertices.forEach((v, i) => {
+            if (i % 50 === 0) {
+                p.push();
+                p.translate(v.pos.x, v.pos.y);
+                p.beginShape();
+                let lx = 0, ly = 0;
+                for (let k = 0; k < 30; k++) {
+                    const nx = p.sin(ly * 0.1) * 10;
+                    const ny = p.cos(lx * 0.1) * 10;
+                    lx += nx; ly += ny;
+                    p.vertex(lx, ly);
+                }
+                p.endShape();
+                p.pop();
+            }
+        });
+    }
+
+    drawParametric(p, col, d) {
+        // Geometric orbits
+        p.noFill();
+        p.stroke(col[0], col[1], col[2], d.alpha);
+        this.vertices.forEach((v, i) => {
+            if (i % 40 === 0) {
+                p.push();
+                p.translate(v.pos.x, v.pos.y);
+                p.beginShape();
+                for (let a = 0; a < p.TWO_PI; a += 0.2) {
+                    const r = 20 * p.sin(a * 4 + p.frameCount * 0.1);
+                    p.vertex(p.cos(a) * r, p.sin(a) * r);
+                }
+                p.endShape(p.CLOSE);
+                p.pop();
+            }
+        });
+        this.drawDefault(p, col, d);
     }
 
     drawDefault(p, col, d) {
