@@ -31,7 +31,8 @@ class BioGenome {
         'CRYSTAL', 'FLUID', 'NEURAL', 'MECHANIC', 'GASEOUS', 'FRAGMENTED', 'LIGHT',
         'QUANTUM', 'FRACTAL', 'GRID', 'ARTISTIC', 'LIQUID_METAL', 'GHOST',
         'VOXEL', 'FUNGAL', 'GLITCH', 'VECTOR', 'STRING',
-        'OP_ART', 'KINETIC', 'STIPPLE', 'AURA', 'FLUX'
+        'OP_ART', 'KINETIC', 'STIPPLE', 'AURA', 'FLUX',
+        'MITOSIS', 'DNA', 'PHOTOSYNTHESIS', 'LYMPHOCYTE', 'GLOBULE'
     ];
     static MATERIALS = ['MATTE', 'NEON', 'GLASS', 'MEAT', 'METAL', 'CHROME', 'PLASMA', 'GOLIGHT', 'DARKMATTER'];
 
@@ -159,7 +160,7 @@ const sketch = (p) => {
         p.fill(255, 30);
         p.noStroke();
         p.textSize(10);
-        p.text(`SPORE ENGINE v50.6 | FAMILIES: ${BioGenome.TYPES.length} | MOLECULES: ${APP_STATE.atoms.length}`, 20, p.height - 20);
+        p.text(`SPORE ENGINE v50.7 | FAMILIES: ${BioGenome.TYPES.length} | MOLECULES: ${APP_STATE.atoms.length}`, 20, p.height - 20);
     };
 
     p.windowResized = () => p.resizeCanvas(window.innerWidth, window.innerHeight);
@@ -331,6 +332,11 @@ class LivingTypo {
             case 'STIPPLE':     this.drawStipple(p, col, d); break;
             case 'AURA':        this.drawAura(p, col, d); break;
             case 'FLUX':        this.drawFlux(p, col, d); break;
+            case 'MITOSIS':     this.drawMitosis(p, col, d); break;
+            case 'DNA':         this.drawDna(p, col, d); break;
+            case 'PHOTOSYNTHESIS': this.drawPhotosynthesis(p, col, d); break;
+            case 'LYMPHOCYTE':  this.drawLymphocyte(p, col, d); break;
+            case 'GLOBULE':     this.drawGlobule(p, col, d); break;
             default:            this.drawDefault(p, col, d);
         }
 
@@ -591,6 +597,88 @@ class LivingTypo {
             }
         });
         this.drawDefault(p, col, d);
+    }
+
+    drawMitosis(p, col, d) {
+        // Cells splitting
+        const split = Math.sin(p.frameCount * 0.05) * 20;
+        p.noFill();
+        p.strokeWeight(d.v_strokeW);
+        p.stroke(col[0], col[1], col[2], d.alpha);
+        p.beginShape();
+        this.vertices.forEach(v => p.vertex(v.pos.x - split, v.pos.y));
+        p.endShape();
+        p.beginShape();
+        this.vertices.forEach(v => p.vertex(v.pos.x + split, v.pos.y));
+        p.endShape();
+    }
+
+    drawDna(p, col, d) {
+        // Double helix
+        p.noFill();
+        p.strokeWeight(1.5);
+        for (let side = -1; side <= 1; side += 2) {
+            p.stroke(col[0], col[1], col[2], d.alpha);
+            p.beginShape();
+            this.vertices.forEach((v, i) => {
+                const off = Math.sin(p.frameCount * 0.1 + i * 0.5) * 15 * side;
+                p.vertex(v.pos.x + off, v.pos.y);
+                if (i % 8 === 0 && side === 1) {
+                    p.push();
+                    p.stroke(255, 50);
+                    p.line(v.pos.x + off, v.pos.y, v.pos.x - off, v.pos.y);
+                    p.pop();
+                }
+            });
+            p.endShape();
+        }
+    }
+
+    drawPhotosynthesis(p, col, d) {
+        // Green energy & oxygen bubbles
+        p.fill(50, 200, 100, d.alpha * 0.3);
+        p.stroke(50, 255, 120, d.alpha);
+        this.drawFluid(p, [50, 255, 120], d);
+        p.noStroke();
+        this.vertices.forEach((v, i) => {
+            if (i % 10 === 0) {
+                const oxy = (p.frameCount * 0.1 + v.seed * 100) % 50;
+                p.fill(200, 255, 220, d.alpha * (1 - oxy/50));
+                p.circle(v.pos.x, v.pos.y - oxy, 4);
+            }
+        });
+    }
+
+    drawLymphocyte(p, col, d) {
+        // Defensive spikes
+        p.stroke(255, d.alpha);
+        p.fill(col[0], col[1], col[2], d.alpha * 0.7);
+        this.vertices.forEach((v, i) => {
+            if (i % 15 === 0) {
+                p.push();
+                p.translate(v.pos.x, v.pos.y);
+                for (let a = 0; a < p.TWO_PI; a += p.PI/4) {
+                    p.line(0, 0, Math.cos(a) * 15, Math.sin(a) * 15);
+                }
+                p.circle(0, 0, 10);
+                p.pop();
+            }
+        });
+        this.drawDefault(p, col, d);
+    }
+
+    drawGlobule(p, col, d) {
+        // Soft red spheres
+        p.noStroke();
+        this.vertices.forEach((v, i) => {
+            if (i % 8 === 0) {
+                const pulse = 1 + Math.sin(p.frameCount * 0.1 + v.seed * 10) * 0.2;
+                p.fill(200, 20, 40, d.alpha);
+                p.circle(v.pos.x, v.pos.y, 12 * pulse);
+                p.fill(255, 100);
+                p.circle(v.pos.x - 3, v.pos.y - 3, 3);
+            }
+        });
     }
 
     drawDefault(p, col, d) {
