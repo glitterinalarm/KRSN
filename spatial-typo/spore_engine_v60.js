@@ -13,9 +13,7 @@ const APP_STATE = {
 };
 
 const FONT_SOURCES = [
-    { name: 'Roboto', url: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-black-webfont.ttf' },
-    { name: 'Playfair', url: 'https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/playfairdisplay/PlayfairDisplay%5Bwght%5D.ttf' },
-    { name: 'SpaceMono', url: 'https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/spacemono/SpaceMono-Bold.ttf' }
+    { name: 'Outfit', url: 'https://fonts.gstatic.com/s/outfit/v11/QGYtz_MV_NIiAd7uPTufnjU.ttf' }
 ];
 const FONTS = [];
 
@@ -934,7 +932,7 @@ const sketch = (p) => {
     let TU;
     p.preload = () => { FONT_SOURCES.forEach(s => FONTS.push({ name: s.name, obj: p.loadFont(s.url) })); };
     p.setup = () => {
-        p.createCanvas(window.innerWidth, window.innerHeight);
+        p.createCanvas(window.innerWidth, window.innerHeight).parent('stage');
         TU = new TypoUniverse(p);
         const starters = BioGenome.TYPES.sort(() => 0.5 - Math.random()).slice(0, 8);
         starters.forEach((type, i) => {
