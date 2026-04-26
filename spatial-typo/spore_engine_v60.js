@@ -46,15 +46,15 @@ class BioGenome {
             material: pick(this.MATERIALS),
             alpha: 255,
             v_resolution: 0.15,
-            v_speed: rand(0.5, 2.5),
-            v_complexity: rand(0.5, 2.0),
-            v_strokeW: rand(1, 4),
-            g_amplitude: rand(2, 10),
-            g_speed: rand(1, 3),
-            g_drift: rand(-0.5, 0.5),
-            g_viscosity: rand(0.9, 0.98),
-            cohesion: rand(0.1, 0.5),
-            breathing: rand(0.01, 0.05),
+            v_speed: rand(0.5, 2.0),
+            v_complexity: rand(0.3, 1.2),
+            v_strokeW: rand(1, 3),
+            g_amplitude: rand(1, 4), // Reduced from 2-10
+            g_speed: rand(0.5, 2),
+            g_drift: rand(-0.2, 0.2),
+            g_viscosity: rand(0.92, 0.98),
+            cohesion: rand(0.4, 0.8), // Increased from 0.1-0.5
+            breathing: rand(0.01, 0.03),
             anim_offset: p ? p.createVector(0,0) : { x: 0, y: 0, copy: () => ({ x: 0, y: 0 }) },
             colorR: Math.random() * 255,
             colorG: Math.random() * 255,
@@ -313,16 +313,19 @@ class LivingTypo {
     }
 
     drawCrystal(p, col, d, v) {
-        p.noStroke();
-        for (let i = 0; i < v.length - 3; i += 4) {
-            p.fill(col[0], col[1], col[2], d.alpha * 0.3);
-            p.beginShape();
-            p.vertex(v[i].pos.x, v[i].pos.y);
-            p.vertex(v[i+1].pos.x, v[i+1].pos.y);
-            p.vertex(v[i+2].pos.x, v[i+2].pos.y);
-            p.endShape(p.CLOSE);
-            p.stroke(255, 40); p.line(v[i].pos.x, v[i].pos.y, v[i+2].pos.x, v[i+2].pos.y);
+        p.stroke(col[0], col[1], col[2], d.alpha * 0.6); p.noFill();
+        const limit = 40 * (1 + d.v_complexity);
+        for (let i = 0; i < v.length; i += 8) {
+            const v1 = v[i];
+            for (let j = i + 1; j < Math.min(i + 15, v.length); j++) {
+                const v2 = v[j];
+                if (p5.Vector.dist(v1.pos, v2.pos) < limit) {
+                    p.strokeWeight(0.5);
+                    p.line(v1.pos.x, v1.pos.y, v2.pos.x, v2.pos.y);
+                }
+            }
         }
+        this.drawDefault(p, col, d, v);
     }
 
     drawFluid(p, col, d, v) {
