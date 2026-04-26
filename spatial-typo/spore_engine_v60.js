@@ -1,70 +1,49 @@
-// Typography Lab - Spore Engine v65.0
-// RADICAL DIVERSITY: NO MORE DEFAULT RENDERING. EVERY FAMILY IS UNIQUE & BOLD.
+// Typography Lab - Spore Engine v66.0
+// STABILITY & CHARACTER UPDATE: FIXED FUSIONS & RADICAL DIVERSITY
 
-console.log("TypoLab v65.0 — RADICAL IMPACT ENGINE");
+console.log("TypoLab v66.0 — THE GREAT RESET");
 
 let _uid = 0;
 let GLOBAL_FONT = null;
 const APP_STATE = { atoms: [], view: { x: 0, y: 0, zoom: 0.8 } };
 const rand = (a, b) => Math.random() * (b - a) + a;
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-const pick = (arr) => arr[arr.length * Math.random() | 0];
+const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
 // ═══════════════════════════════════════════════════════════════
-// VERTEX GEN
+// VERTEX GEN: BOLDEST SKELETON
 // ═══════════════════════════════════════════════════════════════
 function getVertices(p, char) {
     if(GLOBAL_FONT) {
         try {
-            const pts = GLOBAL_FONT.textToPoints(char, -80, 80, 180, { sampleFactor: 0.4 });
+            const pts = GLOBAL_FONT.textToPoints(char, -80, 80, 200, { sampleFactor: 0.35 });
             if(pts && pts.length > 20) return pts.map(pt => ({pos:p.createVector(pt.x,pt.y), base:p.createVector(pt.x,pt.y), vel:p.createVector(0,0), ordered: true}));
         } catch(e) {}
     }
-    const sz = 150; const pg = p.createGraphics(sz, sz);
-    pg.pixelDensity(1); pg.background(0); pg.fill(255);
-    pg.textAlign(p.CENTER, p.CENTER); pg.textSize(sz*0.8);
-    pg.textFont("Outfit, sans-serif"); pg.text(char, sz/2, sz/2);
-    pg.loadPixels();
-    const pts = [];
-    for (let y=1; y<sz-1; y+=2) {
-        for (let x=1; x<sz-1; x+=2) {
-            let i = (x+y*sz)*4;
-            if (pg.pixels[i]>127) pts.push({x:x-sz/2, y:y-sz/2});
-        }
-    }
-    return pts.map(pt => ({pos:p.createVector(pt.x*1.4,pt.y*1.4), base:p.createVector(pt.x*1.4,pt.y*1.4), vel:p.createVector(0,0), ordered: false}));
+    const sz=150; const pg=p.createGraphics(sz,sz);
+    pg.background(0); pg.fill(255); pg.textAlign(p.CENTER, p.CENTER); pg.textSize(sz*0.8); pg.text(char,sz/2,sz/2);
+    pg.loadPixels(); const pts=[];
+    for(let y=0; y<sz; y+=3) for(let x=0; x<sz; x+=3) if(pg.pixels[(x+y*sz)*4]>127) pts.push({x:x-sz/2, y:y-sz/2});
+    return pts.map(pt => ({pos:p.createVector(pt.x*1.5,pt.y*1.5), base:p.createVector(pt.x*1.5,pt.y*1.5), vel:p.createVector(0,0), ordered: false}));
 }
 
 // ═══════════════════════════════════════════════════════════════
-// GENOME: THE 4 PILLARS (RE-IMPOSED)
+// GENOME: PILLAR-BASED
 // ═══════════════════════════════════════════════════════════════
 class BioGenome {
-    static PILLARS = {
-        'PHYSIQUE': ['CRYSTAL', 'MECHANIC', 'CHROME', 'GLITCH', 'GRAVITY', 'ORIGAMI', 'CARBON'],
-        'BIOLOGIQUE': ['DNA_HELIX', 'FLUID', 'BUBBLE', 'PLASMA', 'BOIDS', 'L-SYSTEM', 'MOSS'],
-        'MATHEMATIQUE': ['NEURAL', 'TURING', 'QUANTUM', 'VORONOI', 'MANDELBROT', 'FIBONACCI'],
-        'OPTIQUE': ['NEON', 'OP_ART', 'SCANLINE', 'DITHERING', 'INK', 'CELESTIAL', 'PRISM']
-    };
+    static PILLARS = ['PHYSIQUE', 'BIOLOGIQUE', 'MATHEMATIQUE', 'OPTIQUE'];
     static createRandom() {
-        const pillar = pick(Object.keys(this.PILLARS));
-        const type = pick(this.PILLARS[pillar]);
+        const p = pick(this.PILLARS);
         return {
-            pillar, type,
-            colorR: rand(150, 255), colorG: rand(150, 255), colorB: rand(150, 255),
-            v_strokeW: rand(4, 12), // RADICAL WEIGHT
-            v_width: rand(0.95, 1.1), g_amp: rand(0.2, 0.6), alpha: 255
+            pillar: p, seed: Math.random()*1000,
+            color: [rand(150,255), rand(150,255), rand(150,255)],
+            sw: rand(4,10), amp: rand(0.1, 0.8), stiffness: rand(0.05, 0.15)
         };
-    }
-    static cross(d1, d2) {
-        let c = this.createRandom();
-        c.pillar = Math.random() < 0.5 ? d1.pillar : d2.pillar;
-        c.type = Math.random() < 0.5 ? d1.type : d2.type;
-        return c;
     }
 }
 
 // ═══════════════════════════════════════════════════════════════
-// LIVING TYPO
+// LIVING ORGANISM
 // ═══════════════════════════════════════════════════════════════
 class LivingTypo {
     constructor(p, cfg={}) {
@@ -76,89 +55,50 @@ class LivingTypo {
     }
     rebuild() { this.vertices = getVertices(this.p, this.char); }
     update() {
-        const p=this.p; const t = p.frameCount*0.015;
-        this.vertices.forEach(v => {
-            const f = p5.Vector.fromAngle(p.noise(v.pos.x*0.01, v.pos.y*0.01, t)*p.TWO_PI*2).mult(this.dna.g_amp);
-            f.add(p5.Vector.sub(v.base, v.pos).mult(0.08));
-            v.vel.add(f); v.vel.mult(0.9); v.pos.add(v.vel);
+        const p=this.p; const d=this.dna;
+        const t = p.frameCount * 0.015;
+        this.vertices.forEach((v,i) => {
+            const n = p.noise(v.pos.x*0.01 + d.seed, v.pos.y*0.01, t)*p.TWO_PI*2;
+            const f = p5.Vector.fromAngle(n).mult(d.amp);
+            f.add(p5.Vector.sub(v.base, v.pos).mult(d.stiffness));
+            v.vel.add(f); v.vel.mult(0.85); v.pos.add(v.vel);
         });
     }
     draw() {
-        if(!this.vertices.length) return;
         const p=this.p; const d=this.dna;
-        p.push(); p.translate(this.x, this.y); p.scale(d.v_width, 1.0);
-        this.renderRadical(p, d);
+        p.push(); p.translate(this.x, this.y);
+        p.stroke(d.color[0], d.color[1], d.color[2]); p.strokeWeight(d.sw); p.noFill();
+        
+        switch(d.pillar) {
+            case 'PHYSIQUE': this.drawPhys(p,d); break;
+            case 'BIOLOGIQUE': this.drawBio(p,d); break;
+            case 'MATHEMATIQUE': this.drawMath(p,d); break;
+            case 'OPTIQUE': this.drawOptic(p,d); break;
+        }
         p.pop();
     }
-
-    renderRadical(p, d) {
-        const v = this.vertices;
-        const isOrd = v[0]?.ordered;
-        const col = p.color(d.colorR, d.colorG, d.colorB);
-        const sw = d.v_strokeW;
-        p.noFill(); p.stroke(col);
-
-        // 1. BASE VISIBILITY LAYER (Ensure the letter is ALWAYS THERE)
-        p.strokeWeight(sw*0.5); p.stroke(d.colorR,d.colorG,d.colorB,80);
-        this.path(p,v,isOrd);
-
-        // 2. RADICAL FAMILY EFFECT
-        p.stroke(col);
-        switch(d.type) {
-            case 'NEON':
-                p.strokeWeight(sw*4); p.stroke(d.colorR,d.colorG,d.colorB,40); this.path(p,v,isOrd);
-                p.strokeWeight(sw); p.stroke(255); this.path(p,v,isOrd);
-                break;
-            case 'CHROME':
-                p.strokeWeight(sw*2); p.stroke(255); this.path(p,v,isOrd);
-                p.strokeWeight(sw*0.5); p.stroke(0); this.path(p,v,isOrd);
-                break;
-            case 'CRYSTAL':
-            case 'ORIGAMI':
-                p.strokeWeight(1); p.fill(d.colorR,d.colorG,d.colorB,100); 
-                for(let i=0; i<v.length-10; i+=12) { p.triangle(v[i].pos.x, v[i].pos.y, v[i+6].pos.x, v[i+6].pos.y, 0,0); }
-                break;
-            case 'BUBBLE':
-                p.noStroke(); p.fill(col); v.forEach((vt,i)=>{ if(i%8===0) p.circle(vt.pos.x, vt.pos.y, sw*4); });
-                break;
-            case 'NEURAL':
-                p.strokeWeight(0.8); for(let i=0; i<v.length; i+=15) for(let j=i+15; j<v.length; j+=40) { if(p.dist(v[i].pos.x,v[i].pos.y,v[j].pos.x,v[j].pos.y)<60) p.line(v[i].pos.x,v[i].pos.y,v[j].pos.x,v[j].pos.y); }
-                break;
-            case 'QUANTUM':
-                p.strokeWeight(1.5); v.forEach(vt => { p.line(vt.pos.x, vt.pos.y, vt.pos.x + p.random(-40,40), vt.pos.y + p.random(-40,40)); });
-                break;
-            case 'GLITCH':
-                p.strokeWeight(sw*2); v.forEach(vt => { if(p.random()>0.9) { p.stroke(255); p.line(vt.pos.x-60, vt.pos.y, vt.pos.x+60, vt.pos.y); } p.stroke(col); p.point(vt.pos.x, vt.pos.y); });
-                break;
-            case 'OP_ART':
-                p.strokeWeight(1); for(let k=0; k<8; k++) { p.push(); p.translate(k*2, k*2); this.path(p,v,isOrd); p.pop(); }
-                break;
-            case 'DNA_HELIX':
-                for(let i=0; i<v.length-1; i+=10) { p.strokeWeight(2); p.line(v[i].pos.x-20, v[i].pos.y, v[i].pos.x+20, v[i].pos.y); p.fill(255); p.circle(v[i].pos.x-20, v[i].pos.y, 6); }
-                break;
-            case 'PLASMA':
-                p.noStroke(); p.fill(d.colorR,d.colorG,d.colorB,40); v.forEach((vt,i)=>{ p.circle(vt.pos.x + p.random(-15,15), vt.pos.y + p.random(-15,15), sw*3); });
-                break;
-            case 'SCANLINE':
-                p.strokeWeight(3); v.forEach(vt => { if(Math.floor(vt.pos.y / 10) % 2 === 0) p.line(vt.pos.x - 50, vt.pos.y, vt.pos.x + 50, vt.pos.y); });
-                break;
-            case 'VORONOI':
-                p.strokeWeight(1); p.fill(d.colorR,d.colorG,d.colorB,50); for(let i=0; i<v.length-5; i+=15) { p.beginShape(); p.vertex(v[i].pos.x,v[i].pos.y); p.vertex(v[i+5].pos.x,v[i+5].pos.y); p.vertex(0,0); p.endShape(p.CLOSE); }
-                break;
-            default:
-                // FALLBACK: THICK CONTRASTED LINE
-                p.strokeWeight(sw); this.path(p,v,isOrd);
+    drawPhys(p,d) {
+        this.vertices.forEach((v,i)=>{ if(i%10===0){ p.rectMode(p.CENTER); p.rect(v.pos.x, v.pos.y, d.sw*3, d.sw*3); p.line(v.pos.x, v.pos.y, 0, 0); } });
+    }
+    drawBio(p,d) {
+        p.beginShape(); this.vertices.forEach(v=>p.curveVertex(v.pos.x, v.pos.y)); p.endShape();
+        this.vertices.forEach((v,i)=>{ if(i%20===0) p.circle(v.pos.x, v.pos.y, d.sw*4); });
+    }
+    drawMath(p,d) {
+        for(let i=0; i<this.vertices.length; i+=15) for(let j=i+15; j<this.vertices.length; j+=40) {
+            if(p.dist(this.vertices[i].pos.x, this.vertices[i].pos.y, this.vertices[j].pos.x, this.vertices[j].pos.y)<60)
+                p.line(this.vertices[i].pos.x, this.vertices[i].pos.y, this.vertices[j].pos.x, this.vertices[j].pos.y);
         }
     }
-
-    path(p,v,isOrd) {
-        if(isOrd) { p.beginShape(); v.forEach(vt=>p.vertex(vt.pos.x,vt.pos.y)); p.endShape(); }
-        else { v.forEach(vt=>p.point(vt.pos.x,vt.pos.y)); }
+    drawOptic(p,d) {
+        p.strokeWeight(d.sw*3); p.stroke(d.color[0], d.color[1], d.color[2], 40); this.path(p);
+        p.strokeWeight(d.sw); p.stroke(255); this.path(p);
     }
+    path(p) { p.beginShape(); this.vertices.forEach(v=>p.vertex(v.pos.x, v.pos.y)); p.endShape(); }
 }
 
 // ═══════════════════════════════════════════════════════════════
-// UNIVERSE
+// UNIVERSE: STABILIZED FUSION & DRAG
 // ═══════════════════════════════════════════════════════════════
 class TypoUniverse {
     constructor(p) { this.p=p; this.initUI(); this.initNav(); }
@@ -168,8 +108,8 @@ class TypoUniverse {
     updateList() {
         const ml=document.getElementById('molecule-list'); if(!ml) return;
         ml.innerHTML=APP_STATE.atoms.map(a=>`<li class="molecule-item" onclick="window.focusOn(${a.atomId})">
-            <span class="status-dot" style="background:rgb(${a.dna.colorR},${a.dna.colorG},${a.dna.colorB})"></span> 
-            ${a.char} <small>[${a.dna.pillar} / ${a.dna.type}]</small>
+            <span class="status-dot" style="background:rgb(${a.dna.color[0]},${a.dna.color[1]},${a.dna.color[2]})"></span> 
+            ${a.char} <small>[${a.dna.pillar}]</small>
         </li>`).join('');
     }
     initUI() { document.getElementById('add-atom').onclick=()=>this.addAtom(); }
@@ -178,8 +118,9 @@ class TypoUniverse {
         const w=(cx,cy)=>({wx:(cx-this.p.width/2-APP_STATE.view.x)/APP_STATE.view.zoom, wy:(cy-this.p.height/2-APP_STATE.view.y)/APP_STATE.view.zoom});
         window.addEventListener('mousedown',e=>{
             if(e.target.closest('.ui-overlay')) return;
-            drag=APP_STATE.atoms.find(a=>{ const{wx,wy}=w(e.clientX,e.clientY); return Math.hypot(a.x-wx,a.y-wy)<150/APP_STATE.view.zoom; });
-            if(!drag) pan=true;
+            const{wx,wy}=w(e.clientX,e.clientY);
+            drag=APP_STATE.atoms.find(a=>Math.hypot(a.x-wx,a.y-wy)<150/APP_STATE.view.zoom);
+            if(!drag) pan=true; else { APP_STATE.atoms=APP_STATE.atoms.filter(a=>a!==drag); APP_STATE.atoms.push(drag); } // Move to front
         });
         window.addEventListener('mousemove',e=>{
             if(drag){ drag.x+=e.movementX/APP_STATE.view.zoom; drag.y+=e.movementY/APP_STATE.view.zoom; }
@@ -193,9 +134,12 @@ class TypoUniverse {
         };
     }
     checkFusion(m) {
-        const o=APP_STATE.atoms.find(at=>at!==m && Math.hypot(at.x-m.x,at.y-m.y)<80);
+        // RADICAL FUSION DETECTION: WE CHECK ALL NEIGHBORS
+        const o=APP_STATE.atoms.find(at=>at!==m && Math.hypot(at.x-m.x,at.y-m.y)<120);
         if(!o) return;
-        this.addAtom((m.x+o.x)/2, (m.y+o.y)/2, pick([m.char,o.char]), BioGenome.cross(m.dna,o.dna));
+        // FLASH EFFECT
+        this.p.background(255);
+        this.addAtom((m.x+o.x)/2, (m.y+o.y)/2, pick([m.char,o.char]), BioGenome.createRandom());
         APP_STATE.atoms=APP_STATE.atoms.filter(a=>a!==m && a!==o); this.updateList();
     }
 }
@@ -215,7 +159,7 @@ const sketch = (p) => {
         APP_STATE.atoms.forEach(a=>{ a.update(); a.draw(); });
         p.pop();
         p.resetMatrix(); p.fill(255,40); p.textSize(10);
-        p.text(`v65.0 | RADICAL IMPACT | NO MORE DEFAULTS`, 20, p.height-20);
+        p.text(`v66.0 | STABILITY RESET | FUSION FIXED | UNIQUE SEEDS`, 20, p.height-20);
     };
 };
 new p5(sketch);
