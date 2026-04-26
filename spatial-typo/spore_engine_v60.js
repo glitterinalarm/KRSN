@@ -1,23 +1,23 @@
-// Typography Lab - Spore Engine v68.0
-// THE SILHOUETTE SALVATION: PROTECTING THE TYPOGRAPHIC SOUL. NO MORE CENTER CLUTTER.
+// Typography Lab - Spore Engine v69.0
+// FUNCTIONAL RESTORATION: FIXING GENERATION ERROR & KEEPING SILHOUETTES
 
-console.log("TypoLab v68.0 — TYPOGRAPHIC INTEGRITY RESTORED");
+console.log("TypoLab v69.0 — BACK TO LIFE");
 
 let _uid = 0;
 let GLOBAL_FONT = null;
 const APP_STATE = { atoms: [], view: { x: 0, y: 0, zoom: 0.7 } };
+const rand = (a, b) => Math.random() * (b - a) + a; // FIXED: Restored rand
 const pick = (arr) => arr[arr.length * Math.random() | 0];
 
 // ═══════════════════════════════════════════════════════════════
-// VERTEX GEN: PRECISE CENTERING
+// VERTEX GEN
 // ═══════════════════════════════════════════════════════════════
 function getVertices(p, char) {
     if(GLOBAL_FONT) {
         try {
-            // Precise bounds centering
             const fSize = 200;
             const pts = GLOBAL_FONT.textToPoints(char, 0, 0, fSize, { sampleFactor: 0.4 });
-            if(pts && pts.length > 20) {
+            if(pts && pts.length > 10) {
                 let minX=Infinity, maxX=-Infinity, minY=Infinity, maxY=-Infinity;
                 pts.forEach(pt=>{ minX=Math.min(minX,pt.x); maxX=Math.max(maxX,pt.x); minY=Math.min(minY,pt.y); maxY=Math.max(maxY,pt.y); });
                 const offX = (minX+maxX)/2; const offY = (minY+maxY)/2;
@@ -28,13 +28,10 @@ function getVertices(p, char) {
     const sz=150; const pg=p.createGraphics(sz,sz);
     pg.background(0); pg.fill(255); pg.textAlign(p.CENTER, p.CENTER); pg.textSize(sz*0.8); pg.text(char,sz/2,sz/2);
     pg.loadPixels(); const pts=[];
-    for(let y=0;y<sz;y+=2)for(let x=0;x<sz;x+=2)if(pg.pixels[(x+y*sz)*4]>127)pts.push({x:x-sz/2,y:y-sz/2});
+    for(let y=0;y<sz;y+=3)for(let x=0;x<sz;x+=3)if(pg.pixels[(x+y*sz)*4]>127)pts.push({x:x-sz/2,y:y-sz/2});
     return pts.map(pt=>({pos:p.createVector(pt.x*1.5,pt.y*1.5), base:p.createVector(pt.x*1.5,pt.y*1.5), ordered: false}));
 }
 
-// ═══════════════════════════════════════════════════════════════
-// GENOME
-// ═══════════════════════════════════════════════════════════════
 class BioGenome {
     static FAMILIES = ['NEON', 'CHROME', 'CRYSTAL', 'NEURAL', 'BUBBLE', 'GLITCH', 'SCANLINE', 'QUANTUM', 'OP_ART', 'INK', 'MECHANIC', 'DNA_HELIX', 'MANDELBROT', 'PRISM'];
     static createRandom(forcedType = null) {
@@ -47,9 +44,6 @@ class BioGenome {
     }
 }
 
-// ═══════════════════════════════════════════════════════════════
-// LIVING ORGANISM
-// ═══════════════════════════════════════════════════════════════
 class LivingTypo {
     constructor(p, cfg={}) {
         this.p=p; this.atomId=_uid++;
@@ -62,10 +56,10 @@ class LivingTypo {
     update() { }
     draw() {
         const p=this.p; const d=this.dna; const v=this.vertices;
+        if(!v.length) return;
         p.push(); p.translate(this.x, this.y);
-        p.stroke(d.color[0], d.color[1], d.color[2]); p.noFill();
+        p.stroke(d.color[0], d.color[1], d.color[2]); p.strokeWeight(d.sw); p.noFill();
         
-        // MAPPING DES FAMILLES - CLEAN & LOCAL ONLY
         switch(d.type) {
             case 'NEON':
                 p.strokeWeight(d.sw*3); p.stroke(d.color[0],d.color[1],d.color[2],30); this.path(p,v);
@@ -73,7 +67,7 @@ class LivingTypo {
                 break;
             case 'CHROME':
                 p.strokeWeight(d.sw); p.stroke(255); this.path(p,v);
-                p.strokeWeight(1); p.stroke(0); this.path(p,v);
+                p.strokeWeight(d.sw*0.4); p.stroke(0); this.path(p,v);
                 break;
             case 'CRYSTAL':
                 p.strokeWeight(1); p.fill(d.color[0],d.color[1],d.color[2],40);
@@ -84,10 +78,10 @@ class LivingTypo {
                 v.forEach((vt,i)=>{ if(i%8===0) p.circle(vt.pos.x, vt.pos.y, d.sw*4); });
                 break;
             case 'NEURAL':
-                p.strokeWeight(0.5); for(let i=0; i<v.length; i+=15) for(let j=i+15; j<v.length; j+=40) if(p.dist(v[i].pos.x,v[i].pos.y,v[j].pos.x,v[j].pos.y)<40) p.line(v[i].pos.x,v[i].pos.y,v[j].pos.x,v[j].pos.y);
+                p.strokeWeight(0.5); for(let i=0; i<v.length; i+=15) for(let j=i+15; j<v.length; j+=40) if(p.dist(v[i].pos.x,v[i].pos.y,v[j].pos.x,v[j].pos.y)<45) p.line(v[i].pos.x,v[i].pos.y,v[j].pos.x,v[j].pos.y);
                 break;
             case 'GLITCH':
-                p.strokeWeight(d.sw); v.forEach(vt=>{ if(p.random(100)>96) p.line(vt.pos.x-40, vt.pos.y, vt.pos.x+40, vt.pos.y); p.point(vt.pos.x, vt.pos.y); });
+                p.strokeWeight(d.sw); v.forEach(vt=>{ if(p.random(100)>96) { p.stroke(255); p.line(vt.pos.x-40, vt.pos.y, vt.pos.x+40, vt.pos.y); p.stroke(d.color[0],d.color[1],d.color[2]); } p.point(vt.pos.x, vt.pos.y); });
                 break;
             case 'SCANLINE':
                 p.strokeWeight(d.sw); v.forEach(vt=>{ if(Math.floor(vt.pos.y/12)%2==0) p.line(vt.pos.x-40, vt.pos.y, vt.pos.x+40, vt.pos.y); });
@@ -98,11 +92,8 @@ class LivingTypo {
             case 'MECHANIC':
                 p.strokeWeight(1); v.forEach((vt,i)=>{ if(i%20===0) { p.rect(vt.pos.x, vt.pos.y, 8, 8); p.line(vt.pos.x, vt.pos.y, vt.pos.x+20, vt.pos.y+20); } });
                 break;
-            case 'DNA_HELIX':
-                for(let i=0; i<v.length-1; i+=12) { p.strokeWeight(1); p.line(v[i].pos.x-15, v[i].pos.y, v[i].pos.x+15, v[i].pos.y); p.fill(255); p.circle(v[i].pos.x-15, v[i].pos.y, 5); }
-                break;
             case 'OP_ART':
-                p.strokeWeight(1); for(let k=0; k<5; k++) { p.push(); p.scale(1+k*0.08); this.path(p,v); p.pop(); }
+                p.strokeWeight(1.5); for(let k=0; k<5; k++) { p.push(); p.scale(1+k*0.1); this.path(p,v); p.pop(); }
                 break;
             default:
                 p.strokeWeight(d.sw); this.path(p,v);
@@ -112,9 +103,6 @@ class LivingTypo {
     path(p,v) { p.beginShape(); v.forEach(vt=>p.vertex(vt.pos.x, vt.pos.y)); p.endShape(); }
 }
 
-// ═══════════════════════════════════════════════════════════════
-// UNIVERSE
-// ═══════════════════════════════════════════════════════════════
 class TypoUniverse {
     constructor(p) { this.p=p; this.initUI(); this.initNav(); }
     addAtom(x=null,y=null,char=null,dna=null) {
@@ -163,7 +151,6 @@ const sketch = (p) => {
         p.createCanvas(window.innerWidth, window.innerHeight).parent('stage');
         TU = new TypoUniverse(p);
         p.loadFont('https://fonts.gstatic.com/s/outfit/v11/QGYtz_MV_NIiAd7uPTufnjU.ttf', (f)=>{GLOBAL_FONT=f; APP_STATE.atoms.forEach(a=>a.rebuild());});
-        
         const fams = BioGenome.FAMILIES;
         for(let i=0; i<18; i++) {
             let row = Math.floor(i/6); let col = i%6;
@@ -174,10 +161,10 @@ const sketch = (p) => {
     p.draw = () => {
         p.clear(); p.push();
         p.translate(p.width/2+APP_STATE.view.x, p.height/2+APP_STATE.view.y); p.scale(APP_STATE.view.zoom);
-        APP_STATE.atoms.forEach(a=>{ a.update(); a.draw(); });
+        APP_STATE.atoms.forEach(a=>{ a.draw(); });
         p.pop();
         p.resetMatrix(); p.fill(255,40); p.textSize(10);
-        p.text(`v68.0 | THE SILHOUETTE SALVATION | TYPOGRAPHIC INTEGRITY FOUND`, 20, p.height-20);
+        p.text(`v69.0 | BACK TO LIFE | SILHOUETTES PROTECTED`, 20, p.height-20);
     };
 };
 new p5(sketch);
