@@ -129,15 +129,21 @@ const sketch = (p) => {
         window.TU = new TypoUniverse(p);
         injectExportUI(p);
         
-        // Initial Showroom - Spawn all families in a grid
-        const types = BioGenome.TYPES;
-        const cols = 5;
+        // Initial Showroom - Spawn 8 random families in a grid
+        const allTypes = [...BioGenome.TYPES];
+        const selectedTypes = [];
+        for (let i = 0; i < 8; i++) {
+            const idx = Math.floor(Math.random() * allTypes.length);
+            selectedTypes.push(allTypes.splice(idx, 1)[0]);
+        }
+        
+        const cols = 4;
         const spacing = 600;
-        types.forEach((type, i) => {
+        selectedTypes.forEach((type, i) => {
             const ix = i % cols;
             const iy = Math.floor(i / cols);
             const x = (ix - (cols-1)/2) * spacing;
-            const y = (iy - (Math.ceil(types.length/cols)-1)/2) * spacing;
+            const y = (iy - (Math.ceil(selectedTypes.length/cols)-1)/2) * spacing;
             window.TU.addAtom(type, x, y);
         });
     };
@@ -164,7 +170,7 @@ const sketch = (p) => {
         p.fill(255, 30);
         p.noStroke();
         p.textSize(10);
-        p.text(`SPORE ENGINE v51.3 | FAMILIES: ${BioGenome.TYPES.length} | MOLECULES: ${APP_STATE.atoms.length}`, 20, p.height - 20);
+        p.text(`SPORE ENGINE v51.4 | FAMILIES: ${BioGenome.TYPES.length} | MOLECULES: ${APP_STATE.atoms.length}`, 20, p.height - 20);
     };
 
     p.windowResized = () => p.resizeCanvas(window.innerWidth, window.innerHeight);
