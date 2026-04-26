@@ -45,16 +45,16 @@ class BioGenome {
             type: pick(this.TYPES),
             material: pick(this.MATERIALS),
             alpha: 255,
-            v_resolution: 0.25, // Increased resolution for better fills
-            v_speed: rand(0.3, 1.2),
-            v_complexity: rand(0.5, 1.5),
-            v_strokeW: rand(1.5, 4),
-            g_amplitude: rand(1, 3.5),
-            g_speed: rand(0.5, 1.5),
-            g_drift: rand(-0.1, 0.1),
-            g_viscosity: rand(0.94, 0.98),
-            cohesion: rand(0.3, 0.6),
-            breathing: rand(0.01, 0.03),
+            v_resolution: 0.15, 
+            v_speed: rand(0.2, 0.8),
+            v_complexity: rand(0.2, 0.8),
+            v_strokeW: rand(1, 2.5),
+            g_amplitude: rand(0.5, 2), // Very low deformation
+            g_speed: rand(0.5, 1.2),
+            g_drift: 0,
+            g_viscosity: 0.96,
+            cohesion: rand(0.7, 0.9), // Extremely high cohesion
+            breathing: rand(0.005, 0.02),
             anim_offset: p ? p.createVector(0,0) : { x: 0, y: 0, copy: () => ({ x: 0, y: 0 }) },
             colorR: Math.random() * 255,
             colorG: Math.random() * 255,
@@ -302,16 +302,15 @@ class LivingTypo {
 
     // --- ENGINES ---
     drawDefault(p, col, d, v) {
-        p.fill(col[0], col[1], col[2], d.alpha * 0.25); 
-        p.stroke(col[0], col[1], col[2], d.alpha * 0.9); 
+        if (!v || v.length === 0) return;
+        p.push();
+        p.fill(col[0], col[1], col[2], d.alpha * 0.4); 
+        p.stroke(col[0], col[1], col[2], d.alpha * 0.8);
         p.strokeWeight(d.v_strokeW);
         p.beginShape();
-        if (v.length > 3) {
-            p.curveVertex(v[0].pos.x, v[0].pos.y);
-            v.forEach(vt => p.curveVertex(vt.pos.x, vt.pos.y));
-            p.curveVertex(v[v.length-1].pos.x, v[v.length-1].pos.y);
-        } else { v.forEach(vt => p.vertex(vt.pos.x, vt.pos.y)); }
+        v.forEach(vt => p.vertex(vt.pos.x, vt.pos.y));
         p.endShape(p.CLOSE);
+        p.pop();
     }
 
     drawCrystal(p, col, d, v) {
