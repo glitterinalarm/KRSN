@@ -54,15 +54,23 @@ body { background: var(--bg-dark); color: var(--text-main); font-family: 'Outfit
 
 .scroll-content {
     flex: 1;
-    overflow-y: auto;
+    overflow-y: scroll; /* Force scrollbar */
     margin: 1rem 0;
-    padding-right: 10px;
-    scrollbar-width: thin;
-    scrollbar-color: var(--accent) transparent;
+    padding-right: 15px;
 }
-.scroll-content::-webkit-scrollbar { width: 6px; }
-.scroll-content::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
-.scroll-content::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 10px; }
+.scroll-content::-webkit-scrollbar { 
+    width: 8px; 
+    display: block !important;
+}
+.scroll-content::-webkit-scrollbar-thumb { 
+    background: var(--accent); 
+    border-radius: 4px;
+    border: 2px solid rgba(0,0,0,0.3);
+}
+.scroll-content::-webkit-scrollbar-track { 
+    background: rgba(255,255,255,0.1); 
+    border-radius: 4px;
+}
 
 header h1 { font-size: 1.8rem; font-weight: 900; letter-spacing: -1px; }
 .highlight { color: var(--accent); }
