@@ -120,7 +120,7 @@ class LivingTypo {
             this.y = config.y;
             this.fontName = config.fontName;
             
-            // Clone vertices if provided
+            // Clone vertices if provided, otherwise we'll generate them below
             if (config.vertices) {
                 config.vertices.forEach(v => {
                     this.vertices.push({
@@ -131,23 +131,15 @@ class LivingTypo {
                     });
                 });
             }
-            
-            if (this.dna.type === 'FRAGMENTED' || this.dna.type === 'GASEOUS') {
-                for (let i = 0; i < 40; i++) {
-                    const v = pick(this.vertices) || { pos: p.createVector(0,0) };
-                    this.particles.push({
-                        pos: v.pos.copy(),
-                        vel: p.createVector(rand(-1,1), rand(-1,1)),
-                        sz: rand(2, 6),
-                        life: rand(0.5, 1.0)
-                    });
-                }
-            }
         } else {
             this.x = (Math.random() - 0.5) * 800;
             this.y = (Math.random() - 0.5) * 600;
             this.char = char || pick("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
             this.dna = BioGenome.createRandom();
+        }
+
+        // Failsafe: if no vertices were cloned, generate them now
+        if (this.vertices.length === 0) {
             const font = fontData || (FONTS.length ? FONTS[0] : null);
             this.fontName = font ? font.name : 'System';
             if (font && font.obj) {
@@ -163,6 +155,19 @@ class LivingTypo {
                             seed: Math.random()
                         });
                     }
+                });
+            }
+        }
+
+        // Particle initialization for specific types
+        if (this.dna.type === 'FRAGMENTED' || this.dna.type === 'GASEOUS') {
+            for (let i = 0; i < 40; i++) {
+                const v = pick(this.vertices) || { pos: p.createVector(0,0) };
+                this.particles.push({
+                    pos: v.pos.copy(),
+                    vel: p.createVector(rand(-1,1), rand(-1,1)),
+                    sz: rand(2, 6),
+                    life: rand(0.5, 1.0)
                 });
             }
         }
