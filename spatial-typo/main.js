@@ -1,7 +1,7 @@
-// Typography Lab - Spore "Ecosystem" Engine v53.0
+// Typography Lab - Spore "Ecosystem" Engine v53.1
 // THE "SPORE" REVOLUTION: Variable Stroke, Condensed Width, and Chimera Hybridization.
 
-console.log("TypoLab v53.0 — VARIABLE WIDTH & CHIMERA FUSION ACTIVE");
+console.log("TypoLab v53.1 — VARIABLE WIDTH & CHIMERA FUSION ACTIVE");
 
 let _uid = 0;
 
@@ -246,7 +246,7 @@ class LivingTypo {
         const limit = 80 * (1 + d.v_complexity);
         for (let i = 0; i < vSet.length; i += 8) {
             for (let j = i + 8; j < vSet.length; j += 16) {
-                if (p5.Vector.dist(vSet[i].pos, vSet[j].pos) < limit) {
+                if (p.dist(vSet[i].pos.x, vSet[i].pos.y, vSet[j].pos.x, vSet[j].pos.y) < limit) {
                     p.strokeWeight(0.5);
                     p.line(vSet[i].pos.x, vSet[i].pos.y, vSet[j].pos.x, vSet[j].pos.y);
                 }
@@ -322,8 +322,9 @@ class LivingTypo {
     }
 
     drawPixelSort(p, col, d, vSet) {
+        const t = p.frameCount * 0.02;
         p.stroke(col[0], col[1], col[2], d.alpha * 0.4);
-        vSet.forEach((v, i) => { if (i % 8 === 0) p.line(v.pos.x, v.pos.y, v.pos.x, v.pos.y + p.noise(v.pos.x*0.1, t)*50); });
+        vSet.forEach((v, i) => { if (i % 8 === 0) p.line(v.pos.x, v.pos.y, v.pos.x, v.pos.y + p.noise(v.pos.x*0.1, t)*80); });
         this.drawDefault(p, col, d, vSet);
     }
 
@@ -478,8 +479,8 @@ const sketch = (p) => {
         TU.update(); TU.drawParticles();
         APP_STATE.atoms.forEach(a => { a.update(); a.draw(); });
         p.pop();
-        p.resetMatrix(); p.fill(255, 40); p.textSize(10); p.text(`ENGINE v53.0 | CHIMERA FUSION ACTIVE`, 20, p.height - 20);
-        if (p.frameCount < 120) { p.fill(255, 255-p.frameCount*2); p.textSize(40); p.textAlign(p.CENTER); p.text("VARIABLE WIDTH v53.0 ACTIVE", p.width/2, p.height/2); }
+        p.resetMatrix(); p.fill(255, 40); p.textSize(10); p.text(`ENGINE v53.1 | CHIMERA FUSION ACTIVE`, 20, p.height - 20);
+        if (p.frameCount < 120) { p.fill(255, 255-p.frameCount*2); p.textSize(40); p.textAlign(p.CENTER); p.text("VARIABLE WIDTH v53.1 ACTIVE", p.width/2, p.height/2); }
     };
     p.windowResized = () => p.resizeCanvas(window.innerWidth, window.innerHeight);
 };
