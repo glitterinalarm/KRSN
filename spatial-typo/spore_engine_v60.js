@@ -941,21 +941,24 @@ class TypoUniverse {
         window.addEventListener('mousedown', e => {
             if (e.target.closest('.ui-overlay')) return;
             const { wx, wy } = world(e.clientX, e.clientY);
-            const atom = APP_STATE.atoms.find(a => Math.hypot(a.x - wx, a.y - wy) < 200/APP_STATE.view.zoom);
+            const atom = APP_STATE.atoms.find(a => Math.hypot(a.x - wx, a.y - wy) < 300/APP_STATE.view.zoom);
             if (atom) {
                 dragged = atom;
+                // Freeze camera where it is
+                APP_STATE.view.targetX = APP_STATE.view.x;
+                APP_STATE.view.targetY = APP_STATE.view.y;
+                APP_STATE.view.targetZoom = APP_STATE.view.zoom;
             } else {
                 panning = true; lx = e.clientX; ly = e.clientY;
-                APP_STATE.view.targetX = 0;
-                APP_STATE.view.targetY = 0;
-                APP_STATE.view.targetZoom = 1.0;
             }
         });
         window.addEventListener('mousemove', e => {
-            if (dragged) { dragged.x += e.movementX/APP_STATE.view.zoom; dragged.y += e.movementY/APP_STATE.view.zoom; }
-            else if (panning) { 
-                APP_STATE.view.targetX += (e.clientX-lx); 
-                APP_STATE.view.targetY += (e.clientY-ly); 
+            if (dragged) { 
+                dragged.x += e.movementX/APP_STATE.view.zoom; 
+                dragged.y += e.movementY/APP_STATE.view.zoom; 
+            } else if (panning) { 
+                APP_STATE.view.targetX += e.movementX/APP_STATE.view.zoom; 
+                APP_STATE.view.targetY += e.movementY/APP_STATE.view.zoom; 
                 lx=e.clientX; ly=e.clientY; 
             }
         });
