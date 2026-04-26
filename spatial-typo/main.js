@@ -30,7 +30,8 @@ class BioGenome {
     static TYPES = [
         'CRYSTAL', 'FLUID', 'NEURAL', 'MECHANIC', 'GASEOUS', 'FRAGMENTED', 'LIGHT',
         'QUANTUM', 'FRACTAL', 'GRID', 'ARTISTIC', 'LIQUID_METAL', 'GHOST',
-        'VOXEL', 'FUNGAL', 'GLITCH', 'VECTOR', 'STRING'
+        'VOXEL', 'FUNGAL', 'GLITCH', 'VECTOR', 'STRING',
+        'OP_ART', 'KINETIC', 'STIPPLE', 'AURA', 'FLUX'
     ];
     static MATERIALS = ['MATTE', 'NEON', 'GLASS', 'MEAT', 'METAL', 'CHROME', 'PLASMA', 'GOLIGHT', 'DARKMATTER'];
 
@@ -314,6 +315,11 @@ class LivingTypo {
             case 'GLITCH':      this.drawGlitch(p, col, d); break;
             case 'VECTOR':      this.drawVector(p, col, d); break;
             case 'STRING':      this.drawString(p, col, d); break;
+            case 'OP_ART':      this.drawOpArt(p, col, d); break;
+            case 'KINETIC':     this.drawKinetic(p, col, d); break;
+            case 'STIPPLE':     this.drawStipple(p, col, d); break;
+            case 'AURA':        this.drawAura(p, col, d); break;
+            case 'FLUX':        this.drawFlux(p, col, d); break;
             default:            this.drawDefault(p, col, d);
         }
 
@@ -507,6 +513,73 @@ class LivingTypo {
             });
             p.endShape();
         }
+    }
+
+    drawOpArt(p, col, d) {
+        // High contrast Moire & Concentric lines
+        p.noFill();
+        p.strokeWeight(2);
+        for (let i = 0; i < 10; i += 2) {
+            const shift = i * 2;
+            p.stroke(i % 4 === 0 ? 255 : 0, d.alpha);
+            p.beginShape();
+            this.vertices.forEach(v => p.vertex(v.pos.x + shift, v.pos.y + shift));
+            p.endShape();
+        }
+    }
+
+    drawKinetic(p, col, d) {
+        // Rotating mechanical parts
+        p.stroke(col[0], col[1], col[2], d.alpha);
+        this.vertices.forEach((v, i) => {
+            if (i % 20 === 0) {
+                p.push();
+                p.translate(v.pos.x, v.pos.y);
+                p.rotate(p.frameCount * 0.05 + v.seed * p.TWO_PI);
+                p.line(-20, 0, 20, 0);
+                p.circle(20, 0, 5);
+                p.pop();
+            }
+        });
+        this.drawDefault(p, col, d);
+    }
+
+    drawStipple(p, col, d) {
+        // Pointillism / Dithering
+        p.noStroke();
+        p.fill(col[0], col[1], col[2], d.alpha);
+        this.vertices.forEach((v, i) => {
+            const density = Math.floor(v.seed * 10);
+            for (let k = 0; k < density; k++) {
+                p.circle(v.pos.x + rand(-10, 10), v.pos.y + rand(-10, 10), 2);
+            }
+        });
+    }
+
+    drawAura(p, col, d) {
+        // Energetic glow field
+        p.noFill();
+        for (let i = 1; i < 5; i++) {
+            p.stroke(col[0], col[1], col[2], d.alpha / (i * 2));
+            p.strokeWeight(i * 5);
+            p.beginShape();
+            this.vertices.forEach(v => p.vertex(v.pos.x, v.pos.y));
+            p.endShape();
+        }
+        this.drawDefault(p, [255, 255, 255], d);
+    }
+
+    drawFlux(p, col, d) {
+        // Flowing particles
+        p.noStroke();
+        this.vertices.forEach((v, i) => {
+            if (i % 5 === 0) {
+                const flow = (p.frameCount * 0.1 + v.seed * 100) % 100;
+                p.fill(col[0], col[1], col[2], d.alpha * (1 - flow/100));
+                p.circle(v.pos.x, v.pos.y + flow, 3);
+            }
+        });
+        this.drawDefault(p, col, d);
     }
 
     drawDefault(p, col, d) {
