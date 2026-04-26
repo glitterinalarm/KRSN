@@ -13,7 +13,9 @@ const APP_STATE = {
 };
 
 const FONT_SOURCES = [
-    { name: 'Roboto', url: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-black-webfont.ttf' }
+    { name: 'Roboto', url: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-black-webfont.ttf' },
+    { name: 'Playfair', url: 'https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/playfairdisplay/PlayfairDisplay%5Bwght%5D.ttf' },
+    { name: 'SpaceMono', url: 'https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/spacemono/SpaceMono-Bold.ttf' }
 ];
 const FONTS = [];
 
@@ -27,9 +29,10 @@ const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
 class BioGenome {
     static TYPES = [
         'CRYSTAL', 'FLUID', 'NEURAL', 'MECHANIC', 'GASEOUS', 'FRAGMENTED', 'LIGHT',
-        'QUANTUM', 'FRACTAL', 'GRID', 'ARTISTIC', 'LIQUID_METAL', 'GHOST'
+        'QUANTUM', 'FRACTAL', 'GRID', 'ARTISTIC', 'LIQUID_METAL', 'GHOST',
+        'VOXEL', 'FUNGAL', 'GLITCH', 'VECTOR', 'STRING'
     ];
-    static MATERIALS = ['MATTE', 'NEON', 'GLASS', 'MEAT', 'METAL', 'CHROME', 'PLASMA'];
+    static MATERIALS = ['MATTE', 'NEON', 'GLASS', 'MEAT', 'METAL', 'CHROME', 'PLASMA', 'GOLIGHT', 'DARKMATTER'];
 
     static createRandom() {
         return {
@@ -306,6 +309,11 @@ class LivingTypo {
             case 'ARTISTIC':    this.drawArtistic(p, col, d); break;
             case 'LIQUID_METAL': this.drawLiquidMetal(p, col, d); break;
             case 'GHOST':       this.drawGhost(p, col, d); break;
+            case 'VOXEL':       this.drawVoxel(p, col, d); break;
+            case 'FUNGAL':      this.drawFungal(p, col, d); break;
+            case 'GLITCH':      this.drawGlitch(p, col, d); break;
+            case 'VECTOR':      this.drawVector(p, col, d); break;
+            case 'STRING':      this.drawString(p, col, d); break;
             default:            this.drawDefault(p, col, d);
         }
 
@@ -409,6 +417,93 @@ class LivingTypo {
             this.vertices.forEach(v => {
                 const off = v.vel.copy().mult(-i * 2);
                 p.vertex(v.pos.x + off.x, v.pos.y + off.y);
+            });
+            p.endShape();
+        }
+    }
+
+    drawVoxel(p, col, d) {
+        // Pseudo-3D Cubes
+        p.noStroke();
+        this.vertices.forEach((v, i) => {
+            if (i % 12 === 0) {
+                const sz = 15 * v.seed * (1 + d.v_complexity) * 0.8;
+                p.fill(col[0], col[1], col[2], d.alpha);
+                p.rect(v.pos.x, v.pos.y, sz, sz);
+                p.fill(col[0]*0.7, col[1]*0.7, col[2]*0.7, d.alpha);
+                p.beginShape();
+                p.vertex(v.pos.x, v.pos.y);
+                p.vertex(v.pos.x + sz/2, v.pos.y - sz/2);
+                p.vertex(v.pos.x + sz + sz/2, v.pos.y - sz/2);
+                p.vertex(v.pos.x + sz, v.pos.y);
+                p.endShape(p.CLOSE);
+            }
+        });
+    }
+
+    drawFungal(p, col, d) {
+        // Mycelium branching
+        p.stroke(col[0], col[1], col[2], d.alpha * 0.6);
+        p.strokeWeight(1);
+        this.vertices.forEach((v, i) => {
+            if (i % 15 === 0) {
+                const ang = v.seed * p.TWO_PI;
+                const len = 40 * v.seed * (1 + d.v_complexity);
+                p.line(v.pos.x, v.pos.y, v.pos.x + Math.cos(ang) * len, v.pos.y + Math.sin(ang) * len);
+                if (v.seed > 0.8) {
+                    p.circle(v.pos.x + Math.cos(ang) * len, v.pos.y + Math.sin(ang) * len, 3);
+                }
+            }
+        });
+        this.drawDefault(p, col, d);
+    }
+
+    drawGlitch(p, col, d) {
+        // Chromatic aberration and digital noise
+        p.push();
+        if (p.random() > 0.8) p.translate(p.random(-10, 10), 0);
+        p.stroke(255, 0, 0, d.alpha * 0.5);
+        this.drawDefault(p, [255, 0, 0], d);
+        p.pop();
+        
+        p.push();
+        if (p.random() > 0.8) p.translate(p.random(-10, 10), 0);
+        p.stroke(0, 255, 255, d.alpha * 0.5);
+        this.drawDefault(p, [0, 255, 255], d);
+        p.pop();
+        
+        this.drawDefault(p, col, d);
+    }
+
+    drawVector(p, col, d) {
+        // Streamlines
+        p.noFill();
+        p.stroke(col[0], col[1], col[2], d.alpha * 0.4);
+        this.vertices.forEach((v, i) => {
+            if (i % 10 === 0) {
+                p.beginShape();
+                let x = v.pos.x, y = v.pos.y;
+                for (let step = 0; step < 5; step++) {
+                    p.vertex(x, y);
+                    const ang = p.noise(x * 0.01, y * 0.01, p.frameCount * 0.01) * p.TWO_PI * 2;
+                    x += Math.cos(ang) * 10;
+                    y += Math.sin(ang) * 10;
+                }
+                p.endShape();
+            }
+        });
+    }
+
+    drawString(p, col, d) {
+        // High frequency vibrating strings
+        p.noFill();
+        p.strokeWeight(0.5);
+        for (let i = 0; i < 3; i++) {
+            p.stroke(col[0], col[1], col[2], (d.alpha / 3) * (1 + Math.sin(p.frameCount * 0.2 + i)));
+            p.beginShape();
+            this.vertices.forEach(v => {
+                const off = Math.sin(p.frameCount * 0.5 + v.seed * 10) * 5;
+                p.vertex(v.pos.x + off, v.pos.y + off);
             });
             p.endShape();
         }
