@@ -944,9 +944,6 @@ class TypoUniverse {
             const atom = APP_STATE.atoms.find(a => Math.hypot(a.x - wx, a.y - wy) < 200/APP_STATE.view.zoom);
             if (atom) {
                 dragged = atom;
-                APP_STATE.view.targetZoom = 1.1; // Balanced interaction zoom
-                APP_STATE.view.targetX = -atom.x;
-                APP_STATE.view.targetY = -atom.y;
             } else {
                 panning = true; lx = e.clientX; ly = e.clientY;
                 APP_STATE.view.targetX = 0;
