@@ -160,7 +160,7 @@ const sketch = (p) => {
         p.fill(255, 30);
         p.noStroke();
         p.textSize(10);
-        p.text(`SPORE ENGINE v50.9 | FAMILIES: ${BioGenome.TYPES.length} | MOLECULES: ${APP_STATE.atoms.length}`, 20, p.height - 20);
+        p.text(`SPORE ENGINE v51.0 | FAMILIES: ${BioGenome.TYPES.length} | MOLECULES: ${APP_STATE.atoms.length}`, 20, p.height - 20);
     };
 
     p.windowResized = () => p.resizeCanvas(window.innerWidth, window.innerHeight);
@@ -897,6 +897,7 @@ class TypoUniverse {
         });
 
         window.addEventListener('wheel', e => {
+            if (e.target.closest('.ui-overlay')) return; // Let the menu scroll!
             e.preventDefault();
             const factor = e.deltaY > 0 ? 0.9 : 1.1;
             APP_STATE.view.zoom = clamp(APP_STATE.view.zoom * factor, 0.05, 5);
