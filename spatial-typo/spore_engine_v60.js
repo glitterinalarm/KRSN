@@ -941,10 +941,14 @@ class TypoUniverse {
         window.addEventListener('mousedown', e => {
             if (e.target.closest('.ui-overlay')) return;
             const { wx, wy } = world(e.clientX, e.clientY);
-            dragged = APP_STATE.atoms.find(a => Math.hypot(a.x-wx, a.y-wy) < 200/APP_STATE.view.zoom);
-            if (!dragged) { 
-                panning = true; lx = e.clientX; ly = e.clientY; 
-                // Reset focus if clicking empty space
+            const atom = APP_STATE.atoms.find(a => Math.hypot(a.x - wx, a.y - wy) < 200/APP_STATE.view.zoom);
+            if (atom) {
+                dragged = atom;
+                APP_STATE.view.targetZoom = 1.3;
+                APP_STATE.view.targetX = -atom.x;
+                APP_STATE.view.targetY = -atom.y;
+            } else {
+                panning = true; lx = e.clientX; ly = e.clientY;
                 APP_STATE.view.targetX = 0;
                 APP_STATE.view.targetY = 0;
                 APP_STATE.view.targetZoom = 1.0;
@@ -987,7 +991,7 @@ window.focusAtom = (id) => {
     if (atom) {
         APP_STATE.view.targetX = -atom.x;
         APP_STATE.view.targetY = -atom.y;
-        APP_STATE.view.targetZoom = 3.0; // Deep zoom
+        APP_STATE.view.targetZoom = 1.8; // Elegant breathing room
     }
 };
 
