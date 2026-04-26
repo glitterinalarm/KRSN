@@ -1,130 +1,168 @@
-// Typography Lab - Spore Engine v70.0
-// KINETIC PIXEL ENGINE: NO MORE HORIZONTAL JUMPS. PURE TYPOGRAPHIC CLARITY.
+// Typography Lab - Spore Engine v71.0
+// THE RESURRECTION: RESTORING TYPOGRAPHIC SOUL, THE 5 PILLARS, AND FLUID NAVIGATION.
 
-console.log("TypoLab v70.0 — KINETIC PIXEL RESTORATION");
+console.log("TypoLab v71.0 — THE MASTERPIECE RESTORATION");
 
 let _uid = 0;
 let GLOBAL_FONT = null;
-const APP_STATE = { atoms: [], view: { x: 0, y: 0, zoom: 0.6 } };
+const APP_STATE = { atoms: [], view: { x: 0, y: 0, zoom: 0.8 } };
 const rand = (a, b) => Math.random() * (b - a) + a;
 const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
 // ═══════════════════════════════════════════════════════════════
-// VERTEX GEN
+// TAXONOMY: THE 5 SACRED PILLARS & 50 SPECIES
 // ═══════════════════════════════════════════════════════════════
-function getVertices(p, char) {
-    if(GLOBAL_FONT) {
-        try {
-            const fSize = 220;
-            const pts = GLOBAL_FONT.textToPoints(char, 0, 0, fSize, { sampleFactor: 0.45 });
-            if(pts && pts.length > 20) {
-                let minX=Infinity, maxX=-Infinity, minY=Infinity, maxY=-Infinity;
-                pts.forEach(pt=>{ minX=Math.min(minX,pt.x); maxX=Math.max(maxX,pt.x); minY=Math.min(minY,pt.y); maxY=Math.max(maxY,pt.y); });
-                const offX = (minX+maxX)/2; const offY = (minY+maxY)/2;
-                return pts.map(pt => ({pos:p.createVector(pt.x-offX,pt.y-offY), base:p.createVector(pt.x-offX,pt.y-offY)}));
-            }
-        } catch(e) {}
-    }
-    const sz=150; const pg=p.createGraphics(sz,sz);
-    pg.background(0); pg.fill(255); pg.textAlign(p.CENTER, p.CENTER); pg.textSize(sz*0.8); pg.text(char,sz/2,sz/2);
-    pg.loadPixels(); const pts=[];
-    for(let y=0;y<sz;y+=3)for(let x=0;x<sz;x+=3)if(pg.pixels[(x+y*sz)*4]>127)pts.push({x:x-sz/2,y:y-sz/2});
-    return pts.map(pt=>({pos:p.createVector(pt.x*1.5,pt.y*1.5), base:p.createVector(pt.x*1.5,pt.y*1.5)}));
-}
+const GENOME_DATA = {
+    'PHYSIQUE': ['CRYSTAL', 'CHROME', 'MECHANIC', 'GLITCH', 'VOXEL', 'ORIGAMI', 'CARBON', 'METEOR', 'SPIKE', 'PYRAMID'],
+    'BIOLOGIQUE': ['DNA_HELIX', 'FLUID', 'JELLY', 'BUBBLE', 'PLASMA', 'CORAL', 'MOSS', 'AMOEBA', 'SPORE', 'MYCELIUM'],
+    'MATHEMATIQUE': ['NEURAL', 'TURING', 'FRACTAL', 'QUANTUM', 'VECTOR', 'VORONOI', 'MANDELBROT', 'FIBONACCI', 'BINARY', 'TESSERACT'],
+    'OPTIQUE': ['NEON', 'OPTICS', 'PHASE', 'GHOST', 'SHADOW', 'CELESTIAL', 'PRISM', 'SCANLINE', 'DITHERING', 'HOLOGRAPH'],
+    'ARTISTIQUE': ['INK', 'BRUSH', 'OP_ART', 'KINETIC', 'SPECTRUM', 'CANVAS', 'ETCHING', 'DADA', 'FUTURISM', 'BAUHAUS']
+};
 
 class BioGenome {
-    static FAMILIES = ['NEON', 'CHROME', 'CRYSTAL', 'NEURAL', 'BUBBLE', 'GLITCH', 'SCANLINE', 'QUANTUM', 'OP_ART', 'INK', 'MECHANIC', 'DNA_HELIX', 'POWDER', 'GRID', 'VOXEL'];
     static createRandom(forcedType = null) {
+        const pillar = pick(Object.keys(GENOME_DATA));
+        const type = forcedType || pick(GENOME_DATA[pillar]);
         return {
-            type: forcedType || pick(this.FAMILIES),
+            pillar, type,
             color: [rand(140,255), rand(140,255), rand(140,255)],
-            sw: rand(2.5, 6),
-            seed: Math.random()*1000
+            sw: rand(3, 10), // Base weight
+            widthScale: rand(0.9, 1.2),
+            seed: Math.random() * 1000
         };
+    }
+    static cross(d1, d2) {
+        let c = this.createRandom();
+        c.pillar = Math.random() < 0.5 ? d1.pillar : d2.pillar;
+        c.type = Math.random() < 0.5 ? d1.type : d2.type;
+        c.color = [(d1.color[0]+d2.color[0])/2, (d1.color[1]+d2.color[1])/2, (d1.color[2]+d2.color[2])/2];
+        return c;
     }
 }
 
+// ═══════════════════════════════════════════════════════════════
+// LIVING TYPO: HYBRID RENDERING (SOLID CORE + GENERATIVE AURA)
+// ═══════════════════════════════════════════════════════════════
 class LivingTypo {
     constructor(p, cfg={}) {
         this.p=p; this.atomId=_uid++;
         this.x = cfg.x||0; this.y = cfg.y||0;
         this.char = cfg.char||pick("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
         this.dna = cfg.dna||BioGenome.createRandom();
-        this.vertices = []; this.rebuild();
+        this.vertices = []; // Kept only for generative effects
+        this.rebuild();
     }
-    rebuild() { this.vertices = getVertices(this.p, this.char); }
-    update() { }
+    rebuild() {
+        if(GLOBAL_FONT) {
+            this.vertices = GLOBAL_FONT.textToPoints(this.char, -90, 80, 220, { sampleFactor: 0.3 });
+        }
+    }
     draw() {
         const p=this.p; const d=this.dna; const v=this.vertices;
-        if(!v.length) return;
-        p.push(); p.translate(this.x, this.y);
+        p.push(); p.translate(this.x, this.y); p.scale(d.widthScale, 1.0);
         
-        const col = p.color(d.color[0], d.color[1], d.color[2]);
-        const sw = d.v_strokeW || d.sw;
+        // 1. SOLID TYPOGRAPHIC CORE (High Fidelity)
+        p.fill(255, 30); p.noStroke();
+        p.textAlign(p.CENTER, p.CENTER); p.textFont(GLOBAL_FONT || "Outfit"); p.textSize(220);
+        p.text(this.char, 0, 0);
 
-        // ═══════════════════════════════════════════════════════════
-        // PURE PIXEL RENDERING (No Shape Connection = No Jump Lines)
-        // ═══════════════════════════════════════════════════════════
-        switch(d.type) {
-            case 'BUBBLE':
-                p.noStroke(); p.fill(col); v.forEach((vt,i)=>{ if(i%6===0) p.circle(vt.pos.x, vt.pos.y, sw*3); });
-                break;
-            case 'NEON':
-                v.forEach(vt=>{ p.strokeWeight(sw*3); p.stroke(d.color[0],d.color[1],d.color[2],30); p.point(vt.pos.x, vt.pos.y); p.strokeWeight(sw*1.5); p.stroke(255); p.point(vt.pos.x, vt.pos.y); });
-                break;
-            case 'GLITCH':
-                v.forEach(vt=>{ 
-                    if(p.random(100)>98) { p.stroke(255); p.line(vt.pos.x-10, vt.pos.y, vt.pos.x+10, vt.pos.y); } 
-                    p.strokeWeight(sw); p.stroke(col); p.point(vt.pos.x+p.random(-2,2), vt.pos.y); 
-                });
-                break;
-            case 'CRYSTAL':
-                p.strokeWeight(1); p.stroke(col); for(let i=0; i<v.length-5; i+=10) { p.fill(d.color[0],d.color[1],d.color[2],40); p.triangle(v[i].pos.x,v[i].pos.y, v[i+2].pos.x, v[i+2].pos.y, v[i+4].pos.x, v[i+4].pos.y); }
-                break;
-            case 'SCANLINE':
-                p.strokeWeight(1); p.stroke(col); v.forEach(vt=>{ if(Math.floor(vt.pos.y/6)%2==0) { p.line(vt.pos.x-5, vt.pos.y, vt.pos.x+5, vt.pos.y); } p.strokeWeight(sw); p.point(vt.pos.x, vt.pos.y); });
-                break;
-            case 'MECHANIC':
-                p.strokeWeight(1); p.stroke(col); v.forEach((vt,i)=>{ if(i%15===0) { p.noFill(); p.rectMode(p.CENTER); p.rect(vt.pos.x, vt.pos.y, 6, 6); p.line(vt.pos.x, vt.pos.y, vt.pos.x+5, vt.pos.y+5); } p.point(vt.pos.x, vt.pos.y); });
-                break;
-            case 'OP_ART':
-                p.strokeWeight(sw); p.stroke(col); v.forEach(vt=>{ p.point(vt.pos.x, vt.pos.y); p.stroke(255, 100); p.point(vt.pos.x+4, vt.pos.y+4); p.point(vt.pos.x-4, vt.pos.y-4); });
-                break;
-            case 'POWDER':
-                p.noStroke(); p.fill(d.color[0],d.color[1],d.color[2],150); v.forEach(vt=>{ p.circle(vt.pos.x+p.random(-5,5), vt.pos.y+p.random(-5,5), 1.5); });
-                break;
-            case 'NEURAL':
-                p.strokeWeight(0.5); p.stroke(col); for(let i=0; i<v.length; i+=15) for(let j=i+15; j<v.length; j+=40) { if(p.dist(v[i].pos.x,v[i].pos.y,v[j].pos.x,v[j].pos.y)<35) p.line(v[i].pos.x,v[i].pos.y,v[j].pos.x,v[j].pos.y); }
-                v.forEach(vt=>{ p.strokeWeight(sw); p.point(vt.pos.x, vt.pos.y); });
-                break;
-            default:
-                // CLEAN PIXEL OUTLINE
-                p.strokeWeight(sw); p.stroke(col); v.forEach(vt=>p.point(vt.pos.x, vt.pos.y));
+        // 2. GENERATIVE LAYERING
+        p.stroke(d.color[0], d.color[1], d.color[2]); p.strokeWeight(d.sw); p.noFill();
+        
+        switch(d.pillar) {
+            case 'PHYSIQUE': this.renderPhys(p,d,v); break;
+            case 'BIOLOGIQUE': this.renderBio(p,d,v); break;
+            case 'MATHEMATIQUE': this.renderMath(p,d,v); break;
+            case 'OPTIQUE': this.renderOptic(p,d,v); break;
+            case 'ARTISTIQUE': this.renderArt(p,d,v); break;
         }
         p.pop();
     }
+
+    renderPhys(p,d,v) {
+        if(d.type === 'CHROME') {
+            p.strokeWeight(d.sw*2); p.stroke(255); this.contour(p,v);
+            p.strokeWeight(d.sw); p.stroke(d.color[0],d.color[1],d.color[2]); this.contour(p,v);
+        } else if(d.type === 'CRYSTAL') {
+            p.strokeWeight(1); p.fill(d.color[0],d.color[1],d.color[2],40);
+            for(let i=0; i<v.length-5; i+=10) p.triangle(v[i].x, v[i].y, v[i+3].x, v[i+3].y, 0, 0);
+        } else {
+            p.strokeWeight(d.sw); this.contour(p,v);
+        }
+    }
+
+    renderBio(p,d,v) {
+        if(d.type === 'BUBBLE') {
+            p.noStroke(); p.fill(d.color[0],d.color[1],d.color[2],180);
+            v.forEach((vt,i)=>{ if(i%8===0) p.circle(vt.x, vt.y, d.sw*4); });
+        } else if(d.type === 'PLASMA') {
+            p.noStroke(); p.fill(d.color[0],d.color[1],d.color[2],50);
+            v.forEach(vt=>p.circle(vt.x+p.noise(vt.y*0.1)*20, vt.y, d.sw*3));
+        } else {
+            p.strokeWeight(d.sw*1.5); p.beginShape(); v.forEach(vt=>p.curveVertex(vt.x, vt.y)); p.endShape();
+        }
+    }
+
+    renderMath(p,d,v) {
+        if(d.type === 'NEURAL') {
+            p.strokeWeight(0.5); for(let i=0; i<v.length; i+=15) for(let j=i+15; j<v.length; j+=40) if(p.dist(v[i].x,v[i].y,v[j].x,v[j].y)<50) p.line(v[i].x,v[i].y,v[j].x,v[j].y);
+        } else if(d.type === 'QUANTUM') {
+            v.forEach(vt=>p.line(vt.x, vt.y, vt.x+p.random(-40,40), vt.y+p.random(-40,40)));
+        } else {
+            this.contour(p,v);
+        }
+    }
+
+    renderOptic(p,d,v) {
+        if(d.type === 'NEON') {
+            p.strokeWeight(d.sw*3); p.stroke(d.color[0],d.color[1],d.color[2],30); this.contour(p,v);
+            p.strokeWeight(d.sw); p.stroke(255); this.contour(p,v);
+        } else if(d.type === 'SCANLINE') {
+            v.forEach(vt=>{ if(Math.floor(vt.y/10)%2==0) p.line(vt.x-60, vt.y, vt.x+60, vt.y); });
+        } else {
+            p.strokeWeight(d.sw); this.contour(p,v);
+        }
+    }
+
+    renderArt(p,d,v) {
+        if(d.type === 'OP_ART') {
+            for(let k=0; k<6; k++) { p.push(); p.translate(k*5, k*3); this.contour(p,v); p.pop(); }
+        } else if(d.type === 'INK') {
+            p.strokeWeight(d.sw*2); p.beginShape(); v.forEach(vt=>p.curveVertex(vt.x+p.random(-5,5), vt.y)); p.endShape();
+        } else {
+            this.contour(p,v);
+        }
+    }
+
+    contour(p,v) {
+        v.forEach(vt=>p.point(vt.x, vt.y));
+    }
 }
 
+// ═══════════════════════════════════════════════════════════════
+// UNIVERSE: STABILIZED NAVIGATION & FUSION
+// ═══════════════════════════════════════════════════════════════
 class TypoUniverse {
     constructor(p) { this.p=p; this.initUI(); this.initNav(); }
-    addAtom(x=null,y=null,char=null,dna=null) {
+    addAtom(x=0,y=0,char=null,dna=null) {
         const a=new LivingTypo(this.p,{x,y,char,dna}); APP_STATE.atoms.push(a); this.updateList(); return a;
     }
     updateList() {
         const ml=document.getElementById('molecule-list'); if(!ml) return;
         ml.innerHTML=APP_STATE.atoms.map(a=>`<li class="molecule-item" onclick="window.focusOn(${a.atomId})">
             <span class="status-dot" style="background:rgb(${a.dna.color[0]},${a.dna.color[1]},${a.dna.color[2]})"></span> 
-            ${a.char} <small>[${a.dna.type}]</small>
+            ${a.char} <small>[${a.dna.pillar} / ${a.dna.type}]</small>
         </li>`).join('');
     }
-    initUI() { document.getElementById('add-atom').onclick=()=>this.addAtom(); }
+    initUI() { document.getElementById('add-atom').onclick=()=>this.addAtom(rand(-500,500), rand(-500,500)); }
     initNav() {
         let drag=null, pan=false;
         const w=(cx,cy)=>({wx:(cx-this.p.width/2-APP_STATE.view.x)/APP_STATE.view.zoom, wy:(cy-this.p.height/2-APP_STATE.view.y)/APP_STATE.view.zoom});
         window.addEventListener('mousedown',e=>{
             if(e.target.closest('.ui-overlay')) return;
             const{wx,wy}=w(e.clientX,e.clientY);
-            drag=APP_STATE.atoms.find(a=>Math.hypot(a.x-wx,a.y-wy)<120/APP_STATE.view.zoom);
+            drag=APP_STATE.atoms.find(a=>Math.hypot(a.x-wx,a.y-wy)<140/APP_STATE.view.zoom);
             if(!drag) pan=true; 
         });
         window.addEventListener('mousemove',e=>{
@@ -139,10 +177,10 @@ class TypoUniverse {
         };
     }
     checkFusion(m) {
-        const o=APP_STATE.atoms.find(at=>at!==m && Math.hypot(at.x-m.x,at.y-m.y)<100);
+        const o=APP_STATE.atoms.find(at=>at!==m && Math.hypot(at.x-m.x,at.y-m.y)<120);
         if(!o) return;
         this.p.background(255);
-        this.addAtom((m.x+o.x)/2, (m.y+o.y)/2, pick([m.char,o.char]), BioGenome.createRandom());
+        this.addAtom((m.x+o.x)/2, (m.y+o.y)/2, pick([m.char,o.char]), BioGenome.cross(m.dna,o.dna));
         APP_STATE.atoms=APP_STATE.atoms.filter(a=>a!==m && a!==o); this.updateList();
     }
 }
@@ -153,12 +191,7 @@ const sketch = (p) => {
         p.createCanvas(window.innerWidth, window.innerHeight).parent('stage');
         TU = new TypoUniverse(p);
         p.loadFont('https://fonts.gstatic.com/s/outfit/v11/QGYtz_MV_NIiAd7uPTufnjU.ttf', (f)=>{GLOBAL_FONT=f; APP_STATE.atoms.forEach(a=>a.rebuild());});
-        
-        const fams = BioGenome.FAMILIES;
-        for(let i=0; i<18; i++) {
-            let row = Math.floor(i/6); let col = i%6;
-            TU.addAtom((col-2.5)*350, (row-1)*400, pick("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), BioGenome.createRandom(fams[i%fams.length]));
-        }
+        for(let i=0; i<8; i++) TU.addAtom((i%4-1.5)*350, (Math.floor(i/4)-0.5)*400);
         document.getElementById('loader').style.display='none';
     };
     p.draw = () => {
@@ -167,7 +200,7 @@ const sketch = (p) => {
         APP_STATE.atoms.forEach(a=>{ a.draw(); });
         p.pop();
         p.resetMatrix(); p.fill(255,40); p.textSize(10);
-        p.text(`v70.0 | KINETIC PIXELS | PURE SILHOUETTES | NO MORE JUMPS`, 20, p.height-20);
+        p.text(`v71.0 | THE RESURRECTION | RESTORED 5 PILLARS | PERF NAVIGATION`, 20, p.height-20);
     };
 };
 new p5(sketch);
