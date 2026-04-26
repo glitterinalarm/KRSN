@@ -13,7 +13,7 @@ const APP_STATE = {
 };
 
 const FONT_SOURCES = [
-    { name: 'Outfit', url: 'https://fonts.gstatic.com/s/outfit/v11/QGYtz_MV_NIiAd7uPTufnjU.ttf' }
+    { name: 'Outfit', url: 'https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/outfit/static/Outfit-Bold.ttf' }
 ];
 const FONTS = [];
 
