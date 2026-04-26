@@ -39,22 +39,23 @@
                     <p>Génétique Typographique</p>
                 </header>
 
-                <div class="panel-section">
-                    <div class="btn-group">
-
-                        <button id="add-atom" class="btn-primary">Mutuer un Atome</button>
-                        <button id="undo-btn" class="btn-secondary">Undo</button>
+                <div class="scroll-content">
+                    <div class="panel-section">
+                        <div class="btn-group">
+                            <button id="add-atom" class="btn-primary">Mutuer un Atome</button>
+                            <button id="undo-btn" class="btn-secondary">Undo</button>
+                        </div>
                     </div>
-                </div>
 
-                <div class="panel-section">
-                    <h3>Molecules Créées</h3>
-                    <ul id="molecule-list"></ul>
-                </div>
+                    <div class="panel-section">
+                        <h3>Molecules Créées</h3>
+                        <ul id="molecule-list"></ul>
+                    </div>
 
-                <div class="panel-section">
-                    <h3>Atomes dans l'Espace</h3>
-                    <ul id="atom-list"></ul>
+                    <div class="panel-section">
+                        <h3>Atomes dans l'Espace</h3>
+                        <ul id="atom-list"></ul>
+                    </div>
                 </div>
 
                 <footer class="side-footer">
@@ -90,7 +91,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.1/p5.min.js"></script>
-    <script type="module" src="/spatial-typo/main.js?v=50.7"></script>
+    <script type="module" src="/spatial-typo/main.js?v=50.9"></script>
     <script>
         // Fallback: Si le sketch p5 ne prend pas le relais, on cache le loader quand même
         window.addEventListener('load', () => {
