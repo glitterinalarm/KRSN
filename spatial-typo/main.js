@@ -1,7 +1,7 @@
-// Typography Lab - Spore "Ecosystem" Engine v53.1
+// Typography Lab - Spore "Ecosystem" Engine v53.2
 // THE "SPORE" REVOLUTION: Variable Stroke, Condensed Width, and Chimera Hybridization.
 
-console.log("TypoLab v53.1 — VARIABLE WIDTH & CHIMERA FUSION ACTIVE");
+console.log("TypoLab v53.2 — VARIABLE WIDTH & CHIMERA FUSION ACTIVE");
 
 let _uid = 0;
 
@@ -183,31 +183,38 @@ class LivingTypo {
     }
 
     renderDNA(p, col, d, type, start = 0, end = null) {
-        const vSet = end !== null ? this.vertices.slice(start, end) : this.vertices;
-        if (vSet.length < 2) return;
-
-        switch (type) {
-            case 'CRYSTAL': this.drawCrystal(p, col, d, vSet); break;
-            case 'FLUID': this.drawFluid(p, col, d, vSet); break;
-            case 'NEURAL': this.drawNeural(p, col, d, vSet); break;
-            case 'MECHANIC': this.drawMechanic(p, col, d, vSet); break;
-            case 'GASEOUS': this.drawGaseous(p, col, d, vSet); break;
-            case 'FRAGMENTED': this.drawFragmented(p, col, d, vSet); break;
-            case 'OP_ART': this.drawOpArt(p, col, d, vSet); break;
-            case 'KINETIC': this.drawKinetic(p, col, d, vSet); break;
-            case 'VORONOI': this.drawVoronoi(p, col, d, vSet); break;
-            case 'ASCII_ART': this.drawASCII(p, col, d, vSet); break;
-            case 'PIXEL_SORT': this.drawPixelSort(p, col, d, vSet); break;
-            case 'TURING': this.drawTuring(p, col, d, vSet); break;
-            case 'DELAUNAY': this.drawDelaunay(p, col, d, vSet); break;
-            case 'ATTRACTOR': this.drawAttractor(p, col, d, vSet); break;
-            case 'PARAMETRIC': this.drawParametric(p, col, d, vSet); break;
-            case 'TRIGONOMETRY': this.drawTrig(p, col, d, vSet); break;
-            case 'DNA': this.drawDna(p, col, d, vSet); break;
-            case 'LYMPHOCYTE': this.drawLymphocyte(p, col, d, vSet); break;
-            case 'GLOBULE': this.drawGlobule(p, col, d, vSet); break;
-            default: this.drawDefault(p, col, d, vSet);
+        const vSet = (end !== null) ? this.vertices.slice(start, end) : this.vertices;
+        if (vSet.length < 2) {
+            // FALLBACK: If vertices failed to load (font issue), draw a diagnostic square
+            p.fill(col[0], col[1], col[2], 100);
+            p.rect(-50, -50, 100, 100);
+            p.fill(255); p.textSize(12); p.textAlign(p.CENTER);
+            p.text(this.char, 0, 0);
+            return;
         }
+
+        const engineMap = {
+            'CRYSTAL': this.drawCrystal, 'FLUID': this.drawFluid, 'NEURAL': this.drawNeural,
+            'MECHANIC': this.drawMechanic, 'GASEOUS': this.drawGaseous, 'FRAGMENTED': this.drawFragmented,
+            'OP_ART': this.drawOpArt, 'KINETIC': this.drawKinetic, 'VORONOI': this.drawVoronoi,
+            'ASCII_ART': this.drawASCII, 'PIXEL_SORT': this.drawPixelSort, 'TURING': this.drawTuring,
+            'DELAUNAY': this.drawDelaunay, 'ATTRACTOR': this.drawAttractor, 'PARAMETRIC': this.drawParametric,
+            'TRIGONOMETRY': this.drawTrig, 'DNA': this.drawDna, 'LYMPHOCYTE': this.drawLymphocyte,
+            'GLOBULE': this.drawGlobule, 'PHOTOSYNTHESIS': this.drawPhotosynthesis, 'LIQUID_METAL': this.drawLiquidMetal,
+            'GHOST': this.drawGhost, 'VOXEL': this.drawVoxel, 'FUNGAL': this.drawFungal, 'GLITCH': this.drawGlitch,
+            'VECTOR': this.drawVector, 'STRING': this.drawString, 'AURA': this.drawAura, 'FLUX': this.drawFlux,
+            'MITOSIS': this.drawMitosis, 'GOLDEN_RATIO': this.drawGolden, 'DERIVATIVE': this.drawDeriv,
+            'INTEGRAL': this.drawIntegral, 'COMPLEX_PLANE': this.drawComplex, 'STATISTICS': this.drawStats,
+            'GEOMETRY': this.drawGeometry, 'LOGIC': this.drawLogic, 'EXPONENTIAL': this.drawExpr,
+            'RELATIVITY': this.drawRelativity, 'QUANTUM_WAVE': this.drawQuantumWave, 'THERMODYNAMICS': this.drawEntropy,
+            'ELECTROMAGNETISM': this.drawElectromagnetic, 'GRAVITY_WELL': this.drawGravity, 'KINETICS': this.drawKinetics,
+            'FLUID_DYNAMICS': this.drawFluidDyn, 'OPTICS': this.drawOptics, 'ASTROPHYSICS': this.drawAstrophys,
+            'CELLULAR_AUTOMATA': this.drawCellular, 'ARTISTIC': this.drawArtistic, 'QUANTUM': this.drawQuantum,
+            'FRACTAL': this.drawFractal, 'GRID': this.drawGrid
+        };
+
+        const engine = engineMap[type] || this.drawDefault;
+        engine.call(this, p, col, d, vSet);
     }
 
     // --- REFINED MODULES WITH VARIABLE STROKE ---
@@ -464,7 +471,15 @@ class TypoUniverse {
 
 const sketch = (p) => {
     let TU;
-    p.preload = () => { FONT_SOURCES.forEach(s => FONTS.push({ name: s.name, obj: p.loadFont(s.url) })); };
+    p.preload = () => {
+        console.log("Loading Spore Fonts...");
+        for (let s of FONT_SOURCES) {
+            FONTS.push({ name: s.name, obj: p.loadFont(s.url, 
+                () => console.log(`Font ${s.name} loaded.`),
+                () => console.error(`Failed to load font ${s.name}`)
+            )});
+        }
+    };
     p.setup = () => {
         p.createCanvas(window.innerWidth, window.innerHeight); TU = new TypoUniverse(p);
         BioGenome.TYPES.sort(() => 0.5 - Math.random()).slice(0, 8).forEach((type, i) => {
@@ -479,8 +494,8 @@ const sketch = (p) => {
         TU.update(); TU.drawParticles();
         APP_STATE.atoms.forEach(a => { a.update(); a.draw(); });
         p.pop();
-        p.resetMatrix(); p.fill(255, 40); p.textSize(10); p.text(`ENGINE v53.1 | CHIMERA FUSION ACTIVE`, 20, p.height - 20);
-        if (p.frameCount < 120) { p.fill(255, 255-p.frameCount*2); p.textSize(40); p.textAlign(p.CENTER); p.text("VARIABLE WIDTH v53.1 ACTIVE", p.width/2, p.height/2); }
+        p.resetMatrix(); p.fill(255, 40); p.textSize(10); p.text(`ENGINE v53.2 | CHIMERA FUSION ACTIVE`, 20, p.height - 20);
+        if (p.frameCount < 120) { p.fill(255, 255-p.frameCount*2); p.textSize(40); p.textAlign(p.CENTER); p.text("VARIABLE WIDTH v53.2 ACTIVE", p.width/2, p.height/2); }
     };
     p.windowResized = () => p.resizeCanvas(window.innerWidth, window.innerHeight);
 };
