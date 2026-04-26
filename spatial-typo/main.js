@@ -42,6 +42,43 @@ class BioGenome {
     ];
     static MATERIALS = ['MATTE', 'NEON', 'GLASS', 'MEAT', 'METAL', 'CHROME', 'PLASMA', 'GOLIGHT', 'DARKMATTER'];
 
+    static cross(d1, d2) {
+        const roll = Math.random();
+        let newType = d1.type;
+        let secondaryType = null;
+        
+        if (roll < 0.4) { // HYBRID: Combination of both
+            newType = d1.type;
+            secondaryType = d2.type;
+        } else if (roll < 0.7) { // DOMINANT: One takes over
+            newType = Math.random() > 0.5 ? d1.type : d2.type;
+        } else if (roll < 0.95) { // MUTANT: New family
+            newType = pick(this.TYPES);
+        } else { // LETHAL: Handled in checkFusion
+            return null;
+        }
+
+        return {
+            type: newType,
+            secondaryType: secondaryType,
+            material: Math.random() > 0.5 ? d1.material : d2.material,
+            colorR: (d1.colorR + d2.colorR) / 2,
+            colorG: (d1.colorG + d2.colorG) / 2,
+            colorB: (d1.colorB + d2.colorB) / 2,
+            v_resolution: (d1.v_resolution + d2.v_resolution) / 2,
+            v_speed: (d1.v_speed + d2.v_speed) / 2,
+            v_complexity: (d1.v_complexity + d2.v_complexity) / 1.5,
+            v_strokeW: (d1.v_strokeW + d2.v_strokeW) / 2,
+            g_amplitude: (d1.g_amplitude + d2.g_amplitude) / 2,
+            g_speed: (d1.g_speed + d2.g_speed) / 2,
+            g_drift: (d1.g_drift + d2.g_drift) / 2,
+            g_viscosity: (d1.g_viscosity + d2.g_viscosity) / 2,
+            cohesion: (d1.cohesion + d2.cohesion) * 1.1,
+            breathing: (d1.breathing + d2.breathing) / 2,
+            anim_offset: d1.anim_offset.copy().lerp(d2.anim_offset, 0.5)
+        };
+    }
+
     static createRandom() {
         return {
             // Discrete Genes (Spore Style)
@@ -69,6 +106,9 @@ class BioGenome {
             breathing: rand(0.01, 0.08),
             pulsation: rand(0.02, 0.15),
             gravity: rand(-0.1, 0.1),
+            
+            // Deep Genetic Fusion
+            anim_offset: p5.Vector.random2D(),
             
             // Aesthetic
             colorR: Math.random() * 255,
@@ -172,7 +212,7 @@ const sketch = (p) => {
         p.fill(255, 30);
         p.noStroke();
         p.textSize(10);
-        p.text(`SPORE ENGINE v51.7 | FAMILIES: ${BioGenome.TYPES.length} | MOLECULES: ${APP_STATE.atoms.length}`, 20, p.height - 20);
+        p.text(`SPORE ENGINE v52.1 | FAMILIES: ${BioGenome.TYPES.length} | MOLECULES: ${APP_STATE.atoms.length}`, 20, p.height - 20);
     };
 
     p.windowResized = () => p.resizeCanvas(window.innerWidth, window.innerHeight);
@@ -251,6 +291,50 @@ class LivingTypo {
         }
     }
 
+    checkFusion(a1, a2) {
+        const p = this.p;
+        const childDNA = BioGenome.cross(a1.dna, a2.dna);
+        
+        if (!childDNA) {
+            // LETHAL MUTATION: Both die in an explosion
+            this.explode(a1.x, a1.y, [255, 0, 0]);
+            this.removeAtom(a1.atomId);
+            this.removeAtom(a2.atomId);
+            return;
+        }
+
+        let childChar = Math.random() > 0.5 ? a1.char : a2.char;
+        if (Math.random() < 0.2) {
+            // MORPH: Character shift to mathematical/Greek symbols
+            childChar = pick("ABCDEFGHIJKLMNOPQRSTUVWXYZΣΔΩΨΠΦΞΛΘ");
+        }
+
+        const nx = (a1.x + a2.x) / 2;
+        const ny = (a1.y + a2.y) / 2;
+        
+        // Birth explosion
+        this.explode(nx, ny, [childDNA.colorR, childDNA.colorG, childDNA.colorB]);
+
+        this.addAtom(childDNA.type, nx, ny, childChar, childDNA);
+        this.removeAtom(a1.atomId);
+        this.removeAtom(a2.atomId);
+    }
+
+    explode(x, y, col) {
+        const p = this.p;
+        for (let i = 0; i < 50; i++) {
+            const angle = Math.random() * p.TWO_PI;
+            const spd = Math.random() * 8;
+            this.particles.push({
+                pos: p.createVector(x, y),
+                vel: p.createVector(Math.cos(angle) * spd, Math.sin(angle) * spd),
+                sz: rand(2, 10),
+                life: 1.0,
+                color: col
+            });
+        }
+    }
+
     update() {
         const d = this.dna;
         const p = this.p;
@@ -305,22 +389,34 @@ class LivingTypo {
     draw() {
         const p = this.p;
         const d = this.dna;
-        const col = [d.colorR, d.colorG, d.colorB];
-        
         p.push();
         p.translate(this.x, this.y);
-        
-        // Depth / Volume logic
-        const volume = 1 + d.v_complexity * 0.5;
-        p.scale(volume);
+        p.rotate(this.angle);
+
+        const col = [d.colorR, d.colorG, d.colorB];
+        p.strokeWeight(d.v_strokeW);
 
         // Material Setting
         if (d.material === 'NEON') p.blendMode(p.ADD);
         if (d.material === 'GLASS') p.drawingContext.shadowBlur = 15;
         p.drawingContext.shadowColor = `rgba(${col[0]},${col[1]},${col[2]}, 0.5)`;
 
-        // RENDER TYPES
-        switch (d.type) {
+        // Render Primary Engine
+        this.renderDNA(p, col, d, d.type);
+        
+        // Render Secondary Engine (if Hybrid)
+        if (d.secondaryType) {
+            p.push();
+            this.renderDNA(p, [255, 255, 255, 100], d, d.secondaryType);
+            p.pop();
+        }
+
+        p.blendMode(p.BLEND);
+        p.pop();
+    }
+
+    renderDNA(p, col, d, type) {
+        switch (type) {
             case 'CRYSTAL':     this.drawCrystal(p, col, d); break;
             case 'FLUID':       this.drawFluid(p, col, d); break;
             case 'NEURAL':      this.drawNeural(p, col, d); break;
@@ -378,9 +474,6 @@ class LivingTypo {
             case 'PARAMETRIC':   this.drawParametric(p, col, d); break;
             default:            this.drawDefault(p, col, d);
         }
-
-        p.blendMode(p.BLEND);
-        p.pop();
     }
 
     // --- RENDERING MODULES ---
