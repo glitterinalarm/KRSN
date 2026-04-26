@@ -42,30 +42,30 @@ class BioGenome {
 
     static cross(d1, d2) {
         const roll = Math.random();
-        let newType = d1.type;
-        let secondaryType = null;
-        
-        if (roll < 0.4) { // HYBRID: Combination of both
+        let isSuper = false;
+        if (d1.type === d2.type) {
+            isSuper = true;
+            newType = d1.type;
+            secondaryType = d1.secondaryType || d1.type;
+        } else if (roll < 0.6) { // HYBRID: Split!
             newType = d1.type;
             secondaryType = d2.type;
-        } else if (roll < 0.7) { // DOMINANT: One takes over
+        } else { // DOMINANT
             newType = Math.random() > 0.5 ? d1.type : d2.type;
-        } else if (roll < 0.95) { // MUTANT: New family
-            newType = pick(this.TYPES);
-        } else { // LETHAL: Handled in checkFusion
-            return null;
+            secondaryType = newType;
         }
 
         return {
             type: newType,
             secondaryType: secondaryType,
+            isSuper: isSuper,
             material: Math.random() > 0.5 ? d1.material : d2.material,
             colorR: (d1.colorR + d2.colorR) / 2,
             colorG: (d1.colorG + d2.colorG) / 2,
             colorB: (d1.colorB + d2.colorB) / 2,
             v_resolution: (d1.v_resolution + d2.v_resolution) / 2,
-            v_speed: (d1.v_speed + d2.v_speed) / 2,
-            v_complexity: (d1.v_complexity + d2.v_complexity) / 1.5,
+            v_speed: (d1.v_speed + d2.v_speed) * (isSuper ? 1.5 : 1),
+            v_complexity: (d1.v_complexity + d2.v_complexity) * (isSuper ? 1.4 : 1),
             v_strokeW: (d1.v_strokeW + d2.v_strokeW) / 2,
             g_amplitude: (d1.g_amplitude + d2.g_amplitude) / 2,
             g_speed: (d1.g_speed + d2.g_speed) / 2,
@@ -211,131 +211,146 @@ class LivingTypo {
         p.push();
         p.translate(this.x, this.y);
         p.rotate(this.angle);
+        
         const col = [d.colorR, d.colorG, d.colorB];
         if (d.material === 'NEON') p.blendMode(p.ADD);
-        if (d.material === 'GLASS') p.drawingContext.shadowBlur = 15;
+        if (d.material === 'GLASS') p.drawingContext.shadowBlur = d.isSuper ? 30 : 15;
         p.drawingContext.shadowColor = `rgba(${col[0]},${col[1]},${col[2]}, 0.5)`;
 
-        this.renderDNA(p, col, d, d.type);
+        // Split vertices into two halves for the "Chimera" effect
+        const leftV = this.vertices.filter(v => v.basePos.x <= 0);
+        const rightV = this.vertices.filter(v => v.basePos.x > 0);
+
+        if (d.isSuper) p.strokeWeight(d.v_strokeW * 1.5);
+
+        // Render Left Half with Primary Type
+        this.renderDNA(p, col, d, d.type, leftV);
+
+        // Render Right Half with Secondary Type (or Primary if Dominant)
         if (d.secondaryType) {
-            p.push();
-            this.renderDNA(p, [255, 255, 255, 120], d, d.secondaryType);
-            p.pop();
+            const rightCol = d.isSuper ? col : [255, 255, 255, 180];
+            this.renderDNA(p, rightCol, d, d.secondaryType, rightV);
+        } else {
+            this.renderDNA(p, col, d, d.type, rightV);
         }
+
         p.blendMode(p.BLEND);
         p.pop();
     }
 
-    renderDNA(p, col, d, type) {
+    renderDNA(p, col, d, type, customV = null) {
+        const v = customV || this.vertices;
+        if (v.length === 0) return;
+
         switch (type) {
-            case 'CRYSTAL': this.drawCrystal(p, col, d); break;
-            case 'FLUID': this.drawFluid(p, col, d); break;
-            case 'NEURAL': this.drawNeural(p, col, d); break;
-            case 'MECHANIC': this.drawMechanic(p, col, d); break;
-            case 'GASEOUS': this.drawGaseous(p, col, d); break;
-            case 'FRAGMENTED': this.drawFragmented(p, col, d); break;
-            case 'LIGHT': this.drawLight(p, col, d); break;
-            case 'QUANTUM': this.drawQuantum(p, col, d); break;
-            case 'FRACTAL': this.drawFractal(p, col, d); break;
-            case 'GRID': this.drawGrid(p, col, d); break;
-            case 'ARTISTIC': this.drawArtistic(p, col, d); break;
-            case 'LIQUID_METAL': this.drawLiquidMetal(p, col, d); break;
-            case 'GHOST': this.drawGhost(p, col, d); break;
-            case 'VOXEL': this.drawVoxel(p, col, d); break;
-            case 'FUNGAL': this.drawFungal(p, col, d); break;
-            case 'GLITCH': this.drawGlitch(p, col, d); break;
-            case 'VECTOR': this.drawVector(p, col, d); break;
-            case 'STRING': this.drawString(p, col, d); break;
-            case 'OP_ART': this.drawOpArt(p, col, d); break;
-            case 'KINETIC': this.drawKinetic(p, col, d); break;
-            case 'STIPPLE': this.drawStipple(p, col, d); break;
-            case 'AURA': this.drawAura(p, col, d); break;
-            case 'FLUX': this.drawFlux(p, col, d); break;
-            case 'MITOSIS': this.drawMitosis(p, col, d); break;
-            case 'DNA': this.drawDna(p, col, d); break;
-            case 'PHOTOSYNTHESIS': this.drawPhotosynthesis(p, col, d); break;
-            case 'LYMPHOCYTE': this.drawLymphocyte(p, col, d); break;
-            case 'GLOBULE': this.drawGlobule(p, col, d); break;
-            case 'TRIGONOMETRY': this.drawTrig(p, col, d); break;
-            case 'GOLDEN_RATIO': this.drawGolden(p, col, d); break;
-            case 'DERIVATIVE': this.drawDeriv(p, col, d); break;
-            case 'INTEGRAL': this.drawIntegral(p, col, d); break;
-            case 'COMPLEX_PLANE': this.drawComplex(p, col, d); break;
-            case 'STATISTICS': this.drawStats(p, col, d); break;
-            case 'GEOMETRY': this.drawGeometry(p, col, d); break;
-            case 'LOGIC': this.drawLogic(p, col, d); break;
-            case 'EXPONENTIAL': this.drawExpr(p, col, d); break;
-            case 'RELATIVITY': this.drawRelativity(p, col, d); break;
-            case 'QUANTUM_WAVE': this.drawQuantumWave(p, col, d); break;
-            case 'THERMODYNAMICS': this.drawEntropy(p, col, d); break;
-            case 'ELECTROMAGNETISM': this.drawElectromagnetic(p, col, d); break;
-            case 'GRAVITY_WELL': this.drawGravity(p, col, d); break;
-            case 'KINETICS': this.drawKinetics(p, col, d); break;
-            case 'FLUID_DYNAMICS': this.drawFluidDyn(p, col, d); break;
-            case 'OPTICS': this.drawOptics(p, col, d); break;
-            case 'ASTROPHYSICS': this.drawAstrophys(p, col, d); break;
-            case 'CELLULAR_AUTOMATA': this.drawCellular(p, col, d); break;
-            case 'VORONOI': this.drawVoronoi(p, col, d); break;
-            case 'ASCII_ART': this.drawASCII(p, col, d); break;
-            case 'PIXEL_SORT': this.drawPixelSort(p, col, d); break;
-            case 'TURING': this.drawTuring(p, col, d); break;
-            case 'DELAUNAY': this.drawDelaunay(p, col, d); break;
-            case 'FLOW_FIELD': this.drawFlowField(p, col, d); break;
-            case 'ATTRACTOR': this.drawAttractor(p, col, d); break;
-            case 'PARAMETRIC': this.drawParametric(p, col, d); break;
-            default: this.drawDefault(p, col, d);
+            case 'CRYSTAL': this.drawCrystal(p, col, d, v); break;
+            case 'FLUID': this.drawFluid(p, col, d, v); break;
+            case 'NEURAL': this.drawNeural(p, col, d, v); break;
+            case 'MECHANIC': this.drawMechanic(p, col, d, v); break;
+            case 'GASEOUS': this.drawGaseous(p, col, d, v); break;
+            case 'FRAGMENTED': this.drawFragmented(p, col, d, v); break;
+            case 'LIGHT': this.drawLight(p, col, d, v); break;
+            case 'QUANTUM': this.drawQuantum(p, col, d, v); break;
+            case 'FRACTAL': this.drawFractal(p, col, d, v); break;
+            case 'GRID': this.drawGrid(p, col, d, v); break;
+            case 'ARTISTIC': this.drawArtistic(p, col, d, v); break;
+            case 'LIQUID_METAL': this.drawLiquidMetal(p, col, d, v); break;
+            case 'GHOST': this.drawGhost(p, col, d, v); break;
+            case 'VOXEL': this.drawVoxel(p, col, d, v); break;
+            case 'FUNGAL': this.drawFungal(p, col, d, v); break;
+            case 'GLITCH': this.drawGlitch(p, col, d, v); break;
+            case 'VECTOR': this.drawVector(p, col, d, v); break;
+            case 'STRING': this.drawString(p, col, d, v); break;
+            case 'OP_ART': this.drawOpArt(p, col, d, v); break;
+            case 'KINETIC': this.drawKinetic(p, col, d, v); break;
+            case 'STIPPLE': this.drawStipple(p, col, d, v); break;
+            case 'AURA': this.drawAura(p, col, d, v); break;
+            case 'FLUX': this.drawFlux(p, col, d, v); break;
+            case 'MITOSIS': this.drawMitosis(p, col, d, v); break;
+            case 'DNA': this.drawDna(p, col, d, v); break;
+            case 'PHOTOSYNTHESIS': this.drawPhotosynthesis(p, col, d, v); break;
+            case 'LYMPHOCYTE': this.drawLymphocyte(p, col, d, v); break;
+            case 'GLOBULE': this.drawGlobule(p, col, d, v); break;
+            case 'TRIGONOMETRY': this.drawTrig(p, col, d, v); break;
+            case 'GOLDEN_RATIO': this.drawGolden(p, col, d, v); break;
+            case 'DERIVATIVE': this.drawDeriv(p, col, d, v); break;
+            case 'INTEGRAL': this.drawIntegral(p, col, d, v); break;
+            case 'COMPLEX_PLANE': this.drawComplex(p, col, d, v); break;
+            case 'STATISTICS': this.drawStats(p, col, d, v); break;
+            case 'GEOMETRY': this.drawGeometry(p, col, d, v); break;
+            case 'LOGIC': this.drawLogic(p, col, d, v); break;
+            case 'EXPONENTIAL': this.drawExpr(p, col, d, v); break;
+            case 'RELATIVITY': this.drawRelativity(p, col, d, v); break;
+            case 'QUANTUM_WAVE': this.drawQuantumWave(p, col, d, v); break;
+            case 'THERMODYNAMICS': this.drawEntropy(p, col, d, v); break;
+            case 'ELECTROMAGNETISM': this.drawElectromagnetic(p, col, d, v); break;
+            case 'GRAVITY_WELL': this.drawGravity(p, col, d, v); break;
+            case 'KINETICS': this.drawKinetics(p, col, d, v); break;
+            case 'FLUID_DYNAMICS': this.drawFluidDyn(p, col, d, v); break;
+            case 'OPTICS': this.drawOptics(p, col, d, v); break;
+            case 'ASTROPHYSICS': this.drawAstrophys(p, col, d, v); break;
+            case 'CELLULAR_AUTOMATA': this.drawCellular(p, col, d, v); break;
+            case 'VORONOI': this.drawVoronoi(p, col, d, v); break;
+            case 'ASCII_ART': this.drawASCII(p, col, d, v); break;
+            case 'PIXEL_SORT': this.drawPixelSort(p, col, d, v); break;
+            case 'TURING': this.drawTuring(p, col, d, v); break;
+            case 'DELAUNAY': this.drawDelaunay(p, col, d, v); break;
+            case 'FLOW_FIELD': this.drawFlowField(p, col, d, v); break;
+            case 'ATTRACTOR': this.drawAttractor(p, col, d, v); break;
+            case 'PARAMETRIC': this.drawParametric(p, col, d, v); break;
+            default: this.drawDefault(p, col, d, v);
         }
     }
 
     // --- ENGINES ---
-    drawDefault(p, col, d) {
+    drawDefault(p, col, d, v) {
         p.noFill(); p.stroke(col[0], col[1], col[2], d.alpha); p.strokeWeight(d.v_strokeW);
         p.beginShape();
-        if (this.vertices.length > 3) {
-            p.curveVertex(this.vertices[0].pos.x, this.vertices[0].pos.y);
-            this.vertices.forEach(v => p.curveVertex(v.pos.x, v.pos.y));
-            p.curveVertex(this.vertices[this.vertices.length-1].pos.x, this.vertices[this.vertices.length-1].pos.y);
-        } else { this.vertices.forEach(v => p.vertex(v.pos.x, v.pos.y)); }
+        if (v.length > 3) {
+            p.curveVertex(v[0].pos.x, v[0].pos.y);
+            v.forEach(vt => p.curveVertex(vt.pos.x, vt.pos.y));
+            p.curveVertex(v[v.length-1].pos.x, v[v.length-1].pos.y);
+        } else { v.forEach(vt => p.vertex(vt.pos.x, vt.pos.y)); }
         p.endShape();
     }
 
-    drawCrystal(p, col, d) {
+    drawCrystal(p, col, d, v) {
         p.noStroke();
-        for (let i = 0; i < this.vertices.length - 3; i += 4) {
+        for (let i = 0; i < v.length - 3; i += 4) {
             p.fill(col[0], col[1], col[2], d.alpha * 0.3);
             p.beginShape();
-            p.vertex(this.vertices[i].pos.x, this.vertices[i].pos.y);
-            p.vertex(this.vertices[i+1].pos.x, this.vertices[i+1].pos.y);
-            p.vertex(this.vertices[i+2].pos.x, this.vertices[i+2].pos.y);
+            p.vertex(v[i].pos.x, v[i].pos.y);
+            p.vertex(v[i+1].pos.x, v[i+1].pos.y);
+            p.vertex(v[i+2].pos.x, v[i+2].pos.y);
             p.endShape(p.CLOSE);
-            p.stroke(255, 40); p.line(this.vertices[i].pos.x, this.vertices[i].pos.y, this.vertices[i+2].pos.x, this.vertices[i+2].pos.y);
+            p.stroke(255, 40); p.line(v[i].pos.x, v[i].pos.y, v[i+2].pos.x, v[i+2].pos.y);
         }
     }
 
-    drawFluid(p, col, d) {
+    drawFluid(p, col, d, v) {
         p.fill(col[0], col[1], col[2], d.alpha * 0.4); p.stroke(col[0], col[1], col[2], d.alpha);
         p.strokeWeight(d.v_strokeW * 2);
         p.beginShape();
-        this.vertices.forEach(v => p.curveVertex(v.pos.x, v.pos.y));
+        v.forEach(vt => p.curveVertex(vt.pos.x, vt.pos.y));
         p.endShape(p.CLOSE);
     }
 
-    drawNeural(p, col, d) {
+    drawNeural(p, col, d, v) {
         p.stroke(col[0], col[1], col[2], d.alpha * 0.8); p.strokeWeight(d.v_strokeW * 0.5);
         const limit = 100 * (1 + d.v_complexity);
         const step = Math.max(12, Math.floor(20 / (1 + d.v_complexity)));
-        for (let i = 0; i < this.vertices.length; i += step) {
-            const v1 = this.vertices[i];
-            for (let j = i + step; j < this.vertices.length; j += step * 2) {
-                const v2 = this.vertices[j];
+        for (let i = 0; i < v.length; i += step) {
+            const v1 = v[i];
+            for (let j = i + step; j < v.length; j += step * 2) {
+                const v2 = v[j];
                 if (p5.Vector.dist(v1.pos, v2.pos) < limit) p.line(v1.pos.x, v1.pos.y, v2.pos.x, v2.pos.y);
             }
         }
     }
 
-    drawMechanic(p, col, d) {
+    drawMechanic(p, col, d, v) {
         p.stroke(col[0], col[1], col[2], d.alpha * 0.8); p.strokeWeight(d.v_strokeW * 0.5);
-        this.vertices.forEach((v, i) => {
+        v.forEach((v, i) => {
             if (i % 15 === 0) {
                 const len = 25 * Math.sin(p.frameCount * 0.06 + v.seed * 5);
                 p.line(v.pos.x, v.pos.y, v.pos.x + len, v.pos.y + len);
@@ -343,10 +358,10 @@ class LivingTypo {
                 p.stroke(col[0], col[1], col[2], d.alpha * 0.8);
             }
         });
-        this.drawDefault(p, col, d);
+        this.drawDefault(p, col, d, v);
     }
 
-    drawGaseous(p, col, d) {
+    drawGaseous(p, col, d, v) {
         p.noStroke();
         this.particles.forEach(pt => {
             p.fill(col[0], col[1], col[2], d.alpha * pt.life * 0.5);
@@ -354,9 +369,9 @@ class LivingTypo {
         });
     }
 
-    drawFragmented(p, col, d) {
+    drawFragmented(p, col, d, v) {
         p.fill(col[0], col[1], col[2], d.alpha); p.noStroke();
-        this.vertices.forEach((v, i) => {
+        v.forEach((v, i) => {
             if (i % 5 === 0) {
                 const sz = 10 * v.seed * (1 + d.v_complexity);
                 p.push(); p.translate(v.pos.x, v.pos.y); p.rotate(v.seed * p.TWO_PI + p.frameCount * 0.05);
@@ -365,49 +380,49 @@ class LivingTypo {
         });
     }
 
-    drawLight(p, col, d) {
+    drawLight(p, col, d, v) {
         p.blendMode(p.ADD); p.noFill(); p.strokeWeight(d.v_strokeW * 3); p.stroke(col[0], col[1], col[2], 50);
-        p.beginShape(); this.vertices.forEach(v => p.vertex(v.pos.x, v.pos.y)); p.endShape();
+        p.beginShape(); v.forEach(v => p.vertex(v.pos.x, v.pos.y)); p.endShape();
         p.strokeWeight(d.v_strokeW); p.stroke(255, d.alpha);
-        p.beginShape(); this.vertices.forEach(v => p.vertex(v.pos.x, v.pos.y)); p.endShape();
+        p.beginShape(); v.forEach(v => p.vertex(v.pos.x, v.pos.y)); p.endShape();
     }
 
-    drawQuantum(p, col, d) {
+    drawQuantum(p, col, d, v) {
         for (let j = 0; j < 2; j++) {
             p.push();
             p.translate(p.noise(p.frameCount * 0.05, j) * 15 - 7.5, p.noise(p.frameCount * 0.05, j + 50) * 15 - 7.5);
             p.stroke(col[0], col[1], col[2], d.alpha * 0.15); p.noFill();
-            p.beginShape(); this.vertices.forEach((v, i) => { if (i % 2 === 0) p.vertex(v.pos.x, v.pos.y); }); p.endShape();
+            p.beginShape(); v.forEach((v, i) => { if (i % 2 === 0) p.vertex(v.pos.x, v.pos.y); }); p.endShape();
             p.pop();
         }
-        if (p.random() > 0.15) this.drawDefault(p, col, d);
+        if (p.random() > 0.15) this.drawDefault(p, col, d, v);
     }
 
-    drawFractal(p, col, d) {
-        this.drawDefault(p, col, d);
+    drawFractal(p, col, d, v) {
+        this.drawDefault(p, col, d, v);
         if (this.gen < 1) return;
         p.push(); p.scale(0.25);
-        for (let i = 0; i < this.vertices.length; i += 100) {
-            p.push(); p.translate(this.vertices[i].pos.x * 4, this.vertices[i].pos.y * 4);
-            this.drawDefault(p, col, d); p.pop();
+        for (let i = 0; i < v.length; i += 100) {
+            p.push(); p.translate(v[i].pos.x * 4, v[i].pos.y * 4);
+            this.drawDefault(p, col, d, v); p.pop();
         }
         p.pop();
     }
 
-    drawGrid(p, col, d) {
+    drawGrid(p, col, d, v) {
         const gridSize = 20 * (1.1 - d.v_complexity);
         p.stroke(col[0], col[1], col[2], d.alpha); p.noFill();
         p.beginShape(p.LINES);
-        this.vertices.forEach(v => {
+        v.forEach(v => {
             p.vertex(Math.round(v.pos.x / gridSize) * gridSize, Math.round(v.pos.y / gridSize) * gridSize);
             p.vertex(v.pos.x, v.pos.y);
         });
         p.endShape();
     }
 
-    drawArtistic(p, col, d) {
+    drawArtistic(p, col, d, v) {
         p.noStroke();
-        this.vertices.forEach((v, i) => {
+        v.forEach((v, i) => {
             if (i % 15 === 0) {
                 const colors = [[255, 0, 0], [255, 255, 0], [0, 0, 255]];
                 const c = pick(colors); p.fill(c[0], c[1], c[2], d.alpha * 0.5);
@@ -417,17 +432,17 @@ class LivingTypo {
         });
     }
 
-    drawLiquidMetal(p, col, d) {
+    drawLiquidMetal(p, col, d, v) {
         p.noStroke(); p.fill(col[0], col[1], col[2], d.alpha * 0.8);
-        this.vertices.forEach(v => { p.circle(v.pos.x, v.pos.y, 8 + Math.sin(p.frameCount * 0.1 + v.seed * 10) * 4); });
+        v.forEach(v => { p.circle(v.pos.x, v.pos.y, 8 + Math.sin(p.frameCount * 0.1 + v.seed * 10) * 4); });
     }
 
-    drawGhost(p, col, d) {
+    drawGhost(p, col, d, v) {
         p.noFill();
         for (let i = 0; i < 3; i++) {
             p.stroke(col[0], col[1], col[2], d.alpha * (0.3 - i * 0.1));
             p.beginShape();
-            this.vertices.forEach((v, idx) => {
+            v.forEach((v, idx) => {
                 const off = p.noise(idx * 0.1, p.frameCount * 0.02 + i) * 20;
                 p.curveVertex(v.pos.x + off, v.pos.y + off);
             });
@@ -435,9 +450,9 @@ class LivingTypo {
         }
     }
 
-    drawVoxel(p, col, d) {
+    drawVoxel(p, col, d, v) {
         p.fill(col[0], col[1], col[2], d.alpha); p.noStroke();
-        this.vertices.forEach((v, i) => {
+        v.forEach((v, i) => {
             if (i % 8 === 0) {
                 const sz = 12 * (1 + d.v_complexity) * v.seed;
                 p.rect(v.pos.x - sz/2, v.pos.y - sz/2, sz, sz);
@@ -447,32 +462,32 @@ class LivingTypo {
         });
     }
 
-    drawFungal(p, col, d) {
+    drawFungal(p, col, d, v) {
         p.stroke(col[0], col[1], col[2], d.alpha * 0.6);
-        this.vertices.forEach((v, i) => {
+        v.forEach((v, i) => {
             if (i % 20 === 0) {
                 p.line(v.pos.x, v.pos.y, v.pos.x + Math.cos(v.seed * 6.28) * 30, v.pos.y + Math.sin(v.seed * 6.28) * 30);
                 p.circle(v.pos.x + Math.cos(v.seed * 6.28) * 30, v.pos.y + Math.sin(v.seed * 6.28) * 30, 4);
             }
         });
-        this.drawDefault(p, col, d);
+        this.drawDefault(p, col, d, v);
     }
 
-    drawGlitch(p, col, d) {
+    drawGlitch(p, col, d, v) {
         if (p.random() > 0.9) return;
         p.stroke(col[0], col[1], col[2], d.alpha);
-        this.vertices.forEach((v, i) => {
+        v.forEach((v, i) => {
             if (p.random() > 0.95) {
                 p.strokeWeight(p.random(1, 10));
                 p.line(v.pos.x - 50, v.pos.y, v.pos.x + 50, v.pos.y);
             }
         });
-        this.drawDefault(p, col, d);
+        this.drawDefault(p, col, d, v);
     }
 
-    drawVector(p, col, d) {
+    drawVector(p, col, d, v) {
         p.stroke(col[0], col[1], col[2], d.alpha);
-        this.vertices.forEach((v, i) => {
+        v.forEach((v, i) => {
             if (i % 10 === 0) {
                 p.line(v.pos.x, v.pos.y, v.pos.x + v.vel.x * 10, v.pos.y + v.vel.y * 10);
                 p.circle(v.pos.x + v.vel.x * 10, v.pos.y + v.vel.y * 10, 2);
@@ -480,83 +495,83 @@ class LivingTypo {
         });
     }
 
-    drawString(p, col, d) {
+    drawString(p, col, d, v) {
         p.noFill(); p.stroke(col[0], col[1], col[2], d.alpha);
         const step = Math.floor(10 / (1 + d.v_complexity));
-        for (let i = 0; i < this.vertices.length; i += step) {
-            const v = this.vertices[i];
+        for (let i = 0; i < v.length; i += step) {
+            const v = v[i];
             p.line(v.pos.x, v.pos.y, 0, 0);
         }
-        this.drawDefault(p, col, d);
+        this.drawDefault(p, col, d, v);
     }
 
-    drawOpArt(p, col, d) {
+    drawOpArt(p, col, d, v) {
         p.noFill(); p.stroke(255, d.alpha * 0.5);
         for (let i = 0; i < 5; i++) {
             p.beginShape();
-            this.vertices.forEach(v => p.vertex(v.pos.x * (1 + i * 0.1), v.pos.y * (1 + i * 0.1)));
+            v.forEach(v => p.vertex(v.pos.x * (1 + i * 0.1), v.pos.y * (1 + i * 0.1)));
             p.endShape(p.CLOSE);
         }
     }
 
-    drawKinetic(p, col, d) {
-        this.vertices.forEach((v, i) => {
+    drawKinetic(p, col, d, v) {
+        v.forEach((v, i) => {
             if (i % 20 === 0) {
                 p.push(); p.translate(v.pos.x, v.pos.y); p.rotate(p.frameCount * 0.1 + v.seed);
                 p.stroke(col[0], col[1], col[2], d.alpha); p.line(-15, 0, 15, 0); p.pop();
             }
         });
-        this.drawDefault(p, col, d);
+        this.drawDefault(p, col, d, v);
     }
 
-    drawStipple(p, col, d) {
+    drawStipple(p, col, d, v) {
         p.fill(col[0], col[1], col[2], d.alpha); p.noStroke();
-        this.vertices.forEach(v => {
+        v.forEach(v => {
             for (let k = 0; k < 3; k++) p.circle(v.pos.x + rand(-5, 5), v.pos.y + rand(-5, 5), rand(1, 3));
         });
     }
 
-    drawAura(p, col, d) {
+    drawAura(p, col, d, v) {
         p.noStroke();
         for (let r = 40; r > 0; r -= 10) {
             p.fill(col[0], col[1], col[2], d.alpha * 0.1);
-            this.vertices.forEach(v => p.circle(v.pos.x, v.pos.y, r));
+            v.forEach(v => p.circle(v.pos.x, v.pos.y, r));
         }
     }
 
-    drawFlux(p, col, d) {
+    drawFlux(p, col, d, v) {
         p.stroke(col[0], col[1], col[2], d.alpha * 0.5); p.noFill();
         p.beginShape();
-        this.vertices.forEach((v, i) => {
+        v.forEach((v, i) => {
             const off = p.sin(p.frameCount * 0.1 + i * 0.5) * 20;
             p.vertex(v.pos.x + off, v.pos.y + off);
         });
         p.endShape();
     }
 
-    drawMitosis(p, col, d) {
+    drawMitosis(p, col, d, v) {
         p.stroke(col[0], col[1], col[2], d.alpha);
         [ -20, 20 ].forEach(off => {
-            p.push(); p.translate(off, 0); this.drawDefault(p, col, d); p.pop();
+            p.push(); p.translate(off, 0); this.drawDefault(p, col, d, v); p.pop();
         });
-        this.vertices.forEach((v, i) => {
+        v.forEach((v, i) => {
             if (i % 30 === 0) p.line(-20 + v.pos.x, v.pos.y, 20 + v.pos.x, v.pos.y);
         });
     }
 
-    drawDna(p, col, d) {
+    drawDna(p, col, d, v) {
         p.strokeWeight(2);
-        for (let i = 0; i < this.vertices.length - 1; i += 10) {
-            const v1 = this.vertices[i]; const v2 = this.vertices[i+1] || v1;
+        for (let i = 0; i < v.length - 1; i += 10) {
+            const v1 = v[i]; const v2 = v[i+1] || v1;
             p.stroke(col[0], col[1], col[2], d.alpha); p.line(v1.pos.x - 10, v1.pos.y, v1.pos.x + 10, v1.pos.y);
             p.stroke(255, d.alpha * 0.5); p.circle(v1.pos.x - 10, v1.pos.y, 4); p.circle(v1.pos.x + 10, v1.pos.y, 4);
         }
-        this.drawDefault(p, col, d);
+        this.drawDefault(p, col, d, v);
     }
 
-    drawPhotosynthesis(p, col, d) {
+    drawPhotosynthesis(p, col, d, v) {
         p.stroke(0, 255, 100, d.alpha * 0.6);
-        this.vertices.forEach((v, i) => {
+        v.forEach((v, i) => {
             if (i % 15 === 0) {
                 p.push(); p.translate(v.pos.x, v.pos.y); p.rotate(v.seed * 6.28);
                 p.ellipse(0, 0, 10, 20); p.line(0, 0, 0, 15); p.pop();
@@ -565,21 +580,21 @@ class LivingTypo {
         this.drawDefault(p, [0, 200, 50], d);
     }
 
-    drawLymphocyte(p, col, d) {
+    drawLymphocyte(p, col, d, v) {
         p.stroke(255, d.alpha); p.fill(col[0], col[1], col[2], d.alpha * 0.7);
-        this.vertices.forEach((v, i) => {
+        v.forEach((v, i) => {
             if (i % 25 === 0) {
                 p.push(); p.translate(v.pos.x, v.pos.y); const pulse = Math.sin(p.frameCount * 0.1 + v.seed * 5);
                 for (let a = 0; a < p.TWO_PI; a += p.PI/3) p.line(0, 0, Math.cos(a) * (15 + pulse * 10), Math.sin(a) * (15 + pulse * 10));
                 p.circle(0, 0, 8); p.pop();
             }
         });
-        this.drawDefault(p, col, d);
+        this.drawDefault(p, col, d, v);
     }
 
-    drawGlobule(p, col, d) {
+    drawGlobule(p, col, d, v) {
         p.noStroke();
-        this.vertices.forEach((v, i) => {
+        v.forEach((v, i) => {
             if (i % 8 === 0) {
                 const pulse = 1 + Math.sin(p.frameCount * 0.1 + v.seed * 10) * 0.2;
                 p.fill(200, 20, 40, d.alpha); p.circle(v.pos.x, v.pos.y, 12 * pulse);
@@ -588,42 +603,42 @@ class LivingTypo {
         });
     }
 
-    drawTrig(p, col, d) {
+    drawTrig(p, col, d, v) {
         p.noFill(); p.stroke(col[0], col[1], col[2], d.alpha);
-        p.beginShape(); this.vertices.forEach((v, i) => p.vertex(v.pos.x, v.pos.y + Math.sin(p.frameCount * 0.1 + i * 0.2) * 20)); p.endShape();
+        p.beginShape(); v.forEach((v, i) => p.vertex(v.pos.x, v.pos.y + Math.sin(p.frameCount * 0.1 + i * 0.2) * 20)); p.endShape();
     }
 
-    drawGolden(p, col, d) {
+    drawGolden(p, col, d, v) {
         p.noFill(); p.stroke(col[0], col[1], col[2], d.alpha * 0.5);
-        this.vertices.forEach((v, i) => {
+        v.forEach((v, i) => {
             if (i % 40 === 0) {
                 p.push(); p.translate(v.pos.x, v.pos.y); let a = 0, r = 0;
                 p.beginShape(); for (let k = 0; k < 20; k++) { p.vertex(Math.cos(a)*r, Math.sin(a)*r); a += 1.618; r += 2; } p.endShape();
                 p.pop();
             }
         });
-        this.drawDefault(p, col, d);
+        this.drawDefault(p, col, d, v);
     }
 
-    drawDeriv(p, col, d) {
+    drawDeriv(p, col, d, v) {
         p.stroke(col[0], col[1], col[2], d.alpha);
-        this.vertices.forEach((v, i) => {
-            if (i % 15 === 0 && i < this.vertices.length-1) {
-                const next = this.vertices[i+1]; const dx=next.pos.x-v.pos.x, dy=next.pos.y-v.pos.y;
+        v.forEach((v, i) => {
+            if (i % 15 === 0 && i < v.length-1) {
+                const next = v[i+1]; const dx=next.pos.x-v.pos.x, dy=next.pos.y-v.pos.y;
                 p.line(v.pos.x - dx*2, v.pos.y - dy*2, v.pos.x + dx*2, v.pos.y + dy*2);
             }
         });
     }
 
-    drawIntegral(p, col, d) {
+    drawIntegral(p, col, d, v) {
         p.stroke(col[0], col[1], col[2], d.alpha * 0.4); p.strokeWeight(1);
-        this.vertices.forEach((v, i) => { if (i % 8 === 0) p.line(v.pos.x, v.pos.y, v.pos.x, v.pos.y + 30 * v.seed); });
-        this.drawDefault(p, col, d);
+        v.forEach((v, i) => { if (i % 8 === 0) p.line(v.pos.x, v.pos.y, v.pos.x, v.pos.y + 30 * v.seed); });
+        this.drawDefault(p, col, d, v);
     }
 
-    drawComplex(p, col, d) {
+    drawComplex(p, col, d, v) {
         p.noStroke();
-        this.vertices.forEach((v, i) => {
+        v.forEach((v, i) => {
             if (i % 5 === 0) {
                 const noise = p.noise(v.pos.x*0.05, v.pos.y*0.05, p.frameCount*0.01);
                 p.fill(col[0], col[1], col[2], d.alpha * noise); p.rect(v.pos.x - 5, v.pos.y - 5, 10, 10);
@@ -631,74 +646,74 @@ class LivingTypo {
         });
     }
 
-    drawStats(p, col, d) {
+    drawStats(p, col, d, v) {
         p.fill(col[0], col[1], col[2], d.alpha);
-        this.vertices.forEach((v, i) => { if (i % 20 === 0) p.rect(v.pos.x - 2, v.pos.y - 30*v.seed, 4, 30*v.seed); });
+        v.forEach((v, i) => { if (i % 20 === 0) p.rect(v.pos.x - 2, v.pos.y - 30*v.seed, 4, 30*v.seed); });
     }
 
-    drawGeometry(p, col, d) {
+    drawGeometry(p, col, d, v) {
         p.noFill(); p.stroke(col[0], col[1], col[2], d.alpha);
-        this.vertices.forEach((v, i) => {
+        v.forEach((v, i) => {
             if (i % 30 === 0) { if (v.seed > 0.5) p.circle(v.pos.x, v.pos.y, 20); else p.triangle(v.pos.x, v.pos.y-10, v.pos.x-10, v.pos.y+10, v.pos.x+10, v.pos.y+10); }
         });
-        this.drawDefault(p, col, d);
+        this.drawDefault(p, col, d, v);
     }
 
-    drawLogic(p, col, d) {
+    drawLogic(p, col, d, v) {
         p.fill(col[0], col[1], col[2], d.alpha); p.textSize(8);
-        this.vertices.forEach((v, i) => { if (i % 12 === 0) p.text(v.seed > 0.5 ? "1" : "0", v.pos.x, v.pos.y); });
+        v.forEach((v, i) => { if (i % 12 === 0) p.text(v.seed > 0.5 ? "1" : "0", v.pos.x, v.pos.y); });
     }
 
-    drawExpr(p, col, d) {
+    drawExpr(p, col, d, v) {
         p.noFill(); p.stroke(col[0], col[1], col[2], d.alpha);
-        this.vertices.forEach((v, i) => {
+        v.forEach((v, i) => {
             if (i % 40 === 0) {
                 p.beginShape(); for (let x = 0; x < 30; x++) p.vertex(v.pos.x + x, v.pos.y - Math.exp(x * 0.1) * 2); p.endShape();
             }
         });
-        this.drawDefault(p, col, d);
+        this.drawDefault(p, col, d, v);
     }
 
-    drawRelativity(p, col, d) {
+    drawRelativity(p, col, d, v) {
         p.noFill(); p.stroke(col[0], col[1], col[2], d.alpha * 0.5);
         for (let r = 20; r < 200; r += 40) p.ellipse(0, 0, r * 2, r * 1.5);
-        this.vertices.forEach(v => { p.push(); p.translate(v.pos.x, v.pos.y); p.rotate(v.pos.heading()); p.line(0, 0, 20, 0); p.pop(); });
+        v.forEach(v => { p.push(); p.translate(v.pos.x, v.pos.y); p.rotate(v.pos.heading()); p.line(0, 0, 20, 0); p.pop(); });
     }
 
-    drawQuantumWave(p, col, d) {
+    drawQuantumWave(p, col, d, v) {
         p.noFill(); p.stroke(col[0], col[1], col[2], d.alpha);
-        p.beginShape(); this.vertices.forEach((v, i) => {
+        p.beginShape(); v.forEach((v, i) => {
             const amp = 30 * p.noise(i * 0.1, p.frameCount * 0.05);
             p.vertex(v.pos.x, v.pos.y + Math.sin(i * 0.5) * amp);
         }); p.endShape();
     }
 
-    drawEntropy(p, col, d) {
+    drawEntropy(p, col, d, v) {
         p.noStroke();
-        this.vertices.forEach(v => {
+        v.forEach(v => {
             const noise = p.noise(v.pos.x * 0.01, v.pos.y * 0.01, p.frameCount * 0.02);
             p.fill(col[0], col[1], col[2], d.alpha * noise); p.circle(v.pos.x + rand(-20, 20), v.pos.y + rand(-20, 20), 4);
         });
     }
 
-    drawElectromagnetic(p, col, d) {
+    drawElectromagnetic(p, col, d, v) {
         p.stroke(col[0], col[1], col[2], d.alpha * 0.6);
-        this.vertices.forEach((v, i) => {
+        v.forEach((v, i) => {
             if (i % 30 === 0) {
                 for (let r = 5; r < 40; r += 10) p.circle(v.pos.x, v.pos.y, r);
             }
         });
-        this.drawDefault(p, col, d);
+        this.drawDefault(p, col, d, v);
     }
 
-    drawGravity(p, col, d) {
+    drawGravity(p, col, d, v) {
         p.strokeWeight(1); p.stroke(col[0], col[1], col[2], d.alpha * 0.4);
-        this.vertices.forEach(v => p.line(v.pos.x, v.pos.y, 0, 0));
-        this.drawDefault(p, col, d);
+        v.forEach(v => p.line(v.pos.x, v.pos.y, 0, 0));
+        this.drawDefault(p, col, d, v);
     }
 
-    drawKinetics(p, col, d) {
-        this.vertices.forEach((v, i) => {
+    drawKinetics(p, col, d, v) {
+        v.forEach((v, i) => {
             if (i % 15 === 0) {
                 p.push(); p.translate(v.pos.x, v.pos.y); p.rotate(v.vel.heading());
                 p.stroke(col[0], col[1], col[2], d.alpha); p.line(-20, 0, 20, 0); p.circle(20, 0, 5); p.pop();
@@ -706,17 +721,17 @@ class LivingTypo {
         });
     }
 
-    drawFluidDyn(p, col, d) {
+    drawFluidDyn(p, col, d, v) {
         p.noFill(); p.stroke(col[0], col[1], col[2], d.alpha * 0.3);
-        this.vertices.forEach((v, i) => {
+        v.forEach((v, i) => {
             if (i % 10 === 0) {
                 p.beginShape(); for (let k = 0; k < 10; k++) p.vertex(v.pos.x + k * v.vel.x, v.pos.y + k * v.vel.y); p.endShape();
             }
         });
-        this.drawDefault(p, col, d);
+        this.drawDefault(p, col, d, v);
     }
 
-    drawOptics(p, col, d) {
+    drawOptics(p, col, d, v) {
         p.blendMode(p.ADD);
         [ [255, 0, 0], [0, 255, 0], [0, 0, 255] ].forEach((rgb, idx) => {
             p.stroke(rgb[0], rgb[1], rgb[2], d.alpha * 0.5);
@@ -724,9 +739,9 @@ class LivingTypo {
         });
     }
 
-    drawAstrophys(p, col, d) {
+    drawAstrophys(p, col, d, v) {
         p.noFill(); p.stroke(col[0], col[1], col[2], d.alpha * 0.5);
-        this.vertices.forEach((v, i) => {
+        v.forEach((v, i) => {
             if (i % 50 === 0) {
                 p.circle(v.pos.x, v.pos.y, 40);
                 p.push(); p.translate(v.pos.x, v.pos.y); p.rotate(p.frameCount * 0.1); p.fill(255, d.alpha); p.circle(20, 0, 5); p.pop();
@@ -734,41 +749,41 @@ class LivingTypo {
         });
     }
 
-    drawCellular(p, col, d) {
+    drawCellular(p, col, d, v) {
         p.noStroke(); p.fill(col[0], col[1], col[2], d.alpha * 0.6);
-        this.vertices.forEach((v, i) => {
+        v.forEach((v, i) => {
             if (i % 10 === 0) { const sz = 6; p.rect(Math.round(v.pos.x / sz) * sz, Math.round(v.pos.y / sz) * sz, sz-1, sz-1); }
         });
     }
 
-    drawVoronoi(p, col, d) {
+    drawVoronoi(p, col, d, v) {
         p.stroke(col[0], col[1], col[2], d.alpha * 0.4); p.noFill();
-        this.vertices.forEach((v, i) => {
+        v.forEach((v, i) => {
             if (i % 30 === 0) {
                 p.beginShape(); for (let a = 0; a < 6.28; a += 1.04) p.vertex(v.pos.x + p.cos(a) * 20, v.pos.y + p.sin(a) * 20); p.endShape(p.CLOSE);
             }
         });
-        this.drawDefault(p, col, d);
+        this.drawDefault(p, col, d, v);
     }
 
-    drawASCII(p, col, d) {
+    drawASCII(p, col, d, v) {
         p.fill(col[0], col[1], col[2], d.alpha); p.textSize(9); const chars = "@#S%?*+;:,.";
-        this.vertices.forEach((v, i) => {
+        v.forEach((v, i) => {
             if (i % 12 === 0) p.text(chars[Math.floor(v.seed * chars.length)], v.pos.x, v.pos.y);
         });
     }
 
-    drawPixelSort(p, col, d) {
+    drawPixelSort(p, col, d, v) {
         p.stroke(col[0], col[1], col[2], d.alpha * 0.5);
-        this.vertices.forEach((v, i) => {
+        v.forEach((v, i) => {
             if (i % 10 === 0) p.line(v.pos.x, v.pos.y, v.pos.x, v.pos.y + p.noise(v.pos.x * 0.1, p.frameCount * 0.05) * 60);
         });
-        this.drawDefault(p, col, d);
+        this.drawDefault(p, col, d, v);
     }
 
-    drawTuring(p, col, d) {
+    drawTuring(p, col, d, v) {
         p.noStroke();
-        this.vertices.forEach((v, i) => {
+        v.forEach((v, i) => {
             if (i % 5 === 0) {
                 const n = p.noise(v.pos.x * 0.04, v.pos.y * 0.04, p.frameCount * 0.02);
                 if (n > 0.6) { p.fill(255, d.alpha * n); p.circle(v.pos.x, v.pos.y, 8); }
@@ -776,15 +791,15 @@ class LivingTypo {
         });
     }
 
-    drawDelaunay(p, col, d) {
+    drawDelaunay(p, col, d, v) {
         p.stroke(col[0], col[1], col[2], d.alpha * 0.3); p.noFill();
-        for (let i = 0; i < this.vertices.length; i += 20) {
-            const v1=this.vertices[i], v2=this.vertices[(i+40)%this.vertices.length], v3=this.vertices[(i+80)%this.vertices.length];
+        for (let i = 0; i < v.length; i += 20) {
+            const v1=v[i], v2=v[(i+40)%v.length], v3=v[(i+80)%v.length];
             p.triangle(v1.pos.x, v1.pos.y, v2.pos.x, v2.pos.y, v3.pos.x, v3.pos.y);
         }
     }
 
-    drawFlowField(p, col, d) {
+    drawFlowField(p, col, d, v) {
         p.noFill(); p.stroke(col[0], col[1], col[2], d.alpha * 0.6);
         this.vertices.forEach((v, i) => {
             if (i % 15 === 0) {
@@ -798,7 +813,7 @@ class LivingTypo {
         });
     }
 
-    drawAttractor(p, col, d) {
+    drawAttractor(p, col, d, v) {
         p.noFill(); p.stroke(col[0], col[1], col[2], d.alpha * 0.4);
         this.vertices.forEach((v, i) => {
             if (i % 50 === 0) {
@@ -809,7 +824,7 @@ class LivingTypo {
         });
     }
 
-    drawParametric(p, col, d) {
+    drawParametric(p, col, d, v) {
         p.noFill(); p.stroke(col[0], col[1], col[2], d.alpha);
         this.vertices.forEach((v, i) => {
             if (i % 40 === 0) {
@@ -818,7 +833,7 @@ class LivingTypo {
                 p.endShape(p.CLOSE); p.pop();
             }
         });
-        this.drawDefault(p, col, d);
+        this.drawDefault(p, col, d, v);
     }
 }
 
