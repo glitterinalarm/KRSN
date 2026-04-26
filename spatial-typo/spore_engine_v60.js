@@ -114,11 +114,10 @@ class LivingTypo {
         this.breathingStage = Math.random() * p.TWO_PI;
         
         const d = config.dna || BioGenome.createRandom();
-        this.dna = JSON.parse(JSON.stringify(d)); // Deep clone for safety
+        // Manual deep clone to preserve p5.Vector and custom properties
+        this.dna = Object.assign({}, d);
         if (d.anim_offset) this.dna.anim_offset = d.anim_offset.copy();
-        this.dna.isSuper = d.isSuper || false;
-        this.dna.secondaryType = d.secondaryType || d.type;
-
+        
         this.char = config.char || char || pick("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
         this.x = (config.x !== undefined && config.x !== null) ? config.x : (Math.random() - 0.5) * 800;
         this.y = (config.y !== undefined && config.y !== null) ? config.y : (Math.random() - 0.5) * 600;
@@ -216,15 +215,17 @@ class LivingTypo {
 
         if (d.isSuper) p.strokeWeight(d.v_strokeW * 1.5);
 
-        // Render Left Half
-        this.renderDNA(p, col, d, d.type, this.leftV);
-
-        // Render Right Half
+        // Splitted rendering ONLY if secondaryType exists and is different
         if (d.secondaryType && d.secondaryType !== d.type) {
+            // Render Left Half
+            this.renderDNA(p, col, d, d.type, this.leftV);
+            
+            // Render Right Half
             const rightCol = d.isSuper ? col : [255, 255, 255, 180];
             this.renderDNA(p, rightCol, d, d.secondaryType, this.rightV);
         } else {
-            this.renderDNA(p, col, d, d.type, this.rightV);
+            // Render Whole Letter normally
+            this.renderDNA(p, col, d, d.type, this.vertices);
         }
 
         p.blendMode(p.BLEND);
