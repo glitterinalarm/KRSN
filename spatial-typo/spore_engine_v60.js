@@ -45,16 +45,16 @@ class BioGenome {
             type: pick(this.TYPES),
             material: pick(this.MATERIALS),
             alpha: 255,
-            v_resolution: 0.15, 
-            v_speed: rand(0.2, 0.8),
-            v_complexity: rand(0.2, 0.8),
+            v_resolution: 0.35, // Doubled for silkiness
+            v_speed: rand(0.1, 0.4), // Slower
+            v_complexity: rand(0.1, 0.5),
             v_strokeW: rand(1, 2.5),
-            g_amplitude: rand(0.5, 2), // Very low deformation
-            g_speed: rand(0.5, 1.2),
+            g_amplitude: rand(0.5, 1.5), 
+            g_speed: rand(0.2, 0.8),
             g_drift: 0,
-            g_viscosity: 0.96,
-            cohesion: rand(0.7, 0.9), // Extremely high cohesion
-            breathing: rand(0.005, 0.02),
+            g_viscosity: 0.98, // More viscous = smoother
+            cohesion: rand(0.8, 0.95), 
+            breathing: rand(0.002, 0.01),
             anim_offset: p ? p.createVector(0,0) : { x: 0, y: 0, copy: () => ({ x: 0, y: 0 }) },
             colorR: Math.random() * 255,
             colorG: Math.random() * 255,
@@ -180,11 +180,12 @@ class LivingTypo {
 
         this.vertices.forEach((v, i) => {
             const force = p.createVector(0, 0);
-            const ang = p.noise(v.pos.x * 0.005, v.pos.y * 0.005, t) * p.TWO_PI * 4;
+            // Smoother noise scale
+            const ang = p.noise(v.pos.x * 0.002, v.pos.y * 0.002, t) * p.TWO_PI * 2;
             force.add(p5.Vector.fromAngle(ang).mult(d.g_amplitude));
             
             const home = p5.Vector.sub(v.basePos, v.pos);
-            force.add(home.mult(d.cohesion * 0.15));
+            force.add(home.mult(d.cohesion * 0.2));
 
             v.vel.add(force);
             v.vel.mult(d.g_viscosity);
@@ -302,13 +303,17 @@ class LivingTypo {
 
     // --- ENGINES ---
     drawDefault(p, col, d, v) {
-        if (!v || v.length === 0) return;
+        if (!v || v.length < 3) return;
         p.push();
         p.fill(col[0], col[1], col[2], d.alpha * 0.4); 
         p.stroke(col[0], col[1], col[2], d.alpha * 0.8);
         p.strokeWeight(d.v_strokeW);
+        
         p.beginShape();
-        v.forEach(vt => p.vertex(vt.pos.x, vt.pos.y));
+        p.curveVertex(v[v.length-1].pos.x, v[v.length-1].pos.y);
+        v.forEach(vt => p.curveVertex(vt.pos.x, vt.pos.y));
+        p.curveVertex(v[0].pos.x, v[0].pos.y);
+        p.curveVertex(v[1].pos.x, v[1].pos.y);
         p.endShape(p.CLOSE);
         p.pop();
     }
