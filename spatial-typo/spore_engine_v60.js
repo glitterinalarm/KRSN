@@ -40,17 +40,42 @@ class BioGenome {
     ];
     static MATERIALS = ['MATTE', 'NEON', 'GLASS', 'MEAT', 'METAL', 'CHROME', 'PLASMA', 'GOLIGHT', 'DARKMATTER'];
 
-    static cross(d1, d2) {
+    static createRandom(p) {
+        return {
+            type: pick(this.TYPES),
+            material: pick(this.MATERIALS),
+            alpha: 255,
+            v_resolution: 0.15,
+            v_speed: rand(0.5, 2.5),
+            v_complexity: rand(0.5, 2.0),
+            v_strokeW: rand(1, 4),
+            g_amplitude: rand(2, 10),
+            g_speed: rand(1, 3),
+            g_drift: rand(-0.5, 0.5),
+            g_viscosity: rand(0.9, 0.98),
+            cohesion: rand(0.1, 0.5),
+            breathing: rand(0.01, 0.05),
+            anim_offset: p ? p.createVector(0,0) : { x: 0, y: 0, copy: () => ({ x: 0, y: 0 }) },
+            colorR: Math.random() * 255,
+            colorG: Math.random() * 255,
+            colorB: Math.random() * 255
+        };
+    }
+
+    static cross(d1, d2, p) {
         const roll = Math.random();
+        let newType = d1.type;
+        let secondaryType = null;
         let isSuper = false;
+
         if (d1.type === d2.type) {
             isSuper = true;
             newType = d1.type;
             secondaryType = d1.secondaryType || d1.type;
-        } else if (roll < 0.6) { // HYBRID: Split!
+        } else if (roll < 0.6) {
             newType = d1.type;
             secondaryType = d2.type;
-        } else { // DOMINANT
+        } else {
             newType = Math.random() > 0.5 ? d1.type : d2.type;
             secondaryType = newType;
         }
@@ -73,21 +98,11 @@ class BioGenome {
             g_viscosity: (d1.g_viscosity + d2.g_viscosity) / 2,
             cohesion: (d1.cohesion + d2.cohesion) * 1.1,
             breathing: (d1.breathing + d2.breathing) / 2,
-            anim_offset: d1.anim_offset ? d1.anim_offset.copy().lerp(d2.anim_offset || d1.anim_offset, 0.5) : (d2.anim_offset || p5.Vector.random2D())
+            anim_offset: (d1.anim_offset && d2.anim_offset) ? d1.anim_offset.copy().lerp(d2.anim_offset, 0.5) : (p ? p.createVector(0,0) : { x:0, y:0 })
         };
     }
+}
 
-    static createRandom() {
-        return {
-            type: pick(BioGenome.TYPES),
-            material: pick(BioGenome.MATERIALS),
-            g_speed: rand(0.05, 0.25),
-            g_amplitude: rand(0.2, 0.8),
-            g_viscosity: rand(0.7, 0.98), 
-            g_drift: rand(0.01, 0.1),
-            v_complexity: 0.1,
-            v_strokeW: rand(1, 4),
-            v_resolution: 0.15,
             v_speed: rand(0.5, 2.5),
             alpha: 255,
             cohesion: rand(0.1, 0.5),
@@ -113,7 +128,7 @@ class LivingTypo {
         this.gen = config.gen || 0;
         this.breathingStage = Math.random() * p.TWO_PI;
         
-        const d = config.dna || BioGenome.createRandom();
+        const d = config.dna || BioGenome.createRandom(p);
         // Manual deep clone to preserve p5.Vector and custom properties
         this.dna = Object.assign({}, d);
         if (d.anim_offset) this.dna.anim_offset = d.anim_offset.copy();
@@ -216,7 +231,8 @@ class LivingTypo {
         if (d.isSuper) p.strokeWeight(d.v_strokeW * 1.5);
 
         // Splitted rendering ONLY if secondaryType exists and is different
-        if (d.secondaryType && d.secondaryType !== d.type) {
+        // And ONLY if we have calculated halves
+        if (d.secondaryType && d.secondaryType !== d.type && this.leftV.length > 0) {
             // Render Left Half
             this.renderDNA(p, col, d, d.type, this.leftV);
             
@@ -862,7 +878,7 @@ class TypoUniverse {
         const other = APP_STATE.atoms.find(o => o !== moved && Math.hypot(o.x - moved.x, o.y - moved.y) < 150);
         if (!other) return;
 
-        const childDNA = BioGenome.cross(moved.dna, other.dna);
+        const childDNA = BioGenome.cross(moved.dna, other.dna, this.p);
         if (!childDNA) {
             this.explode(moved.x, moved.y, [255, 0, 0]);
             this.removeAtom(moved.atomId);
@@ -926,7 +942,11 @@ class TypoUniverse {
             if (dragged) { dragged.x += e.movementX/APP_STATE.view.zoom; dragged.y += e.movementY/APP_STATE.view.zoom; }
             else if (panning) { APP_STATE.view.targetX += (e.clientX-lx); APP_STATE.view.targetY += (e.clientY-ly); APP_STATE.view.x=APP_STATE.view.targetX; APP_STATE.view.y=APP_STATE.view.targetY; lx=e.clientX; ly=e.clientY; }
         });
-        window.addEventListener('mouseup', () => { if (dragged) this.checkFusion(dragged); dragged = null; panning = false; });
+        window.addEventListener('mouseup', () => { 
+            try { if (dragged) this.checkFusion(dragged); } catch(e) { console.error(e); }
+            dragged = null; 
+            panning = false; 
+        });
         window.addEventListener('wheel', e => { if (e.target.closest('.ui-overlay')) return; e.preventDefault(); APP_STATE.view.zoom = clamp(APP_STATE.view.zoom * (e.deltaY > 0 ? 0.9 : 1.1), 0.05, 5); }, { passive: false });
     }
 
