@@ -49,7 +49,10 @@ body { background: var(--bg-dark); color: var(--text-main); font-family: 'Outfit
     border: 1px solid var(--border); border-radius: 30px; 
     padding: 2rem; display: flex; flex-direction: column; 
     pointer-events: all; backdrop-filter: blur(20px); 
+    overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--accent) transparent;
 }
+.side-panel::-webkit-scrollbar { width: 4px; }
+.side-panel::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
 
 header h1 { font-size: 1.8rem; font-weight: 900; letter-spacing: -1px; }
 .highlight { color: var(--accent); }
