@@ -34,7 +34,9 @@ class BioGenome {
         'OP_ART', 'KINETIC', 'STIPPLE', 'AURA', 'FLUX',
         'MITOSIS', 'DNA', 'PHOTOSYNTHESIS', 'LYMPHOCYTE', 'GLOBULE',
         'TRIGONOMETRY', 'GOLDEN_RATIO', 'DERIVATIVE', 'INTEGRAL', 'COMPLEX_PLANE',
-        'STATISTICS', 'GEOMETRY', 'LOGIC', 'EXPONENTIAL'
+        'STATISTICS', 'GEOMETRY', 'LOGIC', 'EXPONENTIAL',
+        'RELATIVITY', 'QUANTUM_WAVE', 'THERMODYNAMICS', 'ELECTROMAGNETISM',
+        'GRAVITY_WELL', 'KINETICS', 'FLUID_DYNAMICS', 'OPTICS', 'ASTROPHYSICS'
     ];
     static MATERIALS = ['MATTE', 'NEON', 'GLASS', 'MEAT', 'METAL', 'CHROME', 'PLASMA', 'GOLIGHT', 'DARKMATTER'];
 
@@ -162,7 +164,7 @@ const sketch = (p) => {
         p.fill(255, 30);
         p.noStroke();
         p.textSize(10);
-        p.text(`SPORE ENGINE v51.2 | FAMILIES: ${BioGenome.TYPES.length} | MOLECULES: ${APP_STATE.atoms.length}`, 20, p.height - 20);
+        p.text(`SPORE ENGINE v51.3 | FAMILIES: ${BioGenome.TYPES.length} | MOLECULES: ${APP_STATE.atoms.length}`, 20, p.height - 20);
     };
 
     p.windowResized = () => p.resizeCanvas(window.innerWidth, window.innerHeight);
@@ -348,6 +350,15 @@ class LivingTypo {
             case 'GEOMETRY':     this.drawGeometry(p, col, d); break;
             case 'LOGIC':        this.drawLogic(p, col, d); break;
             case 'EXPONENTIAL':  this.drawExpr(p, col, d); break;
+            case 'RELATIVITY':   this.drawRelativity(p, col, d); break;
+            case 'QUANTUM_WAVE': this.drawQuantumWave(p, col, d); break;
+            case 'THERMODYNAMICS': this.drawEntropy(p, col, d); break;
+            case 'ELECTROMAGNETISM': this.drawElectromagnetic(p, col, d); break;
+            case 'GRAVITY_WELL': this.drawGravity(p, col, d); break;
+            case 'KINETICS':     this.drawKinetics(p, col, d); break;
+            case 'FLUID_DYNAMICS': this.drawFluidDyn(p, col, d); break;
+            case 'OPTICS':       this.drawOptics(p, col, d); break;
+            case 'ASTROPHYSICS': this.drawAstrophys(p, col, d); break;
             default:            this.drawDefault(p, col, d);
         }
 
@@ -811,6 +822,133 @@ class LivingTypo {
             }
         });
         this.drawDefault(p, col, d);
+    }
+
+    drawRelativity(p, col, d) {
+        // Space-time Curvature
+        p.noFill();
+        p.stroke(col[0], col[1], col[2], d.alpha * 0.5);
+        for (let r = 20; r < 200; r += 40) {
+            p.ellipse(0, 0, r * 2, r * 1.5);
+        }
+        this.vertices.forEach(v => {
+            p.push();
+            p.translate(v.pos.x, v.pos.y);
+            p.rotate(v.pos.heading());
+            p.line(0, 0, 20, 0);
+            p.pop();
+        });
+    }
+
+    drawQuantumWave(p, col, d) {
+        // Wave-Particle Duality
+        p.noFill();
+        p.strokeWeight(1);
+        for (let i = 0; i < 3; i++) {
+            p.stroke(col[0], col[1], col[2], d.alpha / (i+1));
+            p.beginShape();
+            this.vertices.forEach((v, j) => {
+                const wave = p.sin(p.frameCount * 0.2 + j * 0.1 + i) * 15;
+                p.vertex(v.pos.x + wave, v.pos.y + wave);
+            });
+            p.endShape();
+        }
+    }
+
+    drawEntropy(p, col, d) {
+        // Thermal Agitation
+        p.noStroke();
+        this.vertices.forEach(v => {
+            const heatX = rand(-5, 5);
+            const heatY = rand(-5, 5);
+            p.fill(col[0], col[1], col[2], d.alpha * 0.6);
+            p.circle(v.pos.x + heatX, v.pos.y + heatY, 3);
+        });
+    }
+
+    drawElectromagnetic(p, col, d) {
+        // Field Lines
+        p.noFill();
+        p.stroke(col[0], col[1], col[2], d.alpha);
+        this.vertices.forEach((v, i) => {
+            if (i % 15 === 0) {
+                p.push();
+                p.translate(v.pos.x, v.pos.y);
+                p.arc(0, 0, 40, 40, 0, p.PI);
+                p.pop();
+            }
+        });
+        this.drawDefault(p, [255, 255, 255], d);
+    }
+
+    drawGravity(p, col, d) {
+        // Point Mass & Vacuum
+        p.fill(0, d.alpha);
+        p.stroke(col[0], col[1], col[2], d.alpha);
+        p.circle(0, 0, 50);
+        this.vertices.forEach(v => {
+            const dist = p.dist(0, 0, v.pos.x, v.pos.y);
+            const force = p.createVector(-v.pos.x, -v.pos.y).limit(2);
+            v.pos.add(force);
+            p.line(v.pos.x, v.pos.y, 0, 0);
+        });
+    }
+
+    drawKinetics(p, col, d) {
+        // Momentum Vectors
+        p.stroke(col[0], col[1], col[2], d.alpha);
+        this.vertices.forEach(v => {
+            p.line(v.pos.x, v.pos.y, v.pos.x + v.vel.x * 10, v.pos.y + v.vel.y * 10);
+            p.circle(v.pos.x, v.pos.y, 2);
+        });
+    }
+
+    drawFluidDyn(p, col, d) {
+        // Turbulent streams
+        p.noFill();
+        p.stroke(col[0], col[1], col[2], d.alpha * 0.3);
+        this.vertices.forEach((v, i) => {
+            if (i % 8 === 0) {
+                p.beginShape();
+                for (let k = 0; k < 10; k++) {
+                    const nx = p.noise(v.pos.x * 0.01, v.pos.y * 0.01, k * 0.1) * 20;
+                    p.vertex(v.pos.x + k * 5, v.pos.y + nx);
+                }
+                p.endShape();
+            }
+        });
+    }
+
+    drawOptics(p, col, d) {
+        // Refraction & Caustics
+        p.push();
+        p.blendMode(p.ADD);
+        p.stroke(255, d.alpha);
+        this.vertices.forEach((v, i) => {
+            if (i % 20 === 0) {
+                const ray = p.createVector(100, 100);
+                p.line(v.pos.x, v.pos.y, v.pos.x + ray.x, v.pos.y + ray.y);
+            }
+        });
+        p.pop();
+        this.drawDefault(p, col, d);
+    }
+
+    drawAstrophys(p, col, d) {
+        // Planetary Orbits
+        p.noFill();
+        p.stroke(col[0], col[1], col[2], d.alpha * 0.5);
+        this.vertices.forEach((v, i) => {
+            if (i % 50 === 0) {
+                p.circle(v.pos.x, v.pos.y, 40);
+                p.push();
+                p.translate(v.pos.x, v.pos.y);
+                p.rotate(p.frameCount * 0.1);
+                p.fill(255, d.alpha);
+                p.circle(20, 0, 5);
+                p.pop();
+            }
+        });
     }
 
     drawDefault(p, col, d) {
