@@ -170,7 +170,7 @@ const sketch = (p) => {
         p.fill(255, 30);
         p.noStroke();
         p.textSize(10);
-        p.text(`SPORE ENGINE v51.4 | FAMILIES: ${BioGenome.TYPES.length} | MOLECULES: ${APP_STATE.atoms.length}`, 20, p.height - 20);
+        p.text(`SPORE ENGINE v51.6 | FAMILIES: ${BioGenome.TYPES.length} | MOLECULES: ${APP_STATE.atoms.length}`, 20, p.height - 20);
     };
 
     p.windowResized = () => p.resizeCanvas(window.innerWidth, window.innerHeight);
@@ -280,9 +280,9 @@ class LivingTypo {
             v.vel.mult(d.g_viscosity);
             v.pos.add(v.vel);
 
-            // Breathing effect
-            const breath = 1 + Math.sin(this.breathingStage + v.seed * p.TWO_PI) * 0.05;
-            v.pos.mult(breath);
+            // Breathing effect (Smooth, non-cumulative)
+            const breath = Math.sin(this.breathingStage + v.seed * p.TWO_PI) * 5 * d.v_complexity;
+            v.pos.add(p5.Vector.mult(v.pos, breath * 0.001));
         });
 
         // Particle System Update (for Gaseous/Fragmented)
@@ -678,17 +678,18 @@ class LivingTypo {
     }
 
     drawLymphocyte(p, col, d) {
-        // Defensive spikes
+        // Defensive pulsing spikes
         p.stroke(255, d.alpha);
         p.fill(col[0], col[1], col[2], d.alpha * 0.7);
         this.vertices.forEach((v, i) => {
-            if (i % 15 === 0) {
+            if (i % 25 === 0) {
                 p.push();
                 p.translate(v.pos.x, v.pos.y);
-                for (let a = 0; a < p.TWO_PI; a += p.PI/4) {
-                    p.line(0, 0, Math.cos(a) * 15, Math.sin(a) * 15);
+                const pulse = Math.sin(p.frameCount * 0.1 + v.seed * 5);
+                for (let a = 0; a < p.TWO_PI; a += p.PI/3) {
+                    p.line(0, 0, Math.cos(a) * (15 + pulse * 10), Math.sin(a) * (15 + pulse * 10));
                 }
-                p.circle(0, 0, 10);
+                p.circle(0, 0, 8);
                 p.pop();
             }
         });
@@ -759,9 +760,10 @@ class LivingTypo {
     drawIntegral(p, col, d) {
         // Sums and areas
         p.stroke(col[0], col[1], col[2], d.alpha * 0.4);
+        p.strokeWeight(1);
         this.vertices.forEach((v, i) => {
-            if (i % 10 === 0) {
-                p.line(v.pos.x, v.pos.y, v.pos.x, v.pos.y + 40 * v.seed);
+            if (i % 8 === 0) {
+                p.line(v.pos.x, v.pos.y, v.pos.x, v.pos.y + 30 * v.seed);
             }
         });
         this.drawDefault(p, col, d);
@@ -962,7 +964,14 @@ class LivingTypo {
         p.stroke(col[0], col[1], col[2], d.alpha);
         p.strokeWeight(d.v_strokeW);
         p.beginShape();
-        this.vertices.forEach(v => p.vertex(v.pos.x, v.pos.y));
+        if (this.vertices.length > 3) {
+            // Use curveVertex for smoother organic paths
+            p.curveVertex(this.vertices[0].pos.x, this.vertices[0].pos.y);
+            this.vertices.forEach(v => p.curveVertex(v.pos.x, v.pos.y));
+            p.curveVertex(this.vertices[this.vertices.length-1].pos.x, this.vertices[this.vertices.length-1].pos.y);
+        } else {
+            this.vertices.forEach(v => p.vertex(v.pos.x, v.pos.y));
+        }
         p.endShape();
     }
 
@@ -1014,20 +1023,20 @@ class LivingTypo {
     }
 
     drawMechanic(p, col, d) {
-        // Joints and segments (tripods)
-        p.stroke(col[0], col[1], col[2], d.alpha);
-        p.strokeWeight(d.v_strokeW);
-        for (let i = 0; i < this.vertices.length; i += 10) {
-            const v = this.vertices[i];
-            p.rect(v.pos.x - 2, v.pos.y - 2, 4, 4);
-            if (i > 0) {
-                p.line(v.pos.x, v.pos.y, this.vertices[i-1].pos.x, this.vertices[i-1].pos.y);
+        // High-tech skeletal structure
+        p.stroke(col[0], col[1], col[2], d.alpha * 0.8);
+        p.strokeWeight(d.v_strokeW * 0.5);
+        this.vertices.forEach((v, i) => {
+            if (i % 15 === 0) {
+                const len = 25 * Math.sin(p.frameCount * 0.06 + v.seed * 5);
+                p.line(v.pos.x, v.pos.y, v.pos.x + len, v.pos.y + len);
+                p.noStroke();
+                p.fill(col[0], col[1], col[2], d.alpha);
+                p.rect(v.pos.x + len - 2, v.pos.y + len - 2, 4, 4);
+                p.stroke(col[0], col[1], col[2], d.alpha * 0.8);
             }
-            // Tripod legs
-            if (v.seed > 0.8) {
-                p.line(v.pos.x, v.pos.y, v.pos.x + 20, v.pos.y + 40);
-            }
-        }
+        });
+        this.drawDefault(p, col, d);
     }
 
     drawGaseous(p, col, d) {
