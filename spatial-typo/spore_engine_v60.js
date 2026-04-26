@@ -113,17 +113,15 @@ class LivingTypo {
         this.gen = config.gen || 0;
         this.breathingStage = Math.random() * p.TWO_PI;
         
-        if (config.dna) {
-            this.dna = config.dna;
-            this.char = config.char || char || pick("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
-            this.x = config.x !== null ? config.x : (Math.random() - 0.5) * 800;
-            this.y = config.y !== null ? config.y : (Math.random() - 0.5) * 600;
-        } else {
-            this.dna = BioGenome.createRandom();
-            this.char = char || pick("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
-            this.x = config.x !== null ? config.x : (Math.random() - 0.5) * 800;
-            this.y = config.y !== null ? config.y : (Math.random() - 0.5) * 600;
-        }
+        const d = config.dna || BioGenome.createRandom();
+        this.dna = JSON.parse(JSON.stringify(d)); // Deep clone for safety
+        if (d.anim_offset) this.dna.anim_offset = d.anim_offset.copy();
+        this.dna.isSuper = d.isSuper || false;
+        this.dna.secondaryType = d.secondaryType || d.type;
+
+        this.char = config.char || char || pick("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
+        this.x = (config.x !== undefined && config.x !== null) ? config.x : (Math.random() - 0.5) * 800;
+        this.y = (config.y !== undefined && config.y !== null) ? config.y : (Math.random() - 0.5) * 600;
 
         this.leftV = [];
         this.rightV = [];
