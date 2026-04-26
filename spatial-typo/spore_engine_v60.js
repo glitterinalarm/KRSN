@@ -944,7 +944,7 @@ class TypoUniverse {
             const atom = APP_STATE.atoms.find(a => Math.hypot(a.x - wx, a.y - wy) < 200/APP_STATE.view.zoom);
             if (atom) {
                 dragged = atom;
-                APP_STATE.view.targetZoom = 1.3;
+                APP_STATE.view.targetZoom = 1.1; // Balanced interaction zoom
                 APP_STATE.view.targetX = -atom.x;
                 APP_STATE.view.targetY = -atom.y;
             } else {
@@ -991,7 +991,7 @@ window.focusAtom = (id) => {
     if (atom) {
         APP_STATE.view.targetX = -atom.x;
         APP_STATE.view.targetY = -atom.y;
-        APP_STATE.view.targetZoom = 1.8; // Elegant breathing room
+        APP_STATE.view.targetZoom = 0.8; // Perfect balance for 400px letters
     }
 };
 
