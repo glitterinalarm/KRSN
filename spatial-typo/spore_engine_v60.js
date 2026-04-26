@@ -1,13 +1,13 @@
-// Typography Lab - Spore Engine v69.0
-// FUNCTIONAL RESTORATION: FIXING GENERATION ERROR & KEEPING SILHOUETTES
+// Typography Lab - Spore Engine v70.0
+// KINETIC PIXEL ENGINE: NO MORE HORIZONTAL JUMPS. PURE TYPOGRAPHIC CLARITY.
 
-console.log("TypoLab v69.0 — BACK TO LIFE");
+console.log("TypoLab v70.0 — KINETIC PIXEL RESTORATION");
 
 let _uid = 0;
 let GLOBAL_FONT = null;
-const APP_STATE = { atoms: [], view: { x: 0, y: 0, zoom: 0.7 } };
-const rand = (a, b) => Math.random() * (b - a) + a; // FIXED: Restored rand
-const pick = (arr) => arr[arr.length * Math.random() | 0];
+const APP_STATE = { atoms: [], view: { x: 0, y: 0, zoom: 0.6 } };
+const rand = (a, b) => Math.random() * (b - a) + a;
+const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
 // ═══════════════════════════════════════════════════════════════
 // VERTEX GEN
@@ -15,13 +15,13 @@ const pick = (arr) => arr[arr.length * Math.random() | 0];
 function getVertices(p, char) {
     if(GLOBAL_FONT) {
         try {
-            const fSize = 200;
-            const pts = GLOBAL_FONT.textToPoints(char, 0, 0, fSize, { sampleFactor: 0.4 });
-            if(pts && pts.length > 10) {
+            const fSize = 220;
+            const pts = GLOBAL_FONT.textToPoints(char, 0, 0, fSize, { sampleFactor: 0.45 });
+            if(pts && pts.length > 20) {
                 let minX=Infinity, maxX=-Infinity, minY=Infinity, maxY=-Infinity;
                 pts.forEach(pt=>{ minX=Math.min(minX,pt.x); maxX=Math.max(maxX,pt.x); minY=Math.min(minY,pt.y); maxY=Math.max(maxY,pt.y); });
                 const offX = (minX+maxX)/2; const offY = (minY+maxY)/2;
-                return pts.map(pt => ({pos:p.createVector(pt.x-offX,pt.y-offY), base:p.createVector(pt.x-offX,pt.y-offY), ordered: true}));
+                return pts.map(pt => ({pos:p.createVector(pt.x-offX,pt.y-offY), base:p.createVector(pt.x-offX,pt.y-offY)}));
             }
         } catch(e) {}
     }
@@ -29,16 +29,16 @@ function getVertices(p, char) {
     pg.background(0); pg.fill(255); pg.textAlign(p.CENTER, p.CENTER); pg.textSize(sz*0.8); pg.text(char,sz/2,sz/2);
     pg.loadPixels(); const pts=[];
     for(let y=0;y<sz;y+=3)for(let x=0;x<sz;x+=3)if(pg.pixels[(x+y*sz)*4]>127)pts.push({x:x-sz/2,y:y-sz/2});
-    return pts.map(pt=>({pos:p.createVector(pt.x*1.5,pt.y*1.5), base:p.createVector(pt.x*1.5,pt.y*1.5), ordered: false}));
+    return pts.map(pt=>({pos:p.createVector(pt.x*1.5,pt.y*1.5), base:p.createVector(pt.x*1.5,pt.y*1.5)}));
 }
 
 class BioGenome {
-    static FAMILIES = ['NEON', 'CHROME', 'CRYSTAL', 'NEURAL', 'BUBBLE', 'GLITCH', 'SCANLINE', 'QUANTUM', 'OP_ART', 'INK', 'MECHANIC', 'DNA_HELIX', 'MANDELBROT', 'PRISM'];
+    static FAMILIES = ['NEON', 'CHROME', 'CRYSTAL', 'NEURAL', 'BUBBLE', 'GLITCH', 'SCANLINE', 'QUANTUM', 'OP_ART', 'INK', 'MECHANIC', 'DNA_HELIX', 'POWDER', 'GRID', 'VOXEL'];
     static createRandom(forcedType = null) {
         return {
             type: forcedType || pick(this.FAMILIES),
-            color: [rand(120,255), rand(120,255), rand(120,255)],
-            sw: rand(3, 8),
+            color: [rand(140,255), rand(140,255), rand(140,255)],
+            sw: rand(2.5, 6),
             seed: Math.random()*1000
         };
     }
@@ -58,49 +58,51 @@ class LivingTypo {
         const p=this.p; const d=this.dna; const v=this.vertices;
         if(!v.length) return;
         p.push(); p.translate(this.x, this.y);
-        p.stroke(d.color[0], d.color[1], d.color[2]); p.strokeWeight(d.sw); p.noFill();
         
+        const col = p.color(d.color[0], d.color[1], d.color[2]);
+        const sw = d.v_strokeW || d.sw;
+
+        // ═══════════════════════════════════════════════════════════
+        // PURE PIXEL RENDERING (No Shape Connection = No Jump Lines)
+        // ═══════════════════════════════════════════════════════════
         switch(d.type) {
-            case 'NEON':
-                p.strokeWeight(d.sw*3); p.stroke(d.color[0],d.color[1],d.color[2],30); this.path(p,v);
-                p.strokeWeight(d.sw); p.stroke(255); this.path(p,v);
-                break;
-            case 'CHROME':
-                p.strokeWeight(d.sw); p.stroke(255); this.path(p,v);
-                p.strokeWeight(d.sw*0.4); p.stroke(0); this.path(p,v);
-                break;
-            case 'CRYSTAL':
-                p.strokeWeight(1); p.fill(d.color[0],d.color[1],d.color[2],40);
-                for(let i=0; i<v.length-2; i+=4) p.triangle(v[i].pos.x, v[i].pos.y, v[i+1].pos.x, v[i+1].pos.y, v[i+2].pos.x, v[i+2].pos.y);
-                break;
             case 'BUBBLE':
-                p.noStroke(); p.fill(d.color[0],d.color[1],d.color[2],200);
-                v.forEach((vt,i)=>{ if(i%8===0) p.circle(vt.pos.x, vt.pos.y, d.sw*4); });
+                p.noStroke(); p.fill(col); v.forEach((vt,i)=>{ if(i%6===0) p.circle(vt.pos.x, vt.pos.y, sw*3); });
                 break;
-            case 'NEURAL':
-                p.strokeWeight(0.5); for(let i=0; i<v.length; i+=15) for(let j=i+15; j<v.length; j+=40) if(p.dist(v[i].pos.x,v[i].pos.y,v[j].pos.x,v[j].pos.y)<45) p.line(v[i].pos.x,v[i].pos.y,v[j].pos.x,v[j].pos.y);
+            case 'NEON':
+                v.forEach(vt=>{ p.strokeWeight(sw*3); p.stroke(d.color[0],d.color[1],d.color[2],30); p.point(vt.pos.x, vt.pos.y); p.strokeWeight(sw*1.5); p.stroke(255); p.point(vt.pos.x, vt.pos.y); });
                 break;
             case 'GLITCH':
-                p.strokeWeight(d.sw); v.forEach(vt=>{ if(p.random(100)>96) { p.stroke(255); p.line(vt.pos.x-40, vt.pos.y, vt.pos.x+40, vt.pos.y); p.stroke(d.color[0],d.color[1],d.color[2]); } p.point(vt.pos.x, vt.pos.y); });
+                v.forEach(vt=>{ 
+                    if(p.random(100)>98) { p.stroke(255); p.line(vt.pos.x-10, vt.pos.y, vt.pos.x+10, vt.pos.y); } 
+                    p.strokeWeight(sw); p.stroke(col); p.point(vt.pos.x+p.random(-2,2), vt.pos.y); 
+                });
+                break;
+            case 'CRYSTAL':
+                p.strokeWeight(1); p.stroke(col); for(let i=0; i<v.length-5; i+=10) { p.fill(d.color[0],d.color[1],d.color[2],40); p.triangle(v[i].pos.x,v[i].pos.y, v[i+2].pos.x, v[i+2].pos.y, v[i+4].pos.x, v[i+4].pos.y); }
                 break;
             case 'SCANLINE':
-                p.strokeWeight(d.sw); v.forEach(vt=>{ if(Math.floor(vt.pos.y/12)%2==0) p.line(vt.pos.x-40, vt.pos.y, vt.pos.x+40, vt.pos.y); });
-                break;
-            case 'QUANTUM':
-                p.strokeWeight(0.8); v.forEach(vt=>p.line(vt.pos.x, vt.pos.y, vt.pos.x+p.random(-30,30), vt.pos.y+p.random(-30,30)));
+                p.strokeWeight(1); p.stroke(col); v.forEach(vt=>{ if(Math.floor(vt.pos.y/6)%2==0) { p.line(vt.pos.x-5, vt.pos.y, vt.pos.x+5, vt.pos.y); } p.strokeWeight(sw); p.point(vt.pos.x, vt.pos.y); });
                 break;
             case 'MECHANIC':
-                p.strokeWeight(1); v.forEach((vt,i)=>{ if(i%20===0) { p.rect(vt.pos.x, vt.pos.y, 8, 8); p.line(vt.pos.x, vt.pos.y, vt.pos.x+20, vt.pos.y+20); } });
+                p.strokeWeight(1); p.stroke(col); v.forEach((vt,i)=>{ if(i%15===0) { p.noFill(); p.rectMode(p.CENTER); p.rect(vt.pos.x, vt.pos.y, 6, 6); p.line(vt.pos.x, vt.pos.y, vt.pos.x+5, vt.pos.y+5); } p.point(vt.pos.x, vt.pos.y); });
                 break;
             case 'OP_ART':
-                p.strokeWeight(1.5); for(let k=0; k<5; k++) { p.push(); p.scale(1+k*0.1); this.path(p,v); p.pop(); }
+                p.strokeWeight(sw); p.stroke(col); v.forEach(vt=>{ p.point(vt.pos.x, vt.pos.y); p.stroke(255, 100); p.point(vt.pos.x+4, vt.pos.y+4); p.point(vt.pos.x-4, vt.pos.y-4); });
+                break;
+            case 'POWDER':
+                p.noStroke(); p.fill(d.color[0],d.color[1],d.color[2],150); v.forEach(vt=>{ p.circle(vt.pos.x+p.random(-5,5), vt.pos.y+p.random(-5,5), 1.5); });
+                break;
+            case 'NEURAL':
+                p.strokeWeight(0.5); p.stroke(col); for(let i=0; i<v.length; i+=15) for(let j=i+15; j<v.length; j+=40) { if(p.dist(v[i].pos.x,v[i].pos.y,v[j].pos.x,v[j].pos.y)<35) p.line(v[i].pos.x,v[i].pos.y,v[j].pos.x,v[j].pos.y); }
+                v.forEach(vt=>{ p.strokeWeight(sw); p.point(vt.pos.x, vt.pos.y); });
                 break;
             default:
-                p.strokeWeight(d.sw); this.path(p,v);
+                // CLEAN PIXEL OUTLINE
+                p.strokeWeight(sw); p.stroke(col); v.forEach(vt=>p.point(vt.pos.x, vt.pos.y));
         }
         p.pop();
     }
-    path(p,v) { p.beginShape(); v.forEach(vt=>p.vertex(vt.pos.x, vt.pos.y)); p.endShape(); }
 }
 
 class TypoUniverse {
@@ -151,10 +153,11 @@ const sketch = (p) => {
         p.createCanvas(window.innerWidth, window.innerHeight).parent('stage');
         TU = new TypoUniverse(p);
         p.loadFont('https://fonts.gstatic.com/s/outfit/v11/QGYtz_MV_NIiAd7uPTufnjU.ttf', (f)=>{GLOBAL_FONT=f; APP_STATE.atoms.forEach(a=>a.rebuild());});
+        
         const fams = BioGenome.FAMILIES;
         for(let i=0; i<18; i++) {
             let row = Math.floor(i/6); let col = i%6;
-            TU.addAtom((col-2.5)*300, (row-1)*350, pick("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), BioGenome.createRandom(fams[i%fams.length]));
+            TU.addAtom((col-2.5)*350, (row-1)*400, pick("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), BioGenome.createRandom(fams[i%fams.length]));
         }
         document.getElementById('loader').style.display='none';
     };
@@ -164,7 +167,7 @@ const sketch = (p) => {
         APP_STATE.atoms.forEach(a=>{ a.draw(); });
         p.pop();
         p.resetMatrix(); p.fill(255,40); p.textSize(10);
-        p.text(`v69.0 | BACK TO LIFE | SILHOUETTES PROTECTED`, 20, p.height-20);
+        p.text(`v70.0 | KINETIC PIXELS | PURE SILHOUETTES | NO MORE JUMPS`, 20, p.height-20);
     };
 };
 new p5(sketch);
