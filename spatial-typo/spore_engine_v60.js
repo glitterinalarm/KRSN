@@ -942,18 +942,32 @@ class TypoUniverse {
             if (e.target.closest('.ui-overlay')) return;
             const { wx, wy } = world(e.clientX, e.clientY);
             dragged = APP_STATE.atoms.find(a => Math.hypot(a.x-wx, a.y-wy) < 200/APP_STATE.view.zoom);
-            if (!dragged) { panning = true; lx = e.clientX; ly = e.clientY; }
+            if (!dragged) { 
+                panning = true; lx = e.clientX; ly = e.clientY; 
+                // Reset focus if clicking empty space
+                APP_STATE.view.targetX = 0;
+                APP_STATE.view.targetY = 0;
+                APP_STATE.view.targetZoom = 1.0;
+            }
         });
         window.addEventListener('mousemove', e => {
             if (dragged) { dragged.x += e.movementX/APP_STATE.view.zoom; dragged.y += e.movementY/APP_STATE.view.zoom; }
-            else if (panning) { APP_STATE.view.targetX += (e.clientX-lx); APP_STATE.view.targetY += (e.clientY-ly); APP_STATE.view.x=APP_STATE.view.targetX; APP_STATE.view.y=APP_STATE.view.targetY; lx=e.clientX; ly=e.clientY; }
+            else if (panning) { 
+                APP_STATE.view.targetX += (e.clientX-lx); 
+                APP_STATE.view.targetY += (e.clientY-ly); 
+                lx=e.clientX; ly=e.clientY; 
+            }
         });
         window.addEventListener('mouseup', () => { 
             try { if (dragged) this.checkFusion(dragged); } catch(e) { console.error(e); }
             dragged = null; 
             panning = false; 
         });
-        window.addEventListener('wheel', e => { if (e.target.closest('.ui-overlay')) return; e.preventDefault(); APP_STATE.view.zoom = clamp(APP_STATE.view.zoom * (e.deltaY > 0 ? 0.9 : 1.1), 0.05, 5); }, { passive: false });
+        window.addEventListener('wheel', e => { 
+            if (e.target.closest('.ui-overlay')) return; 
+            e.preventDefault(); 
+            APP_STATE.view.targetZoom = clamp(APP_STATE.view.targetZoom * (e.deltaY > 0 ? 0.9 : 1.1), 0.05, 5); 
+        }, { passive: false });
     }
 
     updateMoleculeList() {
