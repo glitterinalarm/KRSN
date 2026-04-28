@@ -21,7 +21,7 @@ body { top: 0px !important; }
    <div class="flex justify-between items-center px-6 py-4 w-full max-w-full mx-auto">
     <div class="flex items-center gap-6">
         <a class="text-xl font-black tracking-widest text-white uppercase font-inter no-underline" href="index.html">
-         PARAFFIN
+         PRFFN
         </a>
         <!-- Language Toggle Next To Logo -->
         <div class="hidden md:flex items-center gap-2 font-inter text-[9px] uppercase tracking-widest text-outline-variant border-l border-white/10 pl-6">

@@ -21,9 +21,9 @@ for filename in files:
     new_content = new_content.replace('v.2025.', 'v.2026.')
 
     # Replace site names
-    new_content = re.sub(r'\bPARAFFIN\.STUDIO\b', 'PARAFFIN', new_content, flags=re.IGNORECASE)
-    new_content = re.sub(r'\bPARAFFIN Studio\b', 'PARAFFIN', new_content, flags=re.IGNORECASE)
-    new_content = re.sub(r'\bPARAFFIN\b', 'PARAFFIN', new_content)
+    new_content = re.sub(r'\bPARAFFIN\.STUDIO\b', 'PRFFN', new_content, flags=re.IGNORECASE)
+    new_content = re.sub(r'\bPRFFN\b', 'PRFFN', new_content, flags=re.IGNORECASE)
+    new_content = re.sub(r'\bPARAFFIN\b', 'PRFFN', new_content)
 
     if new_content != content:
         with open(path, 'w') as f:
