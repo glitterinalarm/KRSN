@@ -6,7 +6,7 @@ files = [f for f in os.listdir(dist_dir) if f.endswith(".html")]
 
 replacements = [
     # Logo Home Link
-    (r'<div([^>]*)class="([^"]*font-black[^"]*)"([^>]*)>JTFL(\.STUDIO)?</div>', r'<a href="/" \1class="\2" \3>JTFL\4</a>'),
+    (r'<div([^>]*)class="([^"]*font-black[^"]*)"([^>]*)>PARAFFIN(\.STUDIO)?</div>', r'<a href="/" \1class="\2" \3>PARAFFIN\4</a>'),
     
     # Menu Links
     (r'href="#"([^>]*)>Lab</a>', r'href="/lab"\1>Lab</a>'),
