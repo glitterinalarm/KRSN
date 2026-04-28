@@ -58,16 +58,23 @@ def setup_mailto_v3():
         # Inject new logic
         soup.body.append(BeautifulSoup(js_logic, 'html.parser'))
 
-        # Direct attach to button
+        # Direct attach to button or link that says "Start the Dialogue"
         form = soup.find('form')
         if form:
-            btn = form.find('button')
+            # Find the element that looks like the submit button
+            btn = form.find(lambda tag: tag.name in ['a', 'button'] and 'Start the Dialogue' in tag.text)
             if btn:
+                # Convert to button if it was an 'a' tag to ensure better form handling
+                if btn.name == 'a':
+                    btn.name = 'button'
+                    del btn['href']
+                
                 btn['onclick'] = "launchDialogue(); return false;"
                 btn['type'] = "button" # Prevent dual submit
+                print(f"  Successfully linked button in {file_path}")
 
         with open(file_path, 'w', encoding='utf-8') as f:
-            f.write(str(soup))
+            f.write(soup.prettify())
         print(f"Robust Mailto v3 configured for {file_path}")
 
 if __name__ == "__main__":
