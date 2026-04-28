@@ -9,3 +9,5 @@ __pycache__/
 
 # Keep the dist folder (this is what is deployed)
 !dist/
+.vercel
+.env*.local

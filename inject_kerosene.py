@@ -79,7 +79,7 @@ with open(path, "r") as f:
 # 1. Inject Grid
 # Pattern that matches either the original Stitch grid or our dynamic grid
 grid_pattern = r'<!-- Editorial Grid -->\s*<section class="px-10 mb-32">\s*<div class="max-w-7xl mx-auto">.*?</div>\s*</section>'
-grid_replacement = f'<!-- Editorial Grid -->\n<section class="px-10 mb-32">\n<div class="max-w-7xl mx-auto">\n<div class="mb-12 flex items-center justify-between border-b border-outline-variant pb-4">\n    <h3 class="font-label text-xs uppercase tracking-[0.4em]">Kérosène Daily Curation</h3>\n    <a href="https://kerosene-seven.vercel.app/" target="_blank" class="text-[10px] uppercase tracking-widest text-on-surface-variant hover:text-white transition-colors">View All Transmissions →</a>\n</div>\n{grid_html}\n</div>\n</section>'
+grid_replacement = f'<!-- Editorial Grid -->\n<section class="px-10 mb-32">\n<div class="max-w-7xl mx-auto">\n<div class="mb-12 flex items-center justify-between border-b border-outline-variant pb-4">\n    <h3 class="font-label text-xs uppercase tracking-[0.4em]">Kérosène Daily Curation</h3>\n    <a href="https://veille-creative.vercel.app/" target="_blank" class="text-[10px] uppercase tracking-widest text-on-surface-variant hover:text-white transition-colors">View All Transmissions →</a>\n</div>\n{grid_html}\n</div>\n</section>'
 content = re.sub(grid_pattern, grid_replacement, content, flags=re.DOTALL)
 
 # 2. Fetch Hero Data
@@ -103,7 +103,7 @@ try:
 
         hero_title = hero_data['title']
         hero_excerpt = hero_data['excerpt']
-        hero_link = "https://kerosene-seven.vercel.app/article/manual-hero"
+        hero_link = "https://veille-creative.vercel.app/article/manual-hero"
         hero_category = hero_data.get('category', 'EDITORIAL').upper()
         hero_date = "NEW TRANSMISSION"
         
