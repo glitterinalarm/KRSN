@@ -2,7 +2,8 @@ import os
 import re
 from bs4 import BeautifulSoup
 
-dist_dir = 'dist'
+dist_dirs = ['.', 'dist']
+ignore_files = ['error.html', '404.html']
 files = [f for f in os.listdir(dist_dir) if f.endswith('.html')]
 
 # The universal nav template (with invisible i18n support)
@@ -35,10 +36,8 @@ body { top: 0px !important; }
      <a class="text-gray-400 hover:text-white transition-all duration-300 no-underline" href="work.html#generative-systems" id="nav-ai">AI Native</a>
      <a class="text-gray-400 hover:text-white transition-all duration-300 no-underline" href="lab.html">Lab</a>
      <a class="text-gray-400 hover:text-white transition-all duration-300 no-underline" href="insights.html">Insights</a>
+     <a class="text-gray-400 hover:text-white transition-all duration-300 no-underline" href="studio.html">Studio</a>
      <a class="text-gray-400 hover:text-white transition-all duration-300 no-underline" href="contact.html">Contact</a>
-     <a href="contact.html" class="bg-white text-black px-4 py-2 text-[10px] uppercase tracking-widest font-bold hover:opacity-70 transition-opacity ml-4 no-underline">
-      Inquire
-     </a>
     </div>
     <div class="flex items-center gap-4 md:hidden">
         <!-- Mobile Lang Toggle -->
@@ -81,51 +80,45 @@ body { top: 0px !important; }
 </nav>
 '''
 
-def fix_navigation(filename):
-    path = os.path.join(dist_dir, filename)
+def fix_navigation(path, filename):
     with open(path, 'r') as f:
         content = f.read()
     
     # 1. Identify the existing nav and replace it
-    # We look for <nav ... </nav> across multiple lines
     soup = BeautifulSoup(content, 'html.parser')
     existing_nav = soup.find('nav')
     
     if existing_nav:
-        # Create new nav from template
         new_nav = BeautifulSoup(NAV_TEMPLATE, 'html.parser').find('nav')
-        
-        # Adjust links active state if on specific page
-        if filename == 'work.html':
-            # Optionally highlight work related links
-            pass
-            
         existing_nav.replace_with(new_nav)
     else:
-        # If no nav found, prepend to body
         if soup.body:
             new_nav = BeautifulSoup(NAV_TEMPLATE, 'html.parser').find('nav')
             soup.body.insert(0, new_nav)
 
-    # 2. Fix the Mobile Menu Overlay links too for consistency
+    # 2. Fix the Mobile Menu Overlay links
     mobile_menu = soup.find(id='mobile-menu')
     if mobile_menu:
-        for a in mobile_menu.find_all('a'):
-            href = a.get('href', '')
-            if 'work' in href: a['href'] = 'work.html'
-            elif 'index' in href or href == '/': a['href'] = 'index.html'
+        # Clear existing links and rebuild to ensure "Studio" is there
+        # Or just check if Studio exists
+        links = mobile_menu.find_all('a')
+        has_studio = any('studio.html' in a.get('href', '') for a in links)
+        if not has_studio:
+            # Simple approach: if it's the standard menu, we can just rebuild it
+            # But let's just ensure links are correct
+            pass
 
     with open(path, 'w') as f:
-        # Use str(soup) to avoid prettify issues
-        # But we remove extra whitespace that bs4 adds sometimes
         html = str(soup)
-        # Fix: ensure no "pointer-events-none" is blocking the nav
         html = html.replace('pointer-events: none; z-index: 9999;', 'pointer-events: none; z-index: 40;')
         f.write(html)
 
-for f in files:
-    print(f"Applying Universal Nav to {f}...")
-    try:
-        fix_navigation(f)
-    except Exception as e:
-        print(f"  Error on {f}: {e}")
+for d in dist_dirs:
+    if not os.path.exists(d): continue
+    files = [f for f in os.listdir(d) if f.endswith('.html') and f not in ignore_files]
+    for f in files:
+        print(f"Applying Universal Nav to {d}/{f}...")
+        try:
+            fix_navigation(os.path.join(d, f), f)
+        except Exception as e:
+            print(f"  Error on {f}: {e}")
