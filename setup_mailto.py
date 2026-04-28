@@ -16,7 +16,7 @@ def setup_mailto():
             const brief = form.querySelector('textarea').value;
             const timeline = form.querySelector('input[placeholder*="Weeks"], input[placeholder*="Semaines"]').value;
 
-            const subject = encodeURIComponent(`[BLSTC Brief] New Production Request from ${{company || name}}`);
+            const subject = encodeURIComponent(`[JTFL Brief] New Production Request from ${{company || name}}`);
             const body = encodeURIComponent(
                 `Full Name: ${{name}}\\n` +
                 `Email: ${{email}}\\n` +

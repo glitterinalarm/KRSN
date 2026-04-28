@@ -27,7 +27,7 @@ def setup_mailto_v3():
                     if (label.includes('timeline') || label.includes('délai')) timeline = input.value;
                 }});
 
-                const subject = encodeURIComponent(`[BLSTC Brief] New Production Request from ${{company || name || 'New Client'}}`);
+                const subject = encodeURIComponent(`[JTFL Brief] New Production Request from ${{company || name || 'New Client'}}`);
                 const body = encodeURIComponent(
                     `Full Name: ${{name}}\\n` +
                     `Email: ${{email}}\\n` +
