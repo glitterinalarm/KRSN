@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 
 dist_dirs = ['.', 'dist']
 ignore_files = ['error.html', '404.html']
-files = [f for f in os.listdir(dist_dir) if f.endswith('.html')]
+
 
 # The universal nav template (with invisible i18n support)
 NAV_TEMPLATE = '''
