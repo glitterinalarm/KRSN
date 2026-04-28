@@ -41,6 +41,15 @@ dictionary = {
     r'We orchestrated a complete AI workflow\s*transitioning from initial ideation and generative sketches to photorealistic masters—finalized with': 'Nous avons orchestré un workflow IA intégral allant de l\'idéation initiale et d\'esquisses génératives aux masters photoréalistes—finalisé avec',
     r'Ready to build the future\?': 'Prêt à construire le futur ?',
     r'Brief us on your next production': 'Confiez-nous votre prochain brief',
+    
+    # Navigation
+    r'By Human': "Par l'Humain",
+    r'AI Native': 'IA Native',
+    r'Laboratory': 'Laboratoire',
+    r'\bWork\b': 'Travaux',
+    r'\bStudio\b': 'Studio',
+    r'\bContact\b': 'Contact',
+    r'\bHome\b': 'Accueil',
 }
 
 for filename in files:
