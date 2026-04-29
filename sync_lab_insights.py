@@ -7,18 +7,25 @@ def fetch_kerosene_insights():
     url = "https://veille-creative.vercel.app/"
     fallback_articles = [
         {
-            'title': 'THE DEATH OF THE PIXEL: EMBRACING GENERATIVE FIDELITY',
-            'link': 'https://veille-creative.vercel.app/',
+            'title': 'THE DEATH OF THE PIXEL',
+            'link': 'https://veille-creative.vercel.app/insights/the-death-of-the-pixel',
             'img': 'https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?auto=format&fit=crop&w=800',
-            'meta': 'EDITORIAL // APRIL 2026',
-            'summary': 'How AI is redefining high-end luxury advertising by moving beyond static assets into dynamic visual ecosystems.'
+            'meta': 'EDITORIAL // 2026',
+            'summary': 'Exploring the shift from rasterized assets to infinite generative fidelity.'
         },
         {
-            'title': 'SYNTHETIC CULTURE: THE NEW ARCHIVE',
-            'link': 'https://veille-creative.vercel.app/',
+            'title': 'SYNTHETIC CULTURE',
+            'link': 'https://veille-creative.vercel.app/insights/synthetic-culture',
             'img': 'https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?auto=format&fit=crop&w=800',
-            'meta': 'RESEARCH // MARCH 2026',
-            'summary': 'Exploring the role of curated AI databases in the preservation of brand heritage and digital artifacts.'
+            'meta': 'RESEARCH // 2026',
+            'summary': 'How AI archives are redefining our relationship with brand heritage.'
+        },
+        {
+            'title': 'PRIVATE ISLAND',
+            'link': 'https://veille-creative.vercel.app/insights/private-island',
+            'img': 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800',
+            'meta': 'CURATED // 2026',
+            'summary': 'The emergence of isolated creative ecosystems in the age of mass AI.'
         }
     ]
     

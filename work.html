@@ -170,49 +170,56 @@
    </div>
   </main>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+  <style>
+   .work-gallery-container { cursor: grab; user-select: none; -webkit-user-drag: none; scroll-behavior: auto; }
+    .work-gallery-container.active { cursor: grabbing; }
+    .work-gallery-item img { pointer-events: none; -webkit-user-drag: none; }
+  </style>
   <script>
    const gallery = document.getElementById('gallery');
-        const next = document.getElementById('scroll-next');
-        const prev = document.getElementById('scroll-prev');
+    const next = document.getElementById('scroll-next');
+    const prev = document.getElementById('scroll-prev');
 
-        // Arrow Scroll
-        next.addEventListener('click', () => {
-            gallery.scrollBy({ left: 600, behavior: 'smooth' });
-        });
-        prev.addEventListener('click', () => {
-            gallery.scrollBy({ left: -600, behavior: 'smooth' });
-        });
+    // Arrow Scroll
+    next.addEventListener('click', () => {
+        gallery.scrollBy({ left: 600, behavior: 'smooth' });
+    });
+    prev.addEventListener('click', () => {
+        gallery.scrollBy({ left: -600, behavior: 'smooth' });
+    });
 
-        // Wheel Scroll
-        gallery.addEventListener('wheel', (evt) => {
-            evt.preventDefault();
-            gallery.scrollLeft += evt.deltaY;
-        });
+    // Wheel Scroll
+    gallery.addEventListener('wheel', (evt) => {
+        evt.preventDefault();
+        gallery.scrollLeft += evt.deltaY;
+    }, { passive: false });
 
-        // DRAG TO SCROLL
-        let isDown = false;
-        let startX;
-        let scrollLeft;
+    // DRAG TO SCROLL (REFINED)
+    let isDown = false;
+    let startX;
+    let scrollLeft;
 
-        gallery.addEventListener('mousedown', (e) => {
-            isDown = true;
-            gallery.classList.add('active');
-            startX = e.pageX - gallery.offsetLeft;
-            scrollLeft = gallery.scrollLeft;
-        });
-        gallery.addEventListener('mouseleave', () => {
-            isDown = false;
-        });
-        gallery.addEventListener('mouseup', () => {
-            isDown = false;
-        });
-        gallery.addEventListener('mousemove', (e) => {
-            if(!isDown) return;
-            e.preventDefault();
-            const x = e.pageX - gallery.offsetLeft;
-            const walk = (x - startX) * 2; // scroll-fast
-            gallery.scrollLeft = scrollLeft - walk;
-        });
+    gallery.addEventListener('mousedown', (e) => {
+        isDown = true;
+        gallery.classList.add('active');
+        startX = e.pageX - gallery.offsetLeft;
+        scrollLeft = gallery.scrollLeft;
+    });
+    gallery.addEventListener('mouseleave', () => {
+        isDown = false;
+        gallery.classList.remove('active');
+    });
+    gallery.addEventListener('mouseup', () => {
+        isDown = false;
+        gallery.classList.remove('active');
+    });
+    gallery.addEventListener('mousemove', (e) => {
+        if(!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - gallery.offsetLeft;
+        const walk = (x - startX) * 2.5; 
+        gallery.scrollLeft = scrollLeft - walk;
+    });
   </script>
   <script>
    document.querySelectorAll('img[data-slideshow], img[data-video]').forEach(img => {

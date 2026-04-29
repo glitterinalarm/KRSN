@@ -1,0 +1,42 @@
+{
+    "works": [
+        {
+            "id": "dgpn-02",
+            "title": "POLICE NATIONALE",
+            "category": "CAMPAIGN",
+            "year": "2026",
+            "image": "https://i.ibb.co/pqrVWtc/DGPN02.png",
+            "link": "#"
+        },
+        {
+            "id": "lbc-00",
+            "title": "LEBONCOIN",
+            "category": "PLATFORM",
+            "year": "2025",
+            "image": "/assets/uploads/LBC_00.jpg",
+            "link": "#"
+        },
+        {
+            "id": "tourisme-01",
+            "title": "TOURISME",
+            "category": "BRANDING",
+            "year": "2026",
+            "image": "/assets/uploads/new_project_1776441848129_TOURISME.jpg",
+            "link": "#"
+        }
+    ],
+    "lab": [
+        {
+            "title": "KÉROSÈNE RSS",
+            "meta": "AI CURATED // WEBZINE",
+            "image": "https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?auto=format&fit=crop&w=800",
+            "link": "https://veille-creative.vercel.app/"
+        },
+        {
+            "title": "TLDR CREATIVE",
+            "meta": "INSTAGRAM // ARCHIVE",
+            "image": "https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?auto=format&fit=crop&w=800",
+            "link": "https://www.instagram.com/tldr_creative/"
+        }
+    ]
+}
