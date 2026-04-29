@@ -142,7 +142,6 @@
 </head>
 <body class="bg-background selection:bg-primary/30 selection:text-white overflow-hidden h-screen">
 <div class="grain"></div>
-<!-- Ultra-Minimalist Navigation -->
 <nav class="fixed top-0 w-full z-50 bg-black/90 backdrop-blur-md border-b border-white/10 transition-all duration-300">
 <div class="flex justify-between items-center px-6 py-4 w-full max-w-full mx-auto">
 <div class="flex items-center gap-6">
@@ -202,38 +201,27 @@
     document.addEventListener('DOMContentLoaded', checkCurrentLang);
    </script>
 </nav>
-<main class="h-screen w-full flex flex-col justify-center relative px-10">
-<!-- Background Monolith (The high-end abstract texture/monolith) -->
-<div class="absolute inset-0 z-0 flex items-center justify-center pointer-events-none">
-<div class="w-full h-full max-w-6xl opacity-20 grayscale mix-blend-screen overflow-hidden">
-<img class="w-full h-full object-cover scale-110 blur-[2px]" data-alt="Abstract architectural detail of a monolithic concrete structure with a singular sharp light beam creating high contrast" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKZoscx-d3NfMH2HMTJY_UTKS-SohAG2LaVlC5LR9uaewqgo32t-HkeYbm5mgZHTecMPjIpPKTUjOfc15wv4Tf8ZeTpqN0_U8zAPndCZ3s9Fq9Kr-zs3Ml8znkx0NIeczdkgQCu22pvZfIlyD5PkBcwmv9Llk6c6rDtyx8H_Pp2fT22u0d3pSO_QWpD_8SjwXvc3q3aLgnbdxPYcZaYotB3LmKw480VkfLSbc8VLJD-J-IMDGvVegUEMhuiOX8sw4cgV9QrdStvGQX" style=""/>
+<main class="h-screen w-full flex flex-col justify-center relative px-10 bg-[#080808]">
+<!-- Background Reel Placeholder -->
+<div class="absolute inset-0 z-0 overflow-hidden">
+<video autoplay="" class="w-full h-full object-cover opacity-30 grayscale" loop="" muted="" playsinline="">
+<source src="https://assets.mixkit.co/videos/preview/mixkit-abstract-motion-of-white-particles-on-black-background-30230-large.mp4" type="video/mp4"/>
+</video>
 </div>
-</div>
-<!-- Central Typographic Manifesto -->
+<!-- Frame Accents -->
+<div class="absolute top-10 left-10 font-mono text-[9px] text-[#00FF41] tracking-[0.3em] z-10">PRFFN.V3.08</div>
+<div class="absolute bottom-10 right-10 font-mono text-[9px] text-[#00FF41] tracking-[0.3em] z-10">ARCHITECTURAL NOIR</div>
 <div class="relative z-10 max-w-7xl mx-auto w-full text-center">
-<div class="mb-16">
-<span class="text-[10px] kerning-loose font-inter uppercase text-primary/60" style="">Digital Monolith v.01</span>
+<div class="mb-8">
+<span class="text-[11px] font-mono uppercase text-[#00FF41] tracking-[0.5em]">Creative Direction &amp; Motion</span>
 </div>
-<h1 class="text-[10vw] md:text-[8vw] font-serif italic leading-[0.9] text-on-surface kerning-tight flex flex-col items-center" style="">
-<span class="opacity-90">Creative Direction</span>
-<span class="text-outline mt-4" style="color: rgb(229, 226, 225); letter-spacing: -5.12px; -webkit-text-stroke-width: 0px;">&amp; Production.</span>
+<h1 class="text-[12vw] md:text-[9vw] font-serif italic leading-[0.85] text-white tracking-tighter" style="font-family: 'Bodoni Moda', serif;">
+    Digital<br/>Monolith.
 </h1>
-<div class="mt-20 flex flex-col items-center">
-<p class="font-body text-on-surface-variant text-xs kerning-loose uppercase max-w-xl leading-relaxed tracking-widest opacity-60" style="">From initial idea to finished product, augmented by AI.</p>
-<div class="mt-16 w-[1px] h-24 bg-gradient-to-b from-primary/40 to-transparent"></div>
+<div class="mt-12 flex flex-col items-center">
+<p class="font-inter text-gray-500 text-[10px] uppercase tracking-[0.4em] max-w-xl leading-relaxed">Augmented by AI. Directed by Humans.</p>
+<div class="mt-16 w-[1px] h-32 bg-gradient-to-b from-[#00FF41]/40 to-transparent"></div>
 </div>
-</div>
-<!-- Minimal Side Info (GrandMur style labels) -->
-<div class="absolute bottom-12 left-10 hidden lg:block">
-<div class="flex flex-col gap-2 font-inter text-[9px] tracking-[0.2em] uppercase text-outline-variant">
-<span class="" style="">Obsidien Ether</span>
-<span class="" style="">Est. 2026</span>
-</div>
-</div>
-<div class="absolute bottom-12 right-10 flex items-center gap-6">
-<a class="font-inter text-[9px] tracking-[0.2em] uppercase text-gray-500 hover:text-primary transition-colors" href="lab.html" style="">Laboratory</a>
-<div class="w-4 h-[1px] bg-outline-variant"></div>
-<a class="font-inter text-[9px] tracking-[0.2em] uppercase text-gray-500 hover:text-primary transition-colors" href="insights.html" style="">Journal</a>
 </div>
 </main>
 <!-- Hidden elements for potential interactions (maintaining accessibility/SEO) -->
