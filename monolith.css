@@ -140,11 +140,11 @@ body {
     background: currentColor;
 }
 
-.lab-item { margin-bottom: 80px; }
-.lab-item img { width: 100%; aspect-ratio: 3/4; object-fit: cover; margin-bottom: 2rem; }
+.lab-item { margin-bottom: 60px; }
+.lab-item img { width: 100%; aspect-ratio: 16/10; object-fit: cover; margin-bottom: 1.5rem; }
 
-.insight-item { margin-bottom: 80px; }
-.insight-item img { width: 100%; aspect-ratio: 16/9; object-fit: cover; margin-bottom: 2rem; }
+.insight-item { margin-bottom: 60px; }
+.insight-item img { width: 100%; aspect-ratio: 21/9; object-fit: cover; margin-bottom: 1.5rem; }
 
 /* HORIZONTAL WORK GALLERY ISO */
 .work-section {

@@ -5,35 +5,49 @@ from bs4 import BeautifulSoup
 
 def fetch_kerosene_insights():
     url = "https://veille-creative.vercel.app/"
+    fallback_articles = [
+        {
+            'title': 'THE DEATH OF THE PIXEL: EMBRACING GENERATIVE FIDELITY',
+            'link': 'https://veille-creative.vercel.app/',
+            'img': 'https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?auto=format&fit=crop&w=800',
+            'meta': 'EDITORIAL // APRIL 2026',
+            'summary': 'How AI is redefining high-end luxury advertising by moving beyond static assets into dynamic visual ecosystems.'
+        },
+        {
+            'title': 'SYNTHETIC CULTURE: THE NEW ARCHIVE',
+            'link': 'https://veille-creative.vercel.app/',
+            'img': 'https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?auto=format&fit=crop&w=800',
+            'meta': 'RESEARCH // MARCH 2026',
+            'summary': 'Exploring the role of curated AI databases in the preservation of brand heritage and digital artifacts.'
+        }
+    ]
+    
     try:
         response = requests.get(url, timeout=10)
         soup = BeautifulSoup(response.text, 'html.parser')
         
-        # We look for articles. On Kerosene they are usually in cards.
-        # This is a simplified extraction logic based on typical Kerosene structure
         articles = []
-        
-        # Try to find categories/rubriques
-        # We'll pick the first few distinct ones
-        cards = soup.select('div.group') # Typical card class
-        for card in cards[:6]:
-            title_el = card.select_one('h3')
+        # Look for the main article feed container
+        # On Kerosene, articles are often in 'div.group' inside a main feed
+        cards = soup.select('div.group, article')
+        for card in cards:
+            title_el = card.select_one('h3, h2')
             if not title_el: continue
             
             title = title_el.get_text(strip=True)
             link = card.select_one('a')
-            href = link['href'] if link else "#"
-            if not href.startswith('http'):
+            href = link['href'] if link and 'href' in link.attrs else "#"
+            if not href.startswith('http') and href != "#":
                 href = url.rstrip('/') + '/' + href.lstrip('/')
                 
             img = card.select_one('img')
-            img_src = img['src'] if img else "https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?auto=format&fit=crop&w=800"
+            img_src = img['src'] if img and 'src' in img.attrs else "https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?auto=format&fit=crop&w=800"
+            if not img_src.startswith('http'):
+                img_src = url.rstrip('/') + '/' + img_src.lstrip('/')
             
-            # Category / Date
-            meta = card.select_one('span, div.text-xs')
+            meta = card.select_one('span, div.text-xs, p.text-xs')
             meta_text = meta.get_text(strip=True) if meta else "EDITORIAL // 2026"
             
-            # Summary
             summary = card.select_one('p')
             summary_text = summary.get_text(strip=True) if summary else "Strategic perspectives on the future of creative direction."
             
@@ -44,10 +58,12 @@ def fetch_kerosene_insights():
                 'meta': meta_text,
                 'summary': summary_text
             })
-        return articles
+            if len(articles) >= 6: break
+            
+        return articles if articles else fallback_articles
     except Exception as e:
         print(f"Error fetching Kerosene: {e}")
-        return []
+        return fallback_articles
 
 def update_lab_page():
     path = "lab.html"
