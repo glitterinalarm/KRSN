@@ -166,10 +166,6 @@ def update_pages():
             parts = content.split("<!-- START_LAB_FEED -->")
             rest = parts[1].split("<!-- END_LAB_FEED -->")
             content = parts[0] + "<!-- START_LAB_FEED -->\n" + lab_html + "\n<!-- END_LAB_FEED -->" + rest[1]
-        if "<!-- START_INSIGHTS_FEED -->" in content and "<!-- END_INSIGHTS_FEED -->" in content:
-            parts = content.split("<!-- START_INSIGHTS_FEED -->")
-            rest = parts[1].split("<!-- END_INSIGHTS_FEED -->")
-            content = parts[0] + "<!-- START_INSIGHTS_FEED -->\n" + insights_html + "\n<!-- END_INSIGHTS_FEED -->" + rest[1]
         content = inject_script(content)
         with open("lab.html", "w", encoding="utf-8") as f: f.write(content)
         print("✓ lab.html updated (16/9)")
