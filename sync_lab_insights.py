@@ -27,22 +27,24 @@ def get_media_html(urls, css_class=""):
     if not urls:
         return f'<div class="{css_class} bg-gray-100 flex items-center justify-center text-[9px] uppercase opacity-20">No Media</div>'
 
-    html = f'<div class="media-container relative w-full aspect-[16/10] overflow-hidden mb-6 group">'
+    html = f'<div class="media-container relative w-full h-[80vh] overflow-hidden group">'
     
+    # 1. Video Layer (Hidden by default, shown on hover if exists)
     if videos:
         vid_id = videos[0].split("v=")[1].split("&")[0] if "v=" in videos[0] else videos[0].split("/")[-1]
         html += f'''
         <div class="video-overlay absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none">
-            <iframe class="w-full h-full" src="https://www.youtube.com/embed/{vid_id}?autoplay=1&mute=1&loop=1&playlist={vid_id}&controls=0&showinfo=0&rel=0&disablekb=1" frameborder="0" allow="autoplay; encrypted-media"></iframe>
+            <iframe class="w-full h-full grayscale hover:grayscale-0 transition-all duration-700" src="https://www.youtube.com/embed/{vid_id}?autoplay=1&mute=1&loop=1&playlist={vid_id}&controls=0&showinfo=0&rel=0&disablekb=1" frameborder="0" allow="autoplay; encrypted-media"></iframe>
         </div>'''
 
+    # 2. Image/Slideshow Layer
     if len(images) > 1:
         slides_html = ""
         for i, url in enumerate(images):
-            slides_html += f'<div class="slideshow-item absolute inset-0" style="transition: opacity 1s; opacity: { "1" if i == 0 else "0" }; z-index: { 1 if i == 0 else 0 };" data-index="{i}"><img src="{url}" class="w-full h-full object-cover"></div>'
+            slides_html += f'<div class="slideshow-item absolute inset-0 transition-opacity duration-1000" style="opacity: { "1" if i == 0 else "0" }; z-index: { 1 if i == 0 else 0 };" data-index="{i}"><img src="{url}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"></div>'
         html += f'<div class="slideshow-container absolute inset-0" data-count="{len(images)}">{slides_html}</div>'
     elif len(images) == 1:
-        html += f'<img src="{images[0]}" class="absolute inset-0 w-full h-full object-cover">'
+        html += f'<img src="{images[0]}" class="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">'
     elif not images and videos:
         html += f'<div class="absolute inset-0 bg-black flex items-center justify-center text-[9px] text-white uppercase tracking-widest opacity-20 italic">Hover to Play Video</div>'
 
@@ -103,7 +105,7 @@ def update_pages():
             work_html += f'''
             <div class="work-gallery-item cursor-pointer" onclick="window.open('{link}', '_blank')">
                 {media}
-                <div class="mt-8 flex justify-between items-baseline">
+                <div class="work-caption">
                     <h3 class="text-2xl font-black uppercase">{item['title']}</h3>
                     <span class="label-mono opacity-40">{item.get('year', '2026')} / {item.get('category', 'BRANDING')}</span>
                 </div>
