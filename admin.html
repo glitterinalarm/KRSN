@@ -47,7 +47,18 @@
         }
     </style>
 </head>
-<body class="p-10"><nav class="nav-split">
+<body class="p-10">
+<!-- Login Overlay -->
+<div class="fixed inset-0 bg-black z-[100] flex flex-col justify-center items-center text-white p-6 transition-all duration-700" id="login-overlay">
+<div class="max-w-md w-full">
+<h1 class="text-4xl font-black tracking-tighter mb-8 uppercase text-center italic">ACCESS_RESTRICTED</h1>
+<input class="bg-white/5 border-white/10 text-white text-center text-xl p-6 focus:border-white mb-4 w-full" id="admin-pass" placeholder="ENTER ACCESS KEY" type="password"/>
+<button class="w-full bg-white text-black p-6 font-bold uppercase tracking-widest text-xs hover:bg-gray-200 transition-colors" onclick="checkPass()">Unlock Console</button>
+<p class="text-[9px] text-red-500 uppercase tracking-widest mt-6 text-center opacity-0 transition-opacity" id="login-error">Invalid Access Key</p>
+</div>
+</div>
+<div class="opacity-0 pointer-events-none transition-opacity duration-1000" id="admin-container">
+<nav class="nav-split">
 <div class="nav-group-left">
 <a href="lab.html">Lab</a>
 <a href="lab.html">Insights</a>
@@ -93,9 +104,7 @@
 <!-- Dynamic Content -->
 </div>
 </section>
-<footer class="fixed bottom-10 right-10">
-<button class="btn-black shadow-2xl" onclick="saveAll()">Deploy Changes</button>
-</footer>
+</div> <!-- End admin-container -->
 </div>
 <script>
         let siteData = { works: [], lab: [] };
@@ -258,6 +267,21 @@
                 badge.innerText = "ERROR";
                 badge.style.background = "red";
                 alert("Error saving: " + e.message);
+            }
+        }
+
+        function checkPass() {
+            const pass = document.getElementById('admin-pass').value;
+            if (pass === 'PARAFFINE2026') {
+                document.getElementById('login-overlay').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('login-overlay').style.display = 'none';
+                    document.getElementById('admin-container').classList.remove('opacity-0', 'pointer-events-none');
+                }, 700);
+            } else {
+                const error = document.getElementById('login-error');
+                error.classList.remove('opacity-0');
+                setTimeout(() => error.classList.add('opacity-0'), 2000);
             }
         }
 
