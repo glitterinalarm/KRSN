@@ -52,7 +52,7 @@
 <div class="fixed inset-0 bg-black z-[100] flex flex-col justify-center items-center text-white p-6 transition-all duration-700" id="login-overlay">
 <div class="max-w-md w-full">
 <h1 class="text-4xl font-black tracking-tighter mb-8 uppercase text-center italic">ACCESS_RESTRICTED</h1>
-<input class="bg-white/5 border-white/10 text-white text-center text-xl p-6 focus:border-white mb-4 w-full" id="admin-pass" placeholder="ENTER ACCESS KEY" type="password"/>
+<input class="bg-white/5 border-white/10 text-white text-center text-xl p-6 focus:border-white mb-4 w-full" id="admin-pass" onkeyup="if(event.key === 'Enter') checkPass()" placeholder="ENTER ACCESS KEY" type="password"/>
 <button class="w-full bg-white text-black p-6 font-bold uppercase tracking-widest text-xs hover:bg-gray-200 transition-colors" onclick="checkPass()">Unlock Console</button>
 <p class="text-[9px] text-red-500 uppercase tracking-widest mt-6 text-center opacity-0 transition-opacity" id="login-error">Invalid Access Key</p>
 </div>
