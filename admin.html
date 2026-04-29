@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PARAFFINE // CLOUD CONSOLE</title>
+<link href="monolith.css" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+        body { background: #f4f4f4; color: black; font-family: 'Inter', sans-serif; }
+        .admin-card { background: white; border: 1px solid #ddd; padding: 2rem; margin-bottom: 1rem; transition: all 0.3s ease; }
+        .admin-card:hover { border-color: black; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        input, textarea, select { width: 100%; padding: 0.8rem; border: 1px solid #eee; margin-top: 0.5rem; font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+        input:focus { outline: none; border-color: black; }
+        .btn-black { background: black; color: white; padding: 1rem 2rem; font-size: 11px; font-weight: bold; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; transition: opacity 0.3s; }
+        .btn-black:hover { opacity: 0.8; }
+        .btn-danger { color: #ff4444; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; margin-top: 1rem; display: inline-block; }
+    </style>
+
+<style id="mobile-readability-fix">
+        @media (max-width: 768px) {
+            /* Better reading for descriptions */
+            p.text-sm, p.font-light {
+                font-size: 15px !important;
+                line-height: 1.7 !important;
+                opacity: 0.8 !important;
+                margin-top: 15px !important;
+                letter-spacing: 0.01em !important;
+            }
+            /* Prevents text from sticking to edges */
+            .p-4, .p-6, .p-8 {
+                padding-left: 20px !important;
+                padding-right: 20px !important;
+            }
+            /* Adjust Titles */
+            h3 {
+                font-size: 1.4rem !important;
+                line-height: 1.2 !important;
+                margin-bottom: 8px !important;
+            }
+            /* Space out project blocks */
+            .group {
+                margin-bottom: 2rem !important;
+            }
+        }
+    </style>
+</head>
+<body class="p-10"><nav class="nav-split">
+<div class="nav-group-left">
+<a href="lab.html">Lab</a>
+<a href="lab.html">Insights</a>
+</div>
+<a class="nav-logo-center" href="index.html">PARAFFINE</a>
+<div class="nav-group-right">
+<a href="work.html">Works</a>
+<a href="studio.html">Studio</a>
+<a href="studio.html">Contact</a>
+</div>
+</nav>
+<div class="max-w-4xl mx-auto">
+<header class="flex justify-between items-baseline mb-20">
+<div>
+<h1 class="text-4xl font-black tracking-tighter">PARAFFINE.CONSOLE</h1>
+<p class="text-[10px] opacity-40 uppercase tracking-widest mt-2">Cloud Management System // v1.0</p>
+</div>
+<div class="text-[9px] font-bold uppercase tracking-widest bg-black text-white px-3 py-1" id="status-badge">CONNECTED</div>
+</header>
+<section class="mb-20">
+<h2 class="text-xs font-bold uppercase tracking-[0.3em] mb-10 border-b border-black pb-4">Configuration</h2>
+<div class="admin-card">
+<label class="text-[9px] uppercase font-bold tracking-widest">GitHub Token (Private Access)</label>
+<input id="gh-token" placeholder="Paste your token here to enable saving..." type="password"/>
+<p class="text-[9px] opacity-40 mt-4 italic">This token is stored locally in your browser. It allows the console to push updates to your GitHub repository.</p>
+</div>
+</section>
+<section class="mb-20">
+<div class="flex justify-between items-baseline mb-10">
+<h2 class="text-xs font-bold uppercase tracking-[0.3em] border-b border-black pb-4 flex-grow">Works Portfolio</h2>
+<button class="text-[10px] font-bold uppercase tracking-widest ml-10" onclick="addWork()">+ Add Project</button>
+</div>
+<div id="works-list">
+<!-- Dynamic Content -->
+</div>
+</section>
+<section class="mb-20">
+<div class="flex justify-between items-baseline mb-10">
+<h2 class="text-xs font-bold uppercase tracking-[0.3em] border-b border-black pb-4 flex-grow">Lab Experiments</h2>
+<button class="text-[10px] font-bold uppercase tracking-widest ml-10" onclick="addLab()">+ Add Link</button>
+</div>
+<div id="lab-list">
+<!-- Dynamic Content -->
+</div>
+</section>
+<footer class="fixed bottom-10 right-10">
+<button class="btn-black shadow-2xl" onclick="saveAll()">Deploy Changes</button>
+</footer>
+</div>
+<script>
+        let siteData = { works: [], lab: [] };
+        const GITHUB_REPO = "glitterinalarm/KRSN";
+        const DATA_PATH = "site_data.json";
+
+        // Load Initial Data
+        async function loadData() {
+            try {
+                const res = await fetch('site_data.json?t=' + Date.now());
+                siteData = await res.json();
+                renderAll();
+            } catch (e) {
+                console.error("Failed to load data", e);
+            }
+            
+            const savedToken = localStorage.getItem('gh_token');
+            if(savedToken) document.getElementById('gh-token').value = savedToken;
+        }
+
+        function renderAll() {
+            const worksList = document.getElementById('works-list');
+            worksList.innerHTML = siteData.works.map((w, i) => `
+                <div class="admin-card">
+                    <div class="grid grid-cols-2 gap-6">
+                        <div>
+                            <label class="text-[9px] uppercase font-bold tracking-widest">Project Title</label>
+                            <input type="text" value="${w.title}" onchange="updateWork(${i}, 'title', this.value)">
+                        </div>
+                        <div>
+                            <label class="text-[9px] uppercase font-bold tracking-widest">Category</label>
+                            <input type="text" value="${w.category}" onchange="updateWork(${i}, 'category', this.value)">
+                        </div>
+                        <div>
+                            <label class="text-[9px] uppercase font-bold tracking-widest">Year</label>
+                            <input type="text" value="${w.year}" onchange="updateWork(${i}, 'year', this.value)">
+                        </div>
+                        <div>
+                            <label class="text-[9px] uppercase font-bold tracking-widest">Image URL</label>
+                            <input type="text" value="${w.image}" onchange="updateWork(${i}, 'image', this.value)">
+                        </div>
+                    </div>
+                    <span class="btn-danger" onclick="deleteWork(${i})">Delete Project</span>
+                </div>
+            `).join('');
+
+            const labList = document.getElementById('lab-list');
+            labList.innerHTML = siteData.lab.map((l, i) => `
+                <div class="admin-card">
+                    <div class="grid grid-cols-2 gap-6">
+                        <div>
+                            <label class="text-[9px] uppercase font-bold tracking-widest">Title</label>
+                            <input type="text" value="${l.title}" onchange="updateLab(${i}, 'title', this.value)">
+                        </div>
+                        <div>
+                            <label class="text-[9px] uppercase font-bold tracking-widest">Meta</label>
+                            <input type="text" value="${l.meta}" onchange="updateLab(${i}, 'meta', this.value)">
+                        </div>
+                        <div>
+                            <label class="text-[9px] uppercase font-bold tracking-widest">Image URL</label>
+                            <input type="text" value="${l.image}" onchange="updateLab(${i}, 'image', this.value)">
+                        </div>
+                        <div>
+                            <label class="text-[9px] uppercase font-bold tracking-widest">Link URL</label>
+                            <input type="text" value="${l.link}" onchange="updateLab(${i}, 'link', this.value)">
+                        </div>
+                    </div>
+                    <span class="btn-danger" onclick="deleteLab(${i})">Delete Link</span>
+                </div>
+            `).join('');
+        }
+
+        // CRUD Operations
+        function updateWork(i, key, val) { siteData.works[i][key] = val; }
+        function deleteWork(i) { siteData.works.splice(i, 1); renderAll(); }
+        function addWork() { 
+            siteData.works.unshift({ title: "New Project", category: "BRANDING", year: "2026", image: "", link: "#" }); 
+            renderAll(); 
+        }
+
+        function updateLab(i, key, val) { siteData.lab[i][key] = val; }
+        function deleteLab(i) { siteData.lab.splice(i, 1); renderAll(); }
+        function addLab() { 
+            siteData.lab.unshift({ title: "New Experiment", meta: "INSTAGRAM", image: "", link: "#" }); 
+            renderAll(); 
+        }
+
+        // SAVE TO GITHUB (THE MAGIC)
+        async function saveAll() {
+            const token = document.getElementById('gh-token').value;
+            if(!token) { alert("Please provide a GitHub Token to save changes."); return; }
+            localStorage.setItem('gh_token', token);
+
+            const badge = document.getElementById('status-badge');
+            badge.innerText = "SAVING...";
+            badge.style.background = "#ffcc00";
+
+            try {
+                // 1. Get SHA of current file
+                const getRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${DATA_PATH}`, {
+                    headers: { 'Authorization': `token ${token}` }
+                });
+                const fileData = await getRes.json();
+                const sha = fileData.sha;
+
+                // 2. Update File
+                const content = btoa(JSON.stringify(siteData, null, 4));
+                const putRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${DATA_PATH}`, {
+                    method: 'PUT',
+                    headers: { 
+                        'Authorization': `token ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: "Admin: Update site content via Cloud Console",
+                        content: content,
+                        sha: sha
+                    })
+                });
+
+                if(putRes.ok) {
+                    badge.innerText = "SUCCESS // DEPLOYING";
+                    badge.style.background = "#00cc00";
+                    setTimeout(() => {
+                        badge.innerText = "CONNECTED";
+                        badge.style.background = "black";
+                    }, 5000);
+                    alert("Changes saved! Vercel is now deploying the new version. (Wait 1-2 mins)");
+                } else {
+                    throw new Error("GitHub API Error");
+                }
+            } catch (e) {
+                badge.innerText = "ERROR";
+                badge.style.background = "red";
+                alert("Error saving: " + e.message);
+            }
+        }
+
+        loadData();
+    </script>
+</body>
+</html>
