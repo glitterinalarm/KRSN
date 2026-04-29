@@ -279,7 +279,7 @@
             const hashArray = Array.from(new Uint8Array(hashBuffer));
             const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
-            // Secure Hash for D4602RU041bel
+            // Secure Hash Verification
             if (hashHex === 'cecd08cd2d64e39f8266e707b2e3d32cb687cb0b5b6b4bde2b1086b31e1f716e') {
                 document.getElementById('login-overlay').style.opacity = '0';
                 setTimeout(() => {
