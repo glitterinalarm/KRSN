@@ -40,48 +40,53 @@ body {
 .bottom-left { bottom: 20px; left: 20px; }
 .bottom-right { bottom: 20px; right: 20px; }
 
-/* NAVIGATION CLASSIC (SPLIT ISO REF) */
+/* NAVIGATION CLASSIC (ISO IMAGE 1) */
 .nav-classic {
     position: fixed;
     top: 40px;
-    left: 80px;
-    right: 80px;
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    left: 40px;
+    right: 40px;
+    display: flex;
+    justify-content: space-between;
     align-items: center;
     z-index: 105;
-    color: var(--text-main);
 }
 
-.nav-links-left {
+.nav-logo {
+    font-size: 24px;
+    font-weight: 900;
+    letter-spacing: -0.05em;
+    text-decoration: none;
+    color: inherit;
+}
+
+.nav-links {
     display: flex;
-    gap: 2rem;
-    justify-content: flex-start;
-}
-
-.nav-links-right {
-    display: flex;
-    gap: 2rem;
-    justify-content: flex-end;
-}
-
-.nav-brand-center {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.4em;
-    text-transform: uppercase;
-    text-align: center;
+    gap: 1.5rem;
 }
 
 .nav-links a {
     text-decoration: none;
     color: inherit;
     font-size: 10px;
-    font-family: var(--font-sans);
     font-weight: 400;
     text-transform: uppercase;
     letter-spacing: 0.1em;
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+}
+
+.nav-links a:hover {
+    opacity: 1;
+}
+
+/* TYPOGRAPHY ISO IMAGE 1 */
+.title-huge {
+    font-size: clamp(5rem, 18vw, 22rem);
+    font-weight: 950;
+    letter-spacing: -0.06em;
+    line-height: 0.8;
+    text-transform: uppercase;
 }
 
 /* HORIZONTAL WORK GALLERY ISO */

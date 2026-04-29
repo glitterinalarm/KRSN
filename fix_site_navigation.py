@@ -5,22 +5,17 @@ from bs4 import BeautifulSoup
 dist_dirs = ['.', 'dist']
 ignore_files = ['error.html', '404.html']
 
-# The universal nav template (ISO Ref 02)
+# The universal nav template (ISO IMAGE 1)
 NAV_TEMPLATE = '''
 <nav class="nav-classic">
-    <div class="nav-links-left">
-        <div class="nav-links">
-            <a href="work.html">Works</a>
-            <a href="lab.html">Lab</a>
-        </div>
-    </div>
-    <div class="nav-brand-center">PARAFFINE</div>
-    <div class="nav-links-right">
-        <div class="nav-links">
-            <a href="insights.html">Insights</a>
-            <a href="studio.html">Studio</a>
-            <a href="contact.html">Contact</a>
-        </div>
+    <a href="index.html" class="nav-logo">PRFFN</a>
+    <div class="nav-links">
+        <a href="work.html#directed-by-humans">By Human</a>
+        <a href="work.html#generative-systems">AI Native</a>
+        <a href="lab.html">Lab</a>
+        <a href="insights.html">Insights</a>
+        <a href="studio.html">Studio</a>
+        <a href="contact.html">Contact</a>
     </div>
 </nav>
 '''
