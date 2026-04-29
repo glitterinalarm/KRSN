@@ -16,7 +16,7 @@ NAV_TEMPLATE = '''
     <div class="nav-group-right">
         <a href="work.html">Works</a>
         <a href="studio.html">Studio</a>
-        <a href="contact.html">Contact</a>
+        <a href="studio.html">Contact</a>
     </div>
 </nav>
 '''
