@@ -80,8 +80,8 @@ def get_media_html(urls, css_class=""):
 def update_pages():
     data_path = "site_data.json"
     if not os.path.exists(data_path): return
-    
-    with open(data_path, "r") as f:
+    # Load data
+    with open(data_path, "r", encoding="utf-8", errors="ignore") as f:
         site_data = json.load(f)
 
     # Slideshow Script for injection
