@@ -175,9 +175,10 @@
                         ${(w.images || []).map((img, idx) => `
                             <div class="relative group shrink-0">
                                 <img src="${getThumb(img)}" class="h-20 w-20 object-cover border border-black shadow-sm">
-                                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-2 transition-opacity">
-                                    <button onclick="moveWorkImage(${i}, ${idx}, -1)" class="text-white font-bold px-2 py-1 hover:bg-white hover:text-black transition-colors" ${idx === 0 ? 'disabled style="opacity:0.3"' : ''}>&lt;</button>
-                                    <button onclick="moveWorkImage(${i}, ${idx}, 1)" class="text-white font-bold px-2 py-1 hover:bg-white hover:text-black transition-colors" ${idx === w.images.length - 1 ? 'disabled style="opacity:0.3"' : ''}>&gt;</button>
+                                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-1 transition-opacity">
+                                    <button onclick="moveWorkImage(${i}, ${idx}, -1)" class="text-white font-bold px-1 py-1 hover:bg-white hover:text-black transition-colors" ${idx === 0 ? 'disabled style="opacity:0.3"' : ''}>&lt;</button>
+                                    <button onclick="removeImage(${i}, ${idx})" class="text-red-500 font-black px-1 py-1 hover:bg-red-500 hover:text-white transition-colors">X</button>
+                                    <button onclick="moveWorkImage(${i}, ${idx}, 1)" class="text-white font-bold px-1 py-1 hover:bg-white hover:text-black transition-colors" ${idx === w.images.length - 1 ? 'disabled style="opacity:0.3"' : ''}>&gt;</button>
                                 </div>
                             </div>
                         `).join('')}
@@ -233,9 +234,10 @@
                         ${(l.images || []).map((img, idx) => `
                             <div class="relative group shrink-0">
                                 <img src="${getThumb(img)}" class="h-20 w-20 object-cover border border-black shadow-sm">
-                                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-2 transition-opacity">
-                                    <button onclick="moveLabImage(${i}, ${idx}, -1)" class="text-white font-bold px-2 py-1 hover:bg-white hover:text-black transition-colors" ${idx === 0 ? 'disabled style="opacity:0.3"' : ''}>&lt;</button>
-                                    <button onclick="moveLabImage(${i}, ${idx}, 1)" class="text-white font-bold px-2 py-1 hover:bg-white hover:text-black transition-colors" ${idx === l.images.length - 1 ? 'disabled style="opacity:0.3"' : ''}>&gt;</button>
+                                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-1 transition-opacity">
+                                    <button onclick="moveLabImage(${i}, ${idx}, -1)" class="text-white font-bold px-1 py-1 hover:bg-white hover:text-black transition-colors" ${idx === 0 ? 'disabled style="opacity:0.3"' : ''}>&lt;</button>
+                                    <button onclick="removeLabImage(${i}, ${idx})" class="text-red-500 font-black px-1 py-1 hover:bg-red-500 hover:text-white transition-colors">X</button>
+                                    <button onclick="moveLabImage(${i}, ${idx}, 1)" class="text-white font-bold px-1 py-1 hover:bg-white hover:text-black transition-colors" ${idx === l.images.length - 1 ? 'disabled style="opacity:0.3"' : ''}>&gt;</button>
                                 </div>
                             </div>
                         `).join('')}
