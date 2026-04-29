@@ -40,53 +40,65 @@ body {
 .bottom-left { bottom: 20px; left: 20px; }
 .bottom-right { bottom: 20px; right: 20px; }
 
-/* NAVIGATION CLASSIC (ISO IMAGE 1) */
-.nav-classic {
+/* NAVIGATION SPLIT (ISO IMAGE 2) */
+.nav-split {
     position: fixed;
     top: 40px;
-    left: 40px;
-    right: 40px;
+    left: 80px;
+    right: 80px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     z-index: 105;
-}
-
-.nav-logo {
-    font-size: 24px;
-    font-weight: 900;
-    letter-spacing: -0.05em;
-    text-decoration: none;
-    color: inherit;
-}
-
-.nav-links {
-    display: flex;
-    gap: 1.5rem;
-}
-
-.nav-links a {
-    text-decoration: none;
-    color: inherit;
-    font-size: 10px;
-    font-weight: 400;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    opacity: 0.6;
-    transition: opacity 0.3s ease;
+    font-size: 10px;
+    letter-spacing: 0.2em;
 }
 
-.nav-links a:hover {
+.nav-group {
+    display: flex;
+    gap: 3rem;
+}
+
+.nav-split a {
+    text-decoration: none;
+    color: inherit;
+    opacity: 0.8;
+    transition: opacity 0.3s;
+}
+
+.nav-split a:hover {
     opacity: 1;
 }
 
-/* TYPOGRAPHY ISO IMAGE 1 */
-.title-huge {
-    font-size: clamp(5rem, 18vw, 22rem);
-    font-weight: 950;
-    letter-spacing: -0.06em;
-    line-height: 0.8;
+/* TYPOGRAPHY ISO IMAGE 2 */
+.title-hero {
+    font-size: clamp(4rem, 12vw, 15rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1;
     text-transform: uppercase;
+    margin: 0;
+}
+
+.subtitle-hero {
+    font-size: 10px;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin-top: 2rem;
+}
+
+.side-label {
+    position: fixed;
+    left: 40px;
+    top: 50%;
+    transform: translateY(-50%) rotate(-90deg);
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    opacity: 0.4;
+    text-transform: uppercase;
+    white-space: nowrap;
 }
 
 /* HORIZONTAL WORK GALLERY ISO */
