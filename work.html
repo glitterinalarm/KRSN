@@ -160,12 +160,20 @@
     const next = document.getElementById('scroll-next');
     const prev = document.getElementById('scroll-prev');
 
-    // Arrow Scroll
+    // Arrow Scroll (Dynamic Width + Gap)
     next.addEventListener('click', () => {
-        gallery.scrollBy({ left: 600, behavior: 'smooth' });
+        const item = gallery.querySelector('.work-gallery-item');
+        if(item) {
+            const gap = parseFloat(window.getComputedStyle(gallery).gap) || 60;
+            gallery.scrollBy({ left: item.offsetWidth + gap, behavior: 'smooth' });
+        }
     });
     prev.addEventListener('click', () => {
-        gallery.scrollBy({ left: -600, behavior: 'smooth' });
+        const item = gallery.querySelector('.work-gallery-item');
+        if(item) {
+            const gap = parseFloat(window.getComputedStyle(gallery).gap) || 60;
+            gallery.scrollBy({ left: -(item.offsetWidth + gap), behavior: 'smooth' });
+        }
     });
 
     // Wheel Scroll
