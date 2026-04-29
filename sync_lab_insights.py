@@ -43,27 +43,39 @@ def fetch_kerosene_insights():
         return [] # Fallback will be handled in update_lab_page
 
 def get_media_html(urls, css_class=""):
-    if not isinstance(urls, list): 
-        urls = [urls] if urls else []
+    if not isinstance(urls, list): urls = [urls] if urls else []
     
-    if len(urls) > 1:
-        # Slideshow logic
-        slides_html = ""
-        for i, url in enumerate(urls):
-            slides_html += f'<div class="slideshow-item absolute inset-0 transition-opacity duration-1000 { "opacity-100" if i == 0 else "opacity-0" }" data-index="{i}">{get_single_media_html(url, "w-full h-full object-cover")}</div>'
-        return f'<div class="slideshow-container relative w-full aspect-[16/10] overflow-hidden mb-6" data-count="{len(urls)}">{slides_html}</div>'
-    elif len(urls) == 1:
-        return get_single_media_html(urls[0], css_class)
-    else:
+    # Separate videos and images
+    videos = [u for u in urls if "youtube.com" in u or "youtu.be" in u]
+    images = [u for u in urls if u not in videos and u]
+    
+    if not urls:
         return f'<div class="{css_class} bg-gray-100 flex items-center justify-center text-[9px] uppercase opacity-20">No Media</div>'
 
-def get_single_media_html(url, css_class=""):
-    if not url: return ""
-    if "youtube.com" in url or "youtu.be" in url:
-        vid_id = url.split("v=")[1].split("&")[0] if "v=" in url else url.split("/")[-1]
-        return f'<div class="{css_class} relative overflow-hidden"><iframe class="absolute inset-0 w-full h-full" src="https://www.youtube.com/embed/{vid_id}?autoplay=1&mute=1&loop=1&playlist={vid_id}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>'
-    else:
-        return f'<img src="{url}" class="{css_class}">'
+    html = f'<div class="media-container relative w-full aspect-[16/10] overflow-hidden mb-6 group">'
+    
+    # 1. Video Layer (Hidden by default, shown on hover if exists)
+    if videos:
+        vid_id = videos[0].split("v=")[1].split("&")[0] if "v=" in videos[0] else videos[0].split("/")[-1]
+        html += f'''
+        <div class="video-overlay absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none group-hover:pointer-events-auto">
+            <iframe class="w-full h-full" src="https://www.youtube.com/embed/{vid_id}?autoplay=1&mute=1&loop=1&playlist={vid_id}&controls=0&showinfo=0&rel=0" frameborder="0" allow="autoplay; encrypted-media"></iframe>
+        </div>'''
+
+    # 2. Image/Slideshow Layer
+    if len(images) > 1:
+        slides_html = ""
+        for i, url in enumerate(images):
+            slides_html += f'<div class="slideshow-item absolute inset-0 transition-opacity duration-1000 { "opacity-100" if i == 0 else "opacity-0" }" data-index="{i}"><img src="{url}" class="w-full h-full object-cover"></div>'
+        html += f'<div class="slideshow-container absolute inset-0" data-count="{len(images)}">{slides_html}</div>'
+    elif len(images) == 1:
+        html += f'<img src="{images[0]}" class="absolute inset-0 w-full h-full object-cover">'
+    elif not images and videos:
+        # If ONLY video, show a placeholder or the video directly
+        html += f'<div class="absolute inset-0 bg-black flex items-center justify-center text-[9px] text-white uppercase tracking-widest opacity-20 italic">Hover to Play Video</div>'
+
+    html += '</div>'
+    return html
 
 def update_pages():
     data_path = "site_data.json"
@@ -105,8 +117,9 @@ def update_pages():
         for item in site_data["works"]:
             images = item.get('images', [item.get('image', '')])
             media = get_media_html(images, "w-full aspect-[16/10] object-cover mb-8")
+            link = item.get('link', '#')
             work_html += f'''
-            <div class="work-gallery-item">
+            <div class="work-gallery-item cursor-pointer" onclick="window.open('{link}', '_blank')">
                 {media}
                 <div class="mt-8 flex justify-between items-baseline">
                     <h3 class="text-2xl font-black uppercase">{item['title']}</h3>
