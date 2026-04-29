@@ -125,22 +125,16 @@
             if(savedToken) document.getElementById('gh-token').value = savedToken;
         }
 
-        function renderAll() {
-            const worksList = document.getElementById('works-list');
-            worksList.innerHTML = siteData.works.map((w, i) => `
-                <div class="admin-card">
-                    <div class="grid grid-cols-2 gap-6">
-                        <div>
-                            <label class="text-[9px] uppercase font-bold tracking-widest">Project Title</label>
-                            <input type="text" value="${w.title}" onchange="updateWork(${i}, 'title', this.value)">
-                        </div>
-                        <div>
-                            <label class="text-[9px] uppercase font-bold tracking-widest">Year</label>
-                            <input type="text" value="${w.year}" onchange="updateWork(${i}, 'year', this.value)">
-                        </div>
                         <div class="col-span-2">
-                            <label class="text-[9px] uppercase font-bold tracking-widest">Media URLs (Comma separated or use Drag & Drop)</label>
-                            <textarea onchange="updateWork(${i}, 'images', this.value.split(','))" class="w-full p-4 border border-gray-100 font-mono text-[10px] mt-2">${(w.images || [w.image]).join(',')}</textarea>
+                            <label class="text-[9px] uppercase font-bold tracking-widest">Media Assets</label>
+                            <div class="text-[10px] font-mono bg-gray-50 p-4 border border-gray-100 mt-2 break-all max-h-20 overflow-y-auto">
+                                ${(w.images || []).map((img, idx) => `
+                                    <div class="mb-2 flex justify-between items-center">
+                                        <span class="opacity-40">${img.startsWith('data:') ? '[INTERNAL_MEDIA_UPLOAD]' : img.substring(0, 30) + '...'}</span>
+                                        <button onclick="removeImage(${i}, ${idx})" class="text-red-500 hover:underline ml-4">REMOVE</button>
+                                    </div>
+                                `).join('') || '<span class="opacity-20">No media yet</span>'}
+                            </div>
                         </div>
                     </div>
                     <div class="mt-4 p-8 border-2 border-dashed border-gray-200 text-center text-[10px] uppercase tracking-widest text-gray-400 hover:border-black hover:text-black cursor-pointer" 
@@ -148,8 +142,8 @@
                          ondrop="handleDrop(event, 'work', ${i})">
                         Drag & Drop Multiple Images Here for Slideshow
                     </div>
-                    <div class="flex gap-2 mt-4 overflow-x-auto">
-                        ${(w.images || [w.image]).map(img => `<img src="${img}" class="h-10 w-10 object-cover border border-gray-100">`).join('')}
+                    <div class="flex gap-2 mt-4 overflow-x-auto pb-4">
+                        ${(w.images || []).map(img => `<img src="${img}" class="h-20 w-20 object-cover border border-black shadow-sm">`).join('')}
                     </div>
                     <span class="btn-danger" onclick="deleteWork(${i})">Delete Project</span>
                 </div>
@@ -168,8 +162,15 @@
                             <input type="text" value="${l.meta}" onchange="updateLab(${i}, 'meta', this.value)">
                         </div>
                         <div class="col-span-2">
-                            <label class="text-[9px] uppercase font-bold tracking-widest">Media URLs (Comma separated)</label>
-                            <textarea onchange="updateLab(${i}, 'images', this.value.split(','))" class="w-full p-4 border border-gray-100 font-mono text-[10px] mt-2">${(l.images || [l.image]).join(',')}</textarea>
+                            <label class="text-[9px] uppercase font-bold tracking-widest">Media Assets</label>
+                            <div class="text-[10px] font-mono bg-gray-50 p-4 border border-gray-100 mt-2 break-all max-h-20 overflow-y-auto">
+                                ${(l.images || []).map((img, idx) => `
+                                    <div class="mb-2 flex justify-between items-center">
+                                        <span class="opacity-40">${img.startsWith('data:') ? '[INTERNAL_MEDIA_UPLOAD]' : img.substring(0, 30) + '...'}</span>
+                                        <button onclick="removeLabImage(${i}, ${idx})" class="text-red-500 hover:underline ml-4">REMOVE</button>
+                                    </div>
+                                `).join('') || '<span class="opacity-20">No media yet</span>'}
+                            </div>
                         </div>
                     </div>
                     <div class="mt-4 p-8 border-2 border-dashed border-gray-200 text-center text-[10px] uppercase tracking-widest text-gray-400 hover:border-black hover:text-black cursor-pointer" 
@@ -177,9 +178,22 @@
                          ondrop="handleDrop(event, 'lab', ${i})">
                         Drag & Drop Images for Slideshow
                     </div>
+                    <div class="flex gap-2 mt-4 overflow-x-auto pb-4">
+                        ${(l.images || []).map(img => `<img src="${img}" class="h-20 w-20 object-cover border border-black shadow-sm">`).join('')}
+                    </div>
                     <span class="btn-danger" onclick="deleteLab(${i})">Delete Link</span>
                 </div>
             `).join('');
+        }
+
+        function removeImage(workIdx, imgIdx) {
+            siteData.works[workIdx].images.splice(imgIdx, 1);
+            renderAll();
+        }
+
+        function removeLabImage(labIdx, imgIdx) {
+            siteData.lab[labIdx].images.splice(imgIdx, 1);
+            renderAll();
         }
 
         async function handleDrop(e, type, index) {
