@@ -18,6 +18,7 @@
         .btn-danger { color: #ff4444; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; margin-top: 1rem; display: inline-block; }
     </style>
 
+
 <style id="mobile-readability-fix">
         @media (max-width: 768px) {
             /* Better reading for descriptions */
@@ -137,10 +138,14 @@
                         </div>
                         <div class="col-span-2">
                             <label class="text-[9px] uppercase font-bold tracking-widest">Media Assets</label>
+                            <div class="flex gap-2 mt-2">
+                                <input type="text" id="url-input-${i}" placeholder="Paste Image or YouTube URL here..." class="flex-grow !mt-0">
+                                <button onclick="addUrl(${i}, 'work')" class="bg-black text-white px-4 text-[10px] font-bold uppercase tracking-widest">Add URL</button>
+                            </div>
                             <div class="text-[10px] font-mono bg-gray-50 p-4 border border-gray-100 mt-2 break-all max-h-20 overflow-y-auto">
                                 ${(w.images || []).map((img, idx) => `
                                     <div class="mb-2 flex justify-between items-center">
-                                        <span class="opacity-40">${img.startsWith('data:') ? '[INTERNAL_MEDIA_UPLOAD]' : img.substring(0, 30) + '...'}</span>
+                                        <span class="opacity-40">${img.startsWith('data:') ? '[INTERNAL_MEDIA_UPLOAD]' : img.substring(0, 40) + '...'}</span>
                                         <button onclick="removeImage(${i}, ${idx})" class="text-red-500 hover:underline ml-4">REMOVE</button>
                                     </div>
                                 `).join('') || '<span class="opacity-20">No media yet</span>'}
@@ -173,10 +178,14 @@
                         </div>
                         <div class="col-span-2">
                             <label class="text-[9px] uppercase font-bold tracking-widest">Media Assets</label>
+                            <div class="flex gap-2 mt-2">
+                                <input type="text" id="url-input-lab-${i}" placeholder="Paste URL here..." class="flex-grow !mt-0">
+                                <button onclick="addUrl(${i}, 'lab')" class="bg-black text-white px-4 text-[10px] font-bold uppercase tracking-widest">Add URL</button>
+                            </div>
                             <div class="text-[10px] font-mono bg-gray-50 p-4 border border-gray-100 mt-2 break-all max-h-20 overflow-y-auto">
                                 ${(l.images || []).map((img, idx) => `
                                     <div class="mb-2 flex justify-between items-center">
-                                        <span class="opacity-40">${img.startsWith('data:') ? '[INTERNAL_MEDIA_UPLOAD]' : img.substring(0, 30) + '...'}</span>
+                                        <span class="opacity-40">${img.startsWith('data:') ? '[INTERNAL_MEDIA_UPLOAD]' : img.substring(0, 40) + '...'}</span>
                                         <button onclick="removeLabImage(${i}, ${idx})" class="text-red-500 hover:underline ml-4">REMOVE</button>
                                     </div>
                                 `).join('') || '<span class="opacity-20">No media yet</span>'}
@@ -203,6 +212,19 @@
 
         function removeLabImage(labIdx, imgIdx) {
             siteData.lab[labIdx].images.splice(imgIdx, 1);
+            renderAll();
+        }
+
+        function addUrl(index, type) {
+            const id = type === 'work' ? `url-input-${index}` : `url-input-lab-${index}`;
+            const input = document.getElementById(id);
+            const url = input.value.trim();
+            if (!url) return;
+            
+            const target = type === 'work' ? siteData.works[index] : siteData.lab[index];
+            if (!target.images) target.images = [];
+            target.images.push(url);
+            input.value = "";
             renderAll();
         }
 
