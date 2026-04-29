@@ -4,12 +4,15 @@
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <title>
-   Works — PRFFN
+   Works — PARAFFINE
   </title>
   <link href="monolith.css" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;900&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
   <script src="https://cdn.tailwindcss.com">
   </script>
+  <style>
+   .nav-links a.active { border-bottom: 1px solid black; }
+  </style>
   <style id="mobile-readability-fix">
    @media (max-width: 768px) {
             /* Better reading for descriptions */
@@ -38,20 +41,31 @@
         }
   </style>
  </head>
- <body class="bg-white">
+ <body class="bg-white overflow-hidden">
   <div class="site-frame">
   </div>
   <div class="corner-label top-left">
-   PRFFN.WORKS
+   PARAFFINE.WORKS
   </div>
   <div class="corner-label top-right">
    COLLECTION_2026
   </div>
   <div class="corner-label bottom-left">
-   SELECTED_OUTCOMES
+   DRAG_TO_NAVIGATE — (06) PROJECTS
   </div>
   <div class="corner-label bottom-right">
-   ARCHITECTURAL_NOIR
+   <div class="flex gap-4">
+    <button class="border border-black p-2 hover:bg-black hover:text-white transition-all">
+     <span class="material-symbols-outlined text-sm" style="font-size: 14px;">
+      arrow_back
+     </span>
+    </button>
+    <button class="border border-black p-2 hover:bg-black hover:text-white transition-all">
+     <span class="material-symbols-outlined text-sm" style="font-size: 14px;">
+      arrow_forward
+     </span>
+    </button>
+   </div>
   </div>
   <nav class="fixed top-0 w-full z-50 bg-black/90 backdrop-blur-md border-b border-white/10 transition-all duration-300">
    <div class="flex justify-between items-center px-6 py-4 w-full max-w-full mx-auto">
@@ -139,84 +153,89 @@
    </script>
   </nav>
   <main class="work-section">
-   <h1 class="title-huge text-black">
-    SELECTED WORKS
-   </h1>
-   <div class="work-grid">
+   <div class="mb-12">
+    <h1 class="title-huge text-black">
+     SELECTED WORKS
+    </h1>
+    <div class="w-32 h-[1px] bg-black/20 mt-4">
+    </div>
+   </div>
+   <div class="work-gallery-container">
     <!-- 01 -->
-    <div class="work-item">
+    <div class="work-gallery-item">
      <img src="https://i.ibb.co/pqrVWtc/DGPN02.png"/>
-     <div class="work-caption">
-      <span>
+     <div class="mt-8 flex justify-between items-baseline">
+      <h3 class="text-2xl font-black uppercase">
        POLICE NATIONALE
-      </span>
-      <span class="text-gray-400">
-       2026
+      </h3>
+      <span class="label-mono">
+       2026 / CAMPAIGN
       </span>
      </div>
     </div>
     <!-- 02 -->
-    <div class="work-item">
+    <div class="work-gallery-item">
      <img src="/assets/uploads/LBC_00.jpg"/>
-     <div class="work-caption">
-      <span>
+     <div class="mt-8 flex justify-between items-baseline">
+      <h3 class="text-2xl font-black uppercase">
        LEBONCOIN
-      </span>
-      <span class="text-gray-400">
-       2025
+      </h3>
+      <span class="label-mono">
+       2025 / PLATFORM
       </span>
      </div>
     </div>
     <!-- 03 -->
-    <div class="work-item">
+    <div class="work-gallery-item">
      <img src="/assets/uploads/new_project_1776441848129_TOURISME.jpg"/>
-     <div class="work-caption">
-      <span>
+     <div class="mt-8 flex justify-between items-baseline">
+      <h3 class="text-2xl font-black uppercase">
        TOURISME
-      </span>
-      <span class="text-gray-400">
-       2026
+      </h3>
+      <span class="label-mono">
+       2026 / BRANDING
       </span>
      </div>
     </div>
     <!-- 04 -->
-    <div class="work-item">
+    <div class="work-gallery-item">
      <img src="/assets/uploads/MANTUFESTO_.gif"/>
-     <div class="work-caption">
-      <span>
+     <div class="mt-8 flex justify-between items-baseline">
+      <h3 class="text-2xl font-black uppercase">
        MANTUFESTO
-      </span>
-      <span class="text-gray-400">
-       2024
+      </h3>
+      <span class="label-mono">
+       2024 / ART
       </span>
      </div>
     </div>
     <!-- 05 -->
-    <div class="work-item">
+    <div class="work-gallery-item">
      <img src="/assets/uploads/freepik__a-woman-in-a-yellow-sweater-stands-in-the-center-o__93810.gif"/>
-     <div class="work-caption">
-      <span>
+     <div class="mt-8 flex justify-between items-baseline">
+      <h3 class="text-2xl font-black uppercase">
        WESTFIELD
-      </span>
-      <span class="text-gray-400">
-       2026
+      </h3>
+      <span class="label-mono">
+       2026 / MOTION
       </span>
      </div>
     </div>
     <!-- 06 -->
-    <div class="work-item">
+    <div class="work-gallery-item">
      <img src="/assets/uploads/1758205991092.jpeg"/>
-     <div class="work-caption">
-      <span>
+     <div class="mt-8 flex justify-between items-baseline">
+      <h3 class="text-2xl font-black uppercase">
        BNP PARIBAS
-      </span>
-      <span class="text-gray-400">
-       2025
+      </h3>
+      <span class="label-mono">
+       2025 / CORPORATE
       </span>
      </div>
     </div>
    </div>
   </main>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
   <script>
    document.querySelectorAll('img[data-slideshow], img[data-video]').forEach(img => {
         let interval = null;
