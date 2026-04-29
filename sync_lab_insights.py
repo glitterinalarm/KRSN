@@ -111,7 +111,7 @@ def update_pages():
         media = get_work_media_html(images)
         link = item.get('link', '#')
         work_html += f'''
-            <div class="work-gallery-item cursor-pointer" onclick="window.open('{link}', '_blank')">
+            <div class="work-gallery-item">
                 {media}
                 <div class="work-caption">
                     <h3 class="text-2xl font-black uppercase">{item['title']}</h3>
