@@ -18,6 +18,7 @@
         .btn-danger { color: #ff4444; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; margin-top: 1rem; display: inline-block; }
     </style>
 
+
 <style id="mobile-readability-fix">
         @media (max-width: 768px) {
             /* Better reading for descriptions */
@@ -125,17 +126,22 @@
                             <input type="text" value="${w.title}" onchange="updateWork(${i}, 'title', this.value)">
                         </div>
                         <div>
-                            <label class="text-[9px] uppercase font-bold tracking-widest">Category</label>
-                            <input type="text" value="${w.category}" onchange="updateWork(${i}, 'category', this.value)">
+                            <label class="text-[9px] uppercase font-bold tracking-widest">Media URL (Image, GIF, or YouTube)</label>
+                            <input type="text" value="${w.image}" onchange="updateWork(${i}, 'image', this.value)">
                         </div>
                         <div>
                             <label class="text-[9px] uppercase font-bold tracking-widest">Year</label>
                             <input type="text" value="${w.year}" onchange="updateWork(${i}, 'year', this.value)">
                         </div>
                         <div>
-                            <label class="text-[9px] uppercase font-bold tracking-widest">Image URL</label>
-                            <input type="text" value="${w.image}" onchange="updateWork(${i}, 'image', this.value)">
+                            <label class="text-[9px] uppercase font-bold tracking-widest">Category</label>
+                            <input type="text" value="${w.category}" onchange="updateWork(${i}, 'category', this.value)">
                         </div>
+                    </div>
+                    <div class="mt-4 p-4 border-2 border-dashed border-gray-200 text-center text-[10px] uppercase tracking-widest text-gray-400 hover:border-black hover:text-black cursor-pointer" 
+                         ondragover="event.preventDefault()" 
+                         ondrop="handleDrop(event, 'work', ${i})">
+                        Drag & Drop Image Here to Upload
                     </div>
                     <span class="btn-danger" onclick="deleteWork(${i})">Delete Project</span>
                 </div>
@@ -150,21 +156,43 @@
                             <input type="text" value="${l.title}" onchange="updateLab(${i}, 'title', this.value)">
                         </div>
                         <div>
-                            <label class="text-[9px] uppercase font-bold tracking-widest">Meta</label>
-                            <input type="text" value="${l.meta}" onchange="updateLab(${i}, 'meta', this.value)">
+                            <label class="text-[9px] uppercase font-bold tracking-widest">Media URL</label>
+                            <input type="text" value="${l.image}" onchange="updateLab(${i}, 'image', this.value)">
                         </div>
                         <div>
-                            <label class="text-[9px] uppercase font-bold tracking-widest">Image URL</label>
-                            <input type="text" value="${l.image}" onchange="updateLab(${i}, 'image', this.value)">
+                            <label class="text-[9px] uppercase font-bold tracking-widest">Meta</label>
+                            <input type="text" value="${l.meta}" onchange="updateLab(${i}, 'meta', this.value)">
                         </div>
                         <div>
                             <label class="text-[9px] uppercase font-bold tracking-widest">Link URL</label>
                             <input type="text" value="${l.link}" onchange="updateLab(${i}, 'link', this.value)">
                         </div>
                     </div>
+                    <div class="mt-4 p-4 border-2 border-dashed border-gray-200 text-center text-[10px] uppercase tracking-widest text-gray-400 hover:border-black hover:text-black cursor-pointer" 
+                         ondragover="event.preventDefault()" 
+                         ondrop="handleDrop(event, 'lab', ${i})">
+                        Drag & Drop Image Here to Upload
+                    </div>
                     <span class="btn-danger" onclick="deleteLab(${i})">Delete Link</span>
                 </div>
             `).join('');
+        }
+
+        async function handleDrop(e, type, index) {
+            e.preventDefault();
+            const file = e.dataTransfer.files[0];
+            if (!file) return;
+
+            // Simplified: We convert to data URL for immediate preview 
+            // In a real flow, you'd upload this to an S3 or commit it to GitHub assets
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const url = event.target.result;
+                if(type === 'work') updateWork(index, 'image', url);
+                else updateLab(index, 'image', url);
+                renderAll();
+            };
+            reader.readAsDataURL(file);
         }
 
         // CRUD Operations
