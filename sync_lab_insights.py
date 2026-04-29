@@ -42,80 +42,124 @@ def fetch_kerosene_insights():
         print(f"Scraping failed: {e}")
         return [] # Fallback will be handled in update_lab_page
 
-def get_media_html(url, css_class=""):
+def get_media_html(urls, css_class=""):
+    if not isinstance(urls, list): 
+        urls = [urls] if urls else []
+    
+    if len(urls) > 1:
+        # Slideshow logic
+        slides_html = ""
+        for i, url in enumerate(urls):
+            slides_html += f'<div class="slideshow-item absolute inset-0 transition-opacity duration-1000 { "opacity-100" if i == 0 else "opacity-0" }" data-index="{i}">{get_single_media_html(url, "w-full h-full object-cover")}</div>'
+        return f'<div class="slideshow-container relative w-full aspect-[16/10] overflow-hidden mb-6" data-count="{len(urls)}">{slides_html}</div>'
+    elif len(urls) == 1:
+        return get_single_media_html(urls[0], css_class)
+    else:
+        return f'<div class="{css_class} bg-gray-100 flex items-center justify-center text-[9px] uppercase opacity-20">No Media</div>'
+
+def get_single_media_html(url, css_class=""):
+    if not url: return ""
     if "youtube.com" in url or "youtu.be" in url:
-        # Extract video ID
         vid_id = url.split("v=")[1].split("&")[0] if "v=" in url else url.split("/")[-1]
         return f'<div class="{css_class} relative overflow-hidden"><iframe class="absolute inset-0 w-full h-full" src="https://www.youtube.com/embed/{vid_id}?autoplay=1&mute=1&loop=1&playlist={vid_id}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>'
     else:
         return f'<img src="{url}" class="{css_class}">'
 
-def update_lab_page():
-    path = "lab.html"
+def update_pages():
     data_path = "site_data.json"
-    if not os.path.exists(path) or not os.path.exists(data_path): return
+    if not os.path.exists(data_path): return
     
     with open(data_path, "r") as f:
         site_data = json.load(f)
 
-    with open(path, "r") as f:
-        content = f.read()
+    # Slideshow Script for injection
+    slideshow_js = """
+    <script id="slideshow-logic">
+        function initSlideshows() {
+            const containers = document.querySelectorAll('.slideshow-container');
+            containers.forEach(container => {
+                if (container.dataset.initialized) return;
+                container.dataset.initialized = "true";
+                let current = 0;
+                const slides = container.querySelectorAll('.slideshow-item');
+                const count = parseInt(container.dataset.count);
+                if (count <= 1) return;
+                
+                setInterval(() => {
+                    slides[current].classList.remove('opacity-100');
+                    slides[current].classList.add('opacity-0');
+                    current = (current + 1) % count;
+                    slides[current].classList.remove('opacity-0');
+                    slides[current].classList.add('opacity-100');
+                }, 3000);
+            });
+        }
+        document.addEventListener('DOMContentLoaded', initSlideshows);
+    </script>"""
 
-    # 1. LAB FEED
-    lab_html = ""
-    for i, item in enumerate(site_data["lab"]):
-        media = get_media_html(item['image'], "w-full aspect-[16/10] object-cover mb-6")
-        lab_html += f'''
+    # 1. Update WORK.HTML
+    work_path = "work.html"
+    if os.path.exists(work_path):
+        with open(work_path, "r") as f: content = f.read()
+        work_html = ""
+        for item in site_data["works"]:
+            images = item.get('images', [item.get('image', '')])
+            media = get_media_html(images, "w-full aspect-[16/10] object-cover mb-8")
+            work_html += f'''
+            <div class="work-gallery-item">
+                {media}
+                <div class="mt-8 flex justify-between items-baseline">
+                    <h3 class="text-2xl font-black uppercase">{item['title']}</h3>
+                    <span class="label-mono opacity-40">{item.get('year', '2026')} / {item.get('category', 'BRANDING')}</span>
+                </div>
+            </div>'''
+        content = re.sub(r'<div class="work-gallery-container" id="gallery">.*?</div>', 
+                         f'<div class="work-gallery-container" id="gallery">{work_html}</div>', 
+                         content, flags=re.DOTALL)
+        if 'id="slideshow-logic"' not in content: content = content.replace('</body>', f'{slideshow_js}</body>')
+        with open(work_path, "w") as f: f.write(content)
+
+    # 2. Update LAB.HTML
+    lab_path = "lab.html"
+    if os.path.exists(lab_path):
+        with open(lab_path, "r") as f: content = f.read()
+        lab_html = ""
+        for i, item in enumerate(site_data["lab"]):
+            images = item.get('images', [item.get('image', '')])
+            media = get_media_html(images, "w-full aspect-[16/10] object-cover mb-6")
+            lab_html += f'''
                 <div class="lab-item cursor-pointer" onclick="window.open('{item['link']}', '_blank')">
                     {media}
                     <div class="flex justify-between items-baseline">
                         <div>
-                            <div class="text-[9px] opacity-40 uppercase tracking-widest mb-1">{item['meta']} // {i+1:02d}</div>
+                            <div class="text-[9px] opacity-40 uppercase tracking-widest mb-1">{item.get('meta', 'EXP')} // {i+1:02d}</div>
                             <h3 class="text-2xl font-bold uppercase">{item['title']}</h3>
                         </div>
                     </div>
                 </div>'''
-
-    # 2. INSIGHTS FEED
-    insights = fetch_kerosene_insights()
-    insights_html = ""
-    for art in insights:
-        insights_html += f'''
-                <div class="insight-item">
-                    <img src="{art['img']}" class="w-full aspect-[21/9] object-cover mb-6">
-                    <div class="insight-content">
-                        <div class="text-[9px] opacity-40 uppercase tracking-widest mb-4">{art['meta']}</div>
-                        <h3 class="text-3xl font-bold uppercase leading-tight mb-4">{art['title']}</h3>
-                        <p class="text-sm opacity-60 leading-relaxed mb-6">{art['summary']}</p>
-                        <a href="{art['link']}" target="_blank" class="text-[9px] font-bold uppercase tracking-widest border-b border-black pb-1 hover:opacity-50 transition-opacity">READ DEEP DIVE ></a>
-                    </div>
-                </div>'''
-
-    # Inject
-    content = re.sub(r'<!-- START_LAB_FEED -->.*?<!-- END_LAB_FEED -->', 
-                     f'<!-- START_LAB_FEED -->{lab_html}<!-- END_LAB_FEED -->', 
-                     content, flags=re.DOTALL)
-    
-    content = re.sub(r'<!-- START_INSIGHTS_FEED -->.*?<!-- END_INSIGHTS_FEED -->', 
-                     f'<!-- START_INSIGHTS_FEED -->{insights_html}<!-- END_INSIGHTS_FEED -->', 
-                     content, flags=re.DOTALL)
-
-    with open(path, "w") as f:
-        f.write(content)
-    print("Lab & Insights synced.")
-
-    # Inject
-    content = re.sub(r'<!-- START_LAB_FEED -->.*?<!-- END_LAB_FEED -->', 
-                     f'<!-- START_LAB_FEED -->{lab_html}<!-- END_LAB_FEED -->', 
-                     content, flags=re.DOTALL)
-    
-    content = re.sub(r'<!-- START_INSIGHTS_FEED -->.*?<!-- END_INSIGHTS_FEED -->', 
-                     f'<!-- START_INSIGHTS_FEED -->{insights_html}<!-- END_INSIGHTS_FEED -->', 
-                     content, flags=re.DOTALL)
-
-    with open(path, "w") as f:
-        f.write(content)
-    print("Lab & Insights synced successfully.")
+        content = re.sub(r'<!-- START_LAB_FEED -->.*?<!-- END_LAB_FEED -->', 
+                         f'<!-- START_LAB_FEED -->{lab_html}<!-- END_LAB_FEED -->', 
+                         content, flags=re.DOTALL)
+        
+        insights = fetch_kerosene_insights()
+        insights_html = ""
+        for art in insights:
+            insights_html += f'''
+                    <div class="insight-item">
+                        <img src="{art['img']}" class="w-full aspect-[21/9] object-cover mb-6">
+                        <div class="insight-content">
+                            <div class="text-[9px] opacity-40 uppercase tracking-widest mb-4">{art['meta']}</div>
+                            <h3 class="text-3xl font-bold uppercase leading-tight mb-4">{art['title']}</h3>
+                            <p class="text-sm opacity-60 leading-relaxed mb-6">{art['summary']}</p>
+                            <a href="{art['link']}" target="_blank" class="text-[9px] font-bold uppercase tracking-widest border-b border-black pb-1 hover:opacity-50 transition-opacity">READ DEEP DIVE ></a>
+                        </div>
+                    </div>'''
+        content = re.sub(r'<!-- START_INSIGHTS_FEED -->.*?<!-- END_INSIGHTS_FEED -->', 
+                         f'<!-- START_INSIGHTS_FEED -->{insights_html}<!-- END_INSIGHTS_FEED -->', 
+                         content, flags=re.DOTALL)
+        if 'id="slideshow-logic"' not in content: content = content.replace('</body>', f'{slideshow_js}</body>')
+        with open(lab_path, "w") as f: f.write(content)
+    print("All pages synchronized successfully.")
 
 if __name__ == "__main__":
-    update_lab_page()
+    update_pages()

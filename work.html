@@ -95,9 +95,8 @@
     </div>
    </div>
    <div class="work-gallery-container" id="gallery">
-    <!-- 01 -->
     <div class="work-gallery-item">
-     <img src="https://i.ibb.co/pqrVWtc/DGPN02.png"/>
+     <img class="w-full aspect-[16/10] object-cover mb-8" src="https://i.ibb.co/pqrVWtc/DGPN02.png"/>
      <div class="mt-8 flex justify-between items-baseline">
       <h3 class="text-2xl font-black uppercase">
        POLICE NATIONALE
@@ -107,9 +106,8 @@
       </span>
      </div>
     </div>
-    <!-- 02 -->
     <div class="work-gallery-item">
-     <img src="/assets/uploads/LBC_00.jpg"/>
+     <img class="w-full aspect-[16/10] object-cover mb-8" src="/assets/uploads/LBC_00.jpg"/>
      <div class="mt-8 flex justify-between items-baseline">
       <h3 class="text-2xl font-black uppercase">
        LEBONCOIN
@@ -119,9 +117,8 @@
       </span>
      </div>
     </div>
-    <!-- 03 -->
     <div class="work-gallery-item">
-     <img src="/assets/uploads/new_project_1776441848129_TOURISME.jpg"/>
+     <img class="w-full aspect-[16/10] object-cover mb-8" src="/assets/uploads/new_project_1776441848129_TOURISME.jpg"/>
      <div class="mt-8 flex justify-between items-baseline">
       <h3 class="text-2xl font-black uppercase">
        TOURISME
@@ -131,41 +128,65 @@
       </span>
      </div>
     </div>
-    <!-- 04 -->
-    <div class="work-gallery-item">
-     <img src="/assets/uploads/MANTUFESTO_.gif"/>
-     <div class="mt-8 flex justify-between items-baseline">
-      <h3 class="text-2xl font-black uppercase">
-       MANTUFESTO
-      </h3>
-      <span class="label-mono opacity-40">
-       2024 / ART
-      </span>
-     </div>
+   </div>
+   <!-- 02 -->
+   <div class="work-gallery-item">
+    <img src="/assets/uploads/LBC_00.jpg"/>
+    <div class="mt-8 flex justify-between items-baseline">
+     <h3 class="text-2xl font-black uppercase">
+      LEBONCOIN
+     </h3>
+     <span class="label-mono opacity-40">
+      2025 / PLATFORM
+     </span>
     </div>
-    <!-- 05 -->
-    <div class="work-gallery-item">
-     <img src="/assets/uploads/freepik__a-woman-in-a-yellow-sweater-stands-in-the-center-o__93810.gif"/>
-     <div class="mt-8 flex justify-between items-baseline">
-      <h3 class="text-2xl font-black uppercase">
-       WESTFIELD
-      </h3>
-      <span class="label-mono opacity-40">
-       2026 / MOTION
-      </span>
-     </div>
+   </div>
+   <!-- 03 -->
+   <div class="work-gallery-item">
+    <img src="/assets/uploads/new_project_1776441848129_TOURISME.jpg"/>
+    <div class="mt-8 flex justify-between items-baseline">
+     <h3 class="text-2xl font-black uppercase">
+      TOURISME
+     </h3>
+     <span class="label-mono opacity-40">
+      2026 / BRANDING
+     </span>
     </div>
-    <!-- 06 -->
-    <div class="work-gallery-item">
-     <img src="/assets/uploads/1758205991092.jpeg"/>
-     <div class="mt-8 flex justify-between items-baseline">
-      <h3 class="text-2xl font-black uppercase">
-       BNP PARIBAS
-      </h3>
-      <span class="label-mono opacity-40">
-       2025 / CORPORATE
-      </span>
-     </div>
+   </div>
+   <!-- 04 -->
+   <div class="work-gallery-item">
+    <img src="/assets/uploads/MANTUFESTO_.gif"/>
+    <div class="mt-8 flex justify-between items-baseline">
+     <h3 class="text-2xl font-black uppercase">
+      MANTUFESTO
+     </h3>
+     <span class="label-mono opacity-40">
+      2024 / ART
+     </span>
+    </div>
+   </div>
+   <!-- 05 -->
+   <div class="work-gallery-item">
+    <img src="/assets/uploads/freepik__a-woman-in-a-yellow-sweater-stands-in-the-center-o__93810.gif"/>
+    <div class="mt-8 flex justify-between items-baseline">
+     <h3 class="text-2xl font-black uppercase">
+      WESTFIELD
+     </h3>
+     <span class="label-mono opacity-40">
+      2026 / MOTION
+     </span>
+    </div>
+   </div>
+   <!-- 06 -->
+   <div class="work-gallery-item">
+    <img src="/assets/uploads/1758205991092.jpeg"/>
+    <div class="mt-8 flex justify-between items-baseline">
+     <h3 class="text-2xl font-black uppercase">
+      BNP PARIBAS
+     </h3>
+     <span class="label-mono opacity-40">
+      2025 / CORPORATE
+     </span>
     </div>
    </div>
   </main>
@@ -269,6 +290,28 @@
             slidesStr.split(',').forEach(src => { (new Image()).src = src; });
         }
     });
+  </script>
+  <script id="slideshow-logic">
+   function initSlideshows() {
+            const containers = document.querySelectorAll('.slideshow-container');
+            containers.forEach(container => {
+                if (container.dataset.initialized) return;
+                container.dataset.initialized = "true";
+                let current = 0;
+                const slides = container.querySelectorAll('.slideshow-item');
+                const count = parseInt(container.dataset.count);
+                if (count <= 1) return;
+                
+                setInterval(() => {
+                    slides[current].classList.remove('opacity-100');
+                    slides[current].classList.add('opacity-0');
+                    current = (current + 1) % count;
+                    slides[current].classList.remove('opacity-0');
+                    slides[current].classList.add('opacity-100');
+                }, 3000);
+            });
+        }
+        document.addEventListener('DOMContentLoaded', initSlideshows);
   </script>
  </body>
 </html>

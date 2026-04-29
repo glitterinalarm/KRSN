@@ -169,5 +169,26 @@
 </div>
 </section>
 </main>
-</body>
+<script id="slideshow-logic">
+        function initSlideshows() {
+            const containers = document.querySelectorAll('.slideshow-container');
+            containers.forEach(container => {
+                if (container.dataset.initialized) return;
+                container.dataset.initialized = "true";
+                let current = 0;
+                const slides = container.querySelectorAll('.slideshow-item');
+                const count = parseInt(container.dataset.count);
+                if (count <= 1) return;
+                
+                setInterval(() => {
+                    slides[current].classList.remove('opacity-100');
+                    slides[current].classList.add('opacity-0');
+                    current = (current + 1) % count;
+                    slides[current].classList.remove('opacity-0');
+                    slides[current].classList.add('opacity-100');
+                }, 3000);
+            });
+        }
+        document.addEventListener('DOMContentLoaded', initSlideshows);
+    </script></body>
 </html>

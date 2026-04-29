@@ -135,22 +135,21 @@
                             <input type="text" value="${w.title}" onchange="updateWork(${i}, 'title', this.value)">
                         </div>
                         <div>
-                            <label class="text-[9px] uppercase font-bold tracking-widest">Media URL (Image, GIF, or YouTube)</label>
-                            <input type="text" value="${w.image}" onchange="updateWork(${i}, 'image', this.value)">
-                        </div>
-                        <div>
                             <label class="text-[9px] uppercase font-bold tracking-widest">Year</label>
                             <input type="text" value="${w.year}" onchange="updateWork(${i}, 'year', this.value)">
                         </div>
-                        <div>
-                            <label class="text-[9px] uppercase font-bold tracking-widest">Category</label>
-                            <input type="text" value="${w.category}" onchange="updateWork(${i}, 'category', this.value)">
+                        <div class="col-span-2">
+                            <label class="text-[9px] uppercase font-bold tracking-widest">Media URLs (Comma separated or use Drag & Drop)</label>
+                            <textarea onchange="updateWork(${i}, 'images', this.value.split(','))" class="w-full p-4 border border-gray-100 font-mono text-[10px] mt-2">${(w.images || [w.image]).join(',')}</textarea>
                         </div>
                     </div>
-                    <div class="mt-4 p-4 border-2 border-dashed border-gray-200 text-center text-[10px] uppercase tracking-widest text-gray-400 hover:border-black hover:text-black cursor-pointer" 
+                    <div class="mt-4 p-8 border-2 border-dashed border-gray-200 text-center text-[10px] uppercase tracking-widest text-gray-400 hover:border-black hover:text-black cursor-pointer" 
                          ondragover="event.preventDefault()" 
                          ondrop="handleDrop(event, 'work', ${i})">
-                        Drag & Drop Image Here to Upload
+                        Drag & Drop Multiple Images Here for Slideshow
+                    </div>
+                    <div class="flex gap-2 mt-4 overflow-x-auto">
+                        ${(w.images || [w.image]).map(img => `<img src="${img}" class="h-10 w-10 object-cover border border-gray-100">`).join('')}
                     </div>
                     <span class="btn-danger" onclick="deleteWork(${i})">Delete Project</span>
                 </div>
@@ -165,22 +164,18 @@
                             <input type="text" value="${l.title}" onchange="updateLab(${i}, 'title', this.value)">
                         </div>
                         <div>
-                            <label class="text-[9px] uppercase font-bold tracking-widest">Media URL</label>
-                            <input type="text" value="${l.image}" onchange="updateLab(${i}, 'image', this.value)">
-                        </div>
-                        <div>
                             <label class="text-[9px] uppercase font-bold tracking-widest">Meta</label>
                             <input type="text" value="${l.meta}" onchange="updateLab(${i}, 'meta', this.value)">
                         </div>
-                        <div>
-                            <label class="text-[9px] uppercase font-bold tracking-widest">Link URL</label>
-                            <input type="text" value="${l.link}" onchange="updateLab(${i}, 'link', this.value)">
+                        <div class="col-span-2">
+                            <label class="text-[9px] uppercase font-bold tracking-widest">Media URLs (Comma separated)</label>
+                            <textarea onchange="updateLab(${i}, 'images', this.value.split(','))" class="w-full p-4 border border-gray-100 font-mono text-[10px] mt-2">${(l.images || [l.image]).join(',')}</textarea>
                         </div>
                     </div>
-                    <div class="mt-4 p-4 border-2 border-dashed border-gray-200 text-center text-[10px] uppercase tracking-widest text-gray-400 hover:border-black hover:text-black cursor-pointer" 
+                    <div class="mt-4 p-8 border-2 border-dashed border-gray-200 text-center text-[10px] uppercase tracking-widest text-gray-400 hover:border-black hover:text-black cursor-pointer" 
                          ondragover="event.preventDefault()" 
                          ondrop="handleDrop(event, 'lab', ${i})">
-                        Drag & Drop Image Here to Upload
+                        Drag & Drop Images for Slideshow
                     </div>
                     <span class="btn-danger" onclick="deleteLab(${i})">Delete Link</span>
                 </div>
@@ -189,33 +184,37 @@
 
         async function handleDrop(e, type, index) {
             e.preventDefault();
-            const file = e.dataTransfer.files[0];
-            if (!file) return;
+            const files = Array.from(e.dataTransfer.files);
+            if (!files.length) return;
 
-            // Simplified: We convert to data URL for immediate preview 
-            // In a real flow, you'd upload this to an S3 or commit it to GitHub assets
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                const url = event.target.result;
-                if(type === 'work') updateWork(index, 'image', url);
-                else updateLab(index, 'image', url);
-                renderAll();
-            };
-            reader.readAsDataURL(file);
+            const newUrls = [];
+            for (const file of files) {
+                const reader = new FileReader();
+                const promise = new Promise(resolve => {
+                    reader.onload = (event) => resolve(event.target.result);
+                });
+                reader.readAsDataURL(file);
+                newUrls.push(await promise);
+            }
+
+            const target = type === 'work' ? siteData.works[index] : siteData.lab[index];
+            if (!target.images) target.images = target.image ? [target.image] : [];
+            target.images = [...target.images, ...newUrls];
+            renderAll();
         }
 
         // CRUD Operations
         function updateWork(i, key, val) { siteData.works[i][key] = val; }
         function deleteWork(i) { siteData.works.splice(i, 1); renderAll(); }
         function addWork() { 
-            siteData.works.unshift({ title: "New Project", category: "BRANDING", year: "2026", image: "", link: "#" }); 
+            siteData.works.unshift({ title: "New Project", category: "BRANDING", year: "2026", images: [], link: "#" }); 
             renderAll(); 
         }
 
         function updateLab(i, key, val) { siteData.lab[i][key] = val; }
         function deleteLab(i) { siteData.lab.splice(i, 1); renderAll(); }
         function addLab() { 
-            siteData.lab.unshift({ title: "New Experiment", meta: "INSTAGRAM", image: "", link: "#" }); 
+            siteData.lab.unshift({ title: "New Experiment", meta: "INSTAGRAM", images: [], link: "#" }); 
             renderAll(); 
         }
 
