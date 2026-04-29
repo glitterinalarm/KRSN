@@ -11,7 +11,7 @@ def get_work_media_html(urls):
     images = [u for u in urls if not any(x in u for x in ["youtube.com", "youtu.be", "vimeo.com"])]
     videos = [u for u in urls if any(x in u for x in ["youtube.com", "youtu.be", "vimeo.com"])]
 
-    html = f'<div class="media-container relative h-[75vh] aspect-video overflow-hidden group">'
+    html = f'<div class="media-container relative overflow-hidden group" style="height: 65vh; width: calc(65vh * 16 / 9);">'
     
     if videos:
         vid_id = videos[0].split("v=")[1].split("&")[0] if "v=" in videos[0] else videos[0].split("/")[-1]
