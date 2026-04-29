@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PRFFN — Digital Monolith V3.0</title>
+<link href="monolith.css" rel="stylesheet"/>
+<link href="/favicon.png" rel="icon" type="image/png"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+</link>
+<style id="mobile-readability-fix">
+        @media (max-width: 768px) {
+            /* Better reading for descriptions */
+            p.text-sm, p.font-light {
+                font-size: 15px !important;
+                line-height: 1.7 !important;
+                opacity: 0.8 !important;
+                margin-top: 15px !important;
+                letter-spacing: 0.01em !important;
+            }
+            /* Prevents text from sticking to edges */
+            .p-4, .p-6, .p-8 {
+                padding-left: 20px !important;
+                padding-right: 20px !important;
+            }
+            /* Adjust Titles */
+            h3 {
+                font-size: 1.4rem !important;
+                line-height: 1.2 !important;
+                margin-bottom: 8px !important;
+            }
+            /* Space out project blocks */
+            .group {
+                margin-bottom: 2rem !important;
+            }
+        }
+    </style>
+</head>
+<body><nav class="fixed top-0 w-full z-50 bg-black/90 backdrop-blur-md border-b border-white/10 transition-all duration-300">
+<div class="flex justify-between items-center px-6 py-4 w-full max-w-full mx-auto">
+<div class="flex items-center gap-6">
+<a class="text-xl font-black tracking-widest text-white uppercase font-inter no-underline" href="index.html">
+         PRFFN
+        </a>
+<!-- Language Toggle Next To Logo -->
+<div class="hidden md:flex items-center gap-2 font-inter text-[9px] uppercase tracking-widest text-outline-variant border-l border-white/10 pl-6">
+<button class="hover:text-primary transition-colors focus:outline-none" id="lang-fr" onclick="switchLang('fr')">FR</button>
+<span class="opacity-30">/</span>
+<button class="hover:text-primary transition-colors focus:outline-none" id="lang-en" onclick="switchLang('en')">EN</button>
+</div>
+</div>
+<div class="hidden md:flex items-center gap-8 font-inter tracking-tighter uppercase text-xs font-light">
+<a class="text-gray-400 hover:text-white transition-all duration-300 no-underline" href="work.html#directed-by-humans" id="nav-human">By Human</a>
+<a class="text-gray-400 hover:text-white transition-all duration-300 no-underline" href="work.html#generative-systems" id="nav-ai">AI Native</a>
+<a class="text-gray-400 hover:text-white transition-all duration-300 no-underline" href="lab.html">Lab</a>
+<a class="text-gray-400 hover:text-white transition-all duration-300 no-underline" href="insights.html">Insights</a>
+<a class="text-gray-400 hover:text-white transition-all duration-300 no-underline" href="studio.html">Studio</a>
+<a class="text-gray-400 hover:text-white transition-all duration-300 no-underline" href="contact.html">Contact</a>
+</div>
+<div class="flex items-center gap-4 md:hidden">
+<!-- Mobile Lang Toggle -->
+<div class="flex items-center gap-2 font-inter text-[9px] uppercase tracking-widest text-outline-variant mr-4">
+<button class="hover:text-primary transition-colors focus:outline-none" onclick="switchLang('fr')">FR</button>
+<span class="opacity-30">/</span>
+<button class="hover:text-primary transition-colors focus:outline-none" onclick="switchLang('en')">EN</button>
+</div>
+<button class="text-white active:scale-95 duration-200" id="mobile-menu-trigger">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+</div>
+</div>
+<script type="text/javascript">
+    function checkCurrentLang() {
+        if(window.location.pathname.startsWith('/fr')) {
+            document.querySelectorAll('#lang-fr').forEach(el => el.classList.add('text-primary'));
+        } else {
+            document.querySelectorAll('#lang-en').forEach(el => el.classList.add('text-primary'));
+        }
+    }
+    
+    function switchLang(lang) {
+        var path = window.location.pathname;
+        var file = path.split('/').pop();
+        if(!file || file === 'fr') file = 'index.html';
+        
+        var isFr = path.startsWith('/fr');
+        
+        if(lang === 'fr' && !isFr) {
+            window.location.href = '/fr/' + file;
+        } else if (lang === 'en' && isFr) {
+            window.location.href = '/' + file;
+        }
+    }
+    
+    document.addEventListener('DOMContentLoaded', checkCurrentLang);
+   </script>
+</nav>
+<div class="frame-overlay"></div>
+<div class="corner-label top-left">PRFFN.V3</div>
+<div class="corner-label top-right">EST. 2004 — NYC / LDN</div>
+<div class="corner-label bottom-left">GERMAIN TRILLAT</div>
+<div class="corner-label bottom-right">ARCHITECTURAL NOIR</div>
+<div class="monolith-container">
+<!-- SECTION 01: HERO & REEL -->
+<section id="hero">
+<video autoplay="" class="hero-reel" loop="" muted="" playsinline="">
+<source src="https://assets.mixkit.co/videos/preview/mixkit-abstract-motion-of-white-particles-on-black-background-30230-large.mp4" type="video/mp4"/>
+</video>
+<div class="hero-content">
+<div class="hero-version">MONOLITH V3.08 — STABLE</div>
+<h1 class="hero-title">Creative Direction<br/>&amp; Motion Design</h1>
+<p class="hero-subtitle">Augmented by Human &amp; AI Intelligence</p>
+<div style="margin-top: 4rem; display: flex; gap: 4rem; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.2em; color: var(--text-muted);">
+<span>[ 01. WORK ]</span>
+<span>[ 02. LAB ]</span>
+<span>[ 03. INSIGHTS ]</span>
+<span>[ 04. STUDIO ]</span>
+</div>
+</div>
+</section>
+<!-- SECTION 02: WORKS GALLERY -->
+<section id="works">
+<div class="works-container">
+<!-- 01 Police Nationale -->
+<div class="work-item">
+<div class="work-visual">
+<img src="https://i.ibb.co/pqrVWtc/DGPN02.png" style="width:100%; height:100%; object-fit:cover;"/>
+</div>
+<div class="work-meta">
+<span>01 / 07 — BROADCAST</span>
+<span>POLICE NATIONALE — 2026</span>
+</div>
+<h2 class="work-title">Institutional Cinematic</h2>
+</div>
+<!-- 02 Leboncoin -->
+<div class="work-item">
+<div class="work-visual">
+<img src="/assets/uploads/LBC_00.jpg" style="width:100%; height:100%; object-fit:cover;"/>
+</div>
+<div class="work-meta">
+<span>02 / 07 — MOTION</span>
+<span>LEBONCOIN — 2025</span>
+</div>
+<h2 class="work-title">Character Animation Flow</h2>
+</div>
+<!-- 03 BNP Paribas -->
+<div class="work-item">
+<div class="work-visual">
+<img src="/assets/uploads/1758205991092.jpeg" style="width:100%; height:100%; object-fit:cover;"/>
+</div>
+<div class="work-meta">
+<span>03 / 07 — BRANDING</span>
+<span>BNP PARIBAS — 2025</span>
+</div>
+<h2 class="work-title">Institutional Strength</h2>
+</div>
+<!-- 04 Tourisme -->
+<div class="work-item">
+<div class="work-visual">
+<img src="/assets/uploads/new_project_1776441848129_TOURISME.jpg" style="width:100%; height:100%; object-fit:cover;"/>
+</div>
+<div class="work-meta">
+<span>04 / 07 — BROADCAST</span>
+<span>MINISTERE TOURISME — 2026</span>
+</div>
+<h2 class="work-title">Global Heritage Vision</h2>
+</div>
+<!-- 05 Westfield -->
+<div class="work-item">
+<div class="work-visual">
+<img src="/assets/uploads/freepik__a-woman-in-a-yellow-sweater-stands-in-the-center-o__93810.gif" style="width:100%; height:100%; object-fit:cover;"/>
+</div>
+<div class="work-meta">
+<span>05 / 07 — AI NATIVE</span>
+<span>WESTFIELD — 2026</span>
+</div>
+<h2 class="work-title">Poetic Digital Atmosphere</h2>
+</div>
+<!-- 06 Mondoffice -->
+<div class="work-item">
+<div class="work-visual">
+<img src="/assets/uploads/epokalypse__70s_disco_fashion_scene_man_wearing_bell-bottom_p_5db20b8f-f018-45f6-8f6e-9ebf7da50c5a_1.png" style="width:100%; height:100%; object-fit:cover;"/>
+</div>
+<div class="work-meta">
+<span>06 / 07 — GENERATIVE</span>
+<span>MONDOFFICE — 2025</span>
+</div>
+<h2 class="work-title">Multi-Sensory Brand Fusion</h2>
+</div>
+<!-- 07 Mantufesto -->
+<div class="work-item">
+<div class="work-visual">
+<img src="/assets/uploads/MANTUFESTO_.gif" style="width:100%; height:100%; object-fit:cover;"/>
+</div>
+<div class="work-meta">
+<span>07 / 07 — WORKFLOW</span>
+<span>MANTUFESTO — 2024</span>
+</div>
+<h2 class="work-title">Complete AI Orchestration</h2>
+</div>
+</div>
+</section>
+<!-- SECTION 03: LAB & INSIGHTS (MATRIX) -->
+<section id="matrix">
+<div class="matrix-container" id="matrix-engine">
+<!-- SCREEN: LAB -->
+<div class="matrix-screen" id="lab">
+<div class="hero-version" style="width: fit-content;">LABORATORY R&amp;D</div>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; margin-top: 2rem;">
+<div>
+<h2 class="hero-title" style="font-size: 3rem; text-align: left;">Experimental Systems.</h2>
+<ul style="list-style: none; margin-top: 2rem; font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); line-height: 2.5;">
+<li style="border-bottom: 1px solid rgba(255,255,255,0.05);">[ KEROSENE WEBZINE ] — AI AGENT ECOSYSTEM</li>
+<li style="border-bottom: 1px solid rgba(255,255,255,0.05);">[ PROXY READING ] — VISUAL ARCHIVE</li>
+<li style="border-bottom: 1px solid rgba(255,255,255,0.05);">[ TL3BDR ] — LIU CIXIN TRANSMISSION</li>
+<li style="border-bottom: 1px solid rgba(255,255,255,0.05);">[ SPATIAL TYPO ] — INTERACTIVE VOLUME</li>
+</ul>
+</div>
+<div style="background: #111; height: 300px; border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 10px; color: var(--electric-green);">
+                             &lt; RENDER_STREAM: ACTIVE &gt;
+                        </div>
+</div>
+</div>
+<!-- SCREEN: INSIGHTS (LIVE FEED) -->
+<div class="matrix-screen" id="insights">
+<div class="hero-version" style="width: fit-content; border-color: white; color: white;">INSIGHTS — LIVE FEED</div>
+<div id="insights-feed" style="margin-top: 2rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;">
+<div class="insight-card" style="border-left: 1px solid var(--electric-green); padding-left: 1.5rem; transition: all 0.5s;">
+<div style="font-family: var(--font-mono); font-size: 9px; color: var(--electric-green); margin-bottom: 0.5rem; opacity: 0.7;">[ It's Nice That // LATEST ]</div>
+<h4 style="font-family: var(--font-serif); font-size: 1.3rem; margin-bottom: 1rem; line-height: 1.2;">This little book is a design archive of the most delicate memento – the Spanish napkin</h4>
+<p style="font-family: var(--font-inter); font-size: 11px; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem;"><img articles="" class="webfeedsFeaturedVisual" felipe-hernandez-duran-servilletas-spanish-napkins-publication-graphic-design-project-290426"="" https:="" src="https://admin.itsnicethat.com/images/OcAF8XK81S_eo96vu6Fxm-4UzNM=/277857/width-...&lt;/p&gt;
+        &lt;a href=" style="font-family: var(--font-mono); font-size: 9px; color: white; text-decoration: none; border: 1px solid rgba(255,255,255,0.2); padding: 5px 10px;" target="_blank" www.itsnicethat.com=""/>READ_INSIGHT_
+</p></div>
+<div class="insight-card" style="border-left: 1px solid var(--electric-green); padding-left: 1.5rem; transition: all 0.5s;">
+<div style="font-family: var(--font-mono); font-size: 9px; color: var(--electric-green); margin-bottom: 0.5rem; opacity: 0.7;">[ Motionographer // LATEST ]</div>
+<h4 style="font-family: var(--font-serif); font-size: 1.3rem; margin-bottom: 1rem; line-height: 1.2;">Studio Stories: The Rise of Panic</h4>
+<p style="font-family: var(--font-inter); font-size: 11px; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem;">How Latvian animation studio, Panic, transcended their geography and became a leading player in the industry!...</p>
+<a href="https://motionographer.com/2026/04/28/studio-stories-the-rise-of-panic/" style="font-family: var(--font-mono); font-size: 9px; color: white; text-decoration: none; border: 1px solid rgba(255,255,255,0.2); padding: 5px 10px;" target="_blank">READ_INSIGHT_</a>
+</div>
+</div>
+</div>
+</div>
+</section></div>
+<div class="matrix-toggle">
+<button class="matrix-btn active" onclick="moveMatrix(0)">01. LAB</button>
+<button class="matrix-btn" onclick="moveMatrix(1)">02. INSIGHTS</button>
+</div>
+<!-- SECTION 04: STUDIO & CONTACT -->
+<section id="studio">
+<div class="studio-split">
+<div class="studio-bio">
+<h2 class="spatial-name">Germain<br/>Trillat.</h2>
+<p style="font-family: var(--font-mono); font-size: 11px; line-height: 1.8; color: var(--text-muted); max-width: 400px;">
+                        Creative Director &amp; Motion Strategist with over two decades of digital excellence. 
+                        Pioneer in Generative AI workflows, bridging the gap between high-end cinematic production and autonomous systems.
+                        <br/><br/>
+                        Legacy: Disney, Citroën, Engie, Police Nationale, Westfield.
+                    </p>
+</div>
+<div class="contact-form">
+<h3 style="font-family: var(--font-mono); font-size: 10px; color: var(--electric-green); margin-bottom: 2rem;">START THE DIALOGUE</h3>
+<div class="input-group">
+<input placeholder="Full Name / Company" type="text"/>
+</div>
+<div class="input-group">
+<input placeholder="Email Address" type="email"/>
+</div>
+<div class="input-group">
+<textarea placeholder="Project Vision / Brief" rows="4"></textarea>
+</div>
+<button class="btn-submit">Initiate Protocol</button>
+</div>
+</div>
+</section>
+<script>
+        function moveMatrix(index) {
+            const engine = document.getElementById('matrix-engine');
+            const btns = document.querySelectorAll('.matrix-btn');
+            
+            engine.style.transform = `translateX(-${index * 100}vw)`;
+            
+            btns.forEach((btn, i) => {
+                if(i === index) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+        }
+
+        // Horizontal Scroll for Works Section
+        const worksContainer = document.querySelector('.works-container');
+        worksContainer.addEventListener('wheel', (e) => {
+            if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+            // Native smooth scroll
+        });
+
+        // Insights Injection Logic
+        async function fetchInsights() {
+            try {
+                // We'll use the local news.json if available, or fetch from the webzine
+                const response = await fetch('news.json');
+                const data = await response.json();
+                const container = document.getElementById('insights-feed');
+                container.innerHTML = '';
+                
+                data.slice(0, 3).forEach(item => {
+                    const div = document.createElement('div');
+                    div.style.borderLeft = '1px solid var(--electric-green)';
+                    div.style.paddingLeft = '1rem';
+                    div.innerHTML = `
+                        <div style="font-family: var(--font-mono); font-size: 9px; color: var(--electric-green); margin-bottom: 0.5rem;">[ ${item.date || 'LATEST'} ]</div>
+                        <h4 style="font-family: var(--font-serif); font-size: 1.2rem; margin-bottom: 1rem;">${item.title}</h4>
+                        <p style="font-family: var(--font-inter); font-size: 11px; color: var(--text-muted); line-height: 1.6;">${item.description.substring(0, 100)}...</p>
+                        <a href="${item.link}" target="_blank" style="display: block; margin-top: 1rem; font-family: var(--font-mono); font-size: 9px; color: white;">READ_MORE_</a>
+                    `;
+                    container.appendChild(div);
+                });
+            } catch(e) {
+                console.log("Feed connection standby...");
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', fetchInsights);
+    </script>
+</body>
+</html>
