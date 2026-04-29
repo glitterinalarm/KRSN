@@ -5,15 +5,16 @@ from bs4 import BeautifulSoup
 dist_dirs = ['.', 'dist']
 ignore_files = ['error.html', '404.html']
 
-# The universal nav template (ISO IMAGE 2)
+# The universal nav template (ISO TRIPARTITE)
 NAV_TEMPLATE = '''
 <nav class="nav-split">
-    <div class="nav-group">
-        <a href="work.html">Works</a>
+    <div class="nav-group-left">
         <a href="lab.html">Lab</a>
-    </div>
-    <div class="nav-group">
         <a href="insights.html">Insights</a>
+    </div>
+    <a href="index.html" class="nav-logo-center">PARAFFINE</a>
+    <div class="nav-group-right">
+        <a href="work.html">Works</a>
         <a href="studio.html">Studio</a>
         <a href="contact.html">Contact</a>
     </div>

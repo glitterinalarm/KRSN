@@ -7,12 +7,9 @@
    Works — PARAFFINE
   </title>
   <link href="monolith.css" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;900&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;800;900&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
   <script src="https://cdn.tailwindcss.com">
   </script>
-  <style>
-   .nav-links a.active { border-bottom: 1px solid black; }
-  </style>
   <style id="mobile-readability-fix">
    @media (max-width: 768px) {
             /* Better reading for descriptions */
@@ -53,32 +50,33 @@
   <div class="corner-label bottom-left">
    DRAG_TO_NAVIGATE — (06) PROJECTS
   </div>
-  <div class="corner-label bottom-right">
-   <div class="flex gap-4">
-    <button class="border border-black p-2 hover:bg-black hover:text-white transition-all">
-     <span class="material-symbols-outlined text-sm" style="font-size: 14px;">
-      arrow_back
-     </span>
-    </button>
-    <button class="border border-black p-2 hover:bg-black hover:text-white transition-all">
-     <span class="material-symbols-outlined text-sm" style="font-size: 14px;">
-      arrow_forward
-     </span>
-    </button>
-   </div>
+  <div class="work-nav-container">
+   <button class="nav-arrow" id="scroll-prev">
+    <span class="material-symbols-outlined">
+     arrow_back
+    </span>
+   </button>
+   <button class="nav-arrow" id="scroll-next">
+    <span class="material-symbols-outlined">
+     arrow_forward
+    </span>
+   </button>
   </div>
   <nav class="nav-split">
-   <div class="nav-group">
-    <a href="work.html">
-     Works
-    </a>
+   <div class="nav-group-left">
     <a href="lab.html">
      Lab
     </a>
-   </div>
-   <div class="nav-group">
     <a href="insights.html">
      Insights
+    </a>
+   </div>
+   <a class="nav-logo-center" href="index.html">
+    PARAFFINE
+   </a>
+   <div class="nav-group-right">
+    <a href="work.html">
+     Works
     </a>
     <a href="studio.html">
      Studio
@@ -90,13 +88,13 @@
   </nav>
   <main class="work-section">
    <div class="mb-12">
-    <h1 class="title-huge text-black">
+    <h1 class="text-8xl font-extrabold text-black tracking-tighter">
      SELECTED WORKS
     </h1>
     <div class="w-32 h-[1px] bg-black/20 mt-4">
     </div>
    </div>
-   <div class="work-gallery-container">
+   <div class="work-gallery-container" id="gallery">
     <!-- 01 -->
     <div class="work-gallery-item">
      <img src="https://i.ibb.co/pqrVWtc/DGPN02.png"/>
@@ -104,7 +102,7 @@
       <h3 class="text-2xl font-black uppercase">
        POLICE NATIONALE
       </h3>
-      <span class="label-mono">
+      <span class="label-mono opacity-40">
        2026 / CAMPAIGN
       </span>
      </div>
@@ -116,7 +114,7 @@
       <h3 class="text-2xl font-black uppercase">
        LEBONCOIN
       </h3>
-      <span class="label-mono">
+      <span class="label-mono opacity-40">
        2025 / PLATFORM
       </span>
      </div>
@@ -128,7 +126,7 @@
       <h3 class="text-2xl font-black uppercase">
        TOURISME
       </h3>
-      <span class="label-mono">
+      <span class="label-mono opacity-40">
        2026 / BRANDING
       </span>
      </div>
@@ -140,7 +138,7 @@
       <h3 class="text-2xl font-black uppercase">
        MANTUFESTO
       </h3>
-      <span class="label-mono">
+      <span class="label-mono opacity-40">
        2024 / ART
       </span>
      </div>
@@ -152,7 +150,7 @@
       <h3 class="text-2xl font-black uppercase">
        WESTFIELD
       </h3>
-      <span class="label-mono">
+      <span class="label-mono opacity-40">
        2026 / MOTION
       </span>
      </div>
@@ -164,7 +162,7 @@
       <h3 class="text-2xl font-black uppercase">
        BNP PARIBAS
       </h3>
-      <span class="label-mono">
+      <span class="label-mono opacity-40">
        2025 / CORPORATE
       </span>
      </div>
@@ -172,6 +170,25 @@
    </div>
   </main>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+  <script>
+   const gallery = document.getElementById('gallery');
+        const next = document.getElementById('scroll-next');
+        const prev = document.getElementById('scroll-prev');
+
+        next.addEventListener('click', () => {
+            gallery.scrollBy({ left: 600, behavior: 'smooth' });
+        });
+
+        prev.addEventListener('click', () => {
+            gallery.scrollBy({ left: -600, behavior: 'smooth' });
+        });
+
+        // Mouse wheel scroll horizontal
+        gallery.addEventListener('wheel', (evt) => {
+            evt.preventDefault();
+            gallery.scrollLeft += evt.deltaY;
+        });
+  </script>
   <script>
    document.querySelectorAll('img[data-slideshow], img[data-video]').forEach(img => {
         let interval = null;
