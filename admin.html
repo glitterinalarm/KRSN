@@ -18,7 +18,6 @@
         .btn-danger { color: #ff4444; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; margin-top: 1rem; display: inline-block; }
     </style>
 
-
 <style id="mobile-readability-fix">
         @media (max-width: 768px) {
             /* Better reading for descriptions */
@@ -50,13 +49,14 @@
 <body class="p-10">
 <!-- Login Overlay -->
 <div class="fixed inset-0 bg-black z-[100] flex flex-col justify-center items-center text-white p-6 transition-all duration-700" id="login-overlay">
-<div class="max-w-md w-full">
-<h1 class="text-4xl font-black tracking-tighter mb-8 uppercase text-center italic">ACCESS_RESTRICTED</h1>
+<div class="max-w-md w-full text-center">
+<h1 class="text-4xl font-black tracking-tighter mb-8 uppercase italic">ACCESS_RESTRICTED</h1>
 <input class="bg-white/5 border-white/10 text-white text-center text-xl p-6 focus:border-white mb-4 w-full" id="admin-pass" onkeyup="if(event.key === 'Enter') checkPass()" placeholder="ENTER ACCESS KEY" type="password"/>
 <button class="w-full bg-white text-black p-6 font-bold uppercase tracking-widest text-xs hover:bg-gray-200 transition-colors" onclick="checkPass()">Unlock Console</button>
-<p class="text-[9px] text-red-500 uppercase tracking-widest mt-6 text-center opacity-0 transition-opacity" id="login-error">Invalid Access Key</p>
+<p class="text-[9px] text-red-500 uppercase tracking-widest mt-6 opacity-0 transition-opacity" id="login-error">Invalid Access Key</p>
 </div>
 </div>
+<!-- Main Admin Container -->
 <div class="opacity-0 pointer-events-none transition-opacity duration-1000" id="admin-container">
 <nav class="nav-split">
 <div class="nav-group-left">
@@ -70,11 +70,11 @@
 <a href="studio.html">Contact</a>
 </div>
 </nav>
-<div class="max-w-4xl mx-auto">
+<div class="max-w-4xl mx-auto mt-20">
 <header class="flex justify-between items-baseline mb-20">
 <div>
 <h1 class="text-4xl font-black tracking-tighter">PARAFFINE.CONSOLE</h1>
-<p class="text-[10px] opacity-40 uppercase tracking-widest mt-2">Cloud Management System // v1.0</p>
+<p class="text-[10px] opacity-40 uppercase tracking-widest mt-2">Cloud Management System // v1.1</p>
 </div>
 <div class="text-[9px] font-bold uppercase tracking-widest bg-black text-white px-3 py-1" id="status-badge">CONNECTED</div>
 </header>
@@ -91,30 +91,25 @@
 <h2 class="text-xs font-bold uppercase tracking-[0.3em] border-b border-black pb-4 flex-grow">Works Portfolio</h2>
 <button class="text-[10px] font-bold uppercase tracking-widest ml-10" onclick="addWork()">+ Add Project</button>
 </div>
-<div id="works-list">
-<!-- Dynamic Content -->
-</div>
+<div id="works-list"></div>
 </section>
 <section class="mb-20">
 <div class="flex justify-between items-baseline mb-10">
 <h2 class="text-xs font-bold uppercase tracking-[0.3em] border-b border-black pb-4 flex-grow">Lab Experiments</h2>
 <button class="text-[10px] font-bold uppercase tracking-widest ml-10" onclick="addLab()">+ Add Link</button>
 </div>
-<div id="lab-list">
-<!-- Dynamic Content -->
-</div>
+<div id="lab-list"></div>
 </section>
 <footer class="fixed bottom-10 right-10">
 <button class="btn-black shadow-2xl" onclick="saveAll()">Deploy Changes</button>
 </footer>
-</div> <!-- End admin-container -->
+</div>
 </div>
 <script>
         let siteData = { works: [], lab: [] };
         const GITHUB_REPO = "glitterinalarm/KRSN";
         const DATA_PATH = "site_data.json";
 
-        // Load Initial Data
         async function loadData() {
             try {
                 const res = await fetch('site_data.json?t=' + Date.now());
@@ -123,11 +118,23 @@
             } catch (e) {
                 console.error("Failed to load data", e);
             }
-            
             const savedToken = localStorage.getItem('gh_token');
             if(savedToken) document.getElementById('gh-token').value = savedToken;
         }
 
+        function renderAll() {
+            const worksList = document.getElementById('works-list');
+            worksList.innerHTML = siteData.works.map((w, i) => `
+                <div class="admin-card">
+                    <div class="grid grid-cols-2 gap-6">
+                        <div>
+                            <label class="text-[9px] uppercase font-bold tracking-widest">Project Title</label>
+                            <input type="text" value="${w.title}" onchange="updateWork(${i}, 'title', this.value)">
+                        </div>
+                        <div>
+                            <label class="text-[9px] uppercase font-bold tracking-widest">Year</label>
+                            <input type="text" value="${w.year}" onchange="updateWork(${i}, 'year', this.value)">
+                        </div>
                         <div class="col-span-2">
                             <label class="text-[9px] uppercase font-bold tracking-widest">Media Assets</label>
                             <div class="text-[10px] font-mono bg-gray-50 p-4 border border-gray-100 mt-2 break-all max-h-20 overflow-y-auto">
@@ -203,7 +210,6 @@
             e.preventDefault();
             const files = Array.from(e.dataTransfer.files);
             if (!files.length) return;
-
             const newUrls = [];
             for (const file of files) {
                 const reader = new FileReader();
@@ -213,14 +219,12 @@
                 reader.readAsDataURL(file);
                 newUrls.push(await promise);
             }
-
             const target = type === 'work' ? siteData.works[index] : siteData.lab[index];
             if (!target.images) target.images = target.image ? [target.image] : [];
             target.images = [...target.images, ...newUrls];
             renderAll();
         }
 
-        // CRUD Operations
         function updateWork(i, key, val) { siteData.works[i][key] = val; }
         function deleteWork(i) { siteData.works.splice(i, 1); renderAll(); }
         function addWork() { 
@@ -235,67 +239,44 @@
             renderAll(); 
         }
 
-        // SAVE TO GITHUB (THE MAGIC)
         async function saveAll() {
             const token = document.getElementById('gh-token').value;
             if(!token) { alert("Please provide a GitHub Token to save changes."); return; }
             localStorage.setItem('gh_token', token);
-
             const badge = document.getElementById('status-badge');
             badge.innerText = "SAVING...";
             badge.style.background = "#ffcc00";
-
             try {
-                // 1. Get SHA of current file
                 const getRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${DATA_PATH}`, {
                     headers: { 'Authorization': `token ${token}` }
                 });
                 const fileData = await getRes.json();
                 const sha = fileData.sha;
-
-                // 2. Update File
                 const content = btoa(JSON.stringify(siteData, null, 4));
                 const putRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${DATA_PATH}`, {
                     method: 'PUT',
-                    headers: { 
-                        'Authorization': `token ${token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        message: "Admin: Update site content via Cloud Console",
-                        content: content,
-                        sha: sha
-                    })
+                    headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: "Admin: Update content", content: content, sha: sha })
                 });
-
                 if(putRes.ok) {
                     badge.innerText = "SUCCESS // DEPLOYING";
                     badge.style.background = "#00cc00";
-                    setTimeout(() => {
-                        badge.innerText = "CONNECTED";
-                        badge.style.background = "black";
-                    }, 5000);
-                    alert("Changes saved! Vercel is now deploying the new version. (Wait 1-2 mins)");
-                } else {
-                    throw new Error("GitHub API Error");
-                }
+                    setTimeout(() => { badge.innerText = "CONNECTED"; badge.style.background = "black"; }, 5000);
+                    alert("Changes saved! Vercel is now deploying. (Wait 1-2 mins)");
+                } else { throw new Error("GitHub API Error"); }
             } catch (e) {
-                badge.innerText = "ERROR";
-                badge.style.background = "red";
+                badge.innerText = "ERROR"; badge.style.background = "red";
                 alert("Error saving: " + e.message);
             }
         }
 
         async function checkPass() {
             const pass = document.getElementById('admin-pass').value;
-            
-            // SHA-256 Hashing logic
             const msgUint8 = new TextEncoder().encode(pass);
             const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
             const hashArray = Array.from(new Uint8Array(hashBuffer));
             const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
-            // Secure Hash Verification
             if (hashHex === 'cecd08cd2d64e39f8266e707b2e3d32cb687cb0b5b6b4bde2b1086b31e1f716e') {
                 document.getElementById('login-overlay').style.opacity = '0';
                 setTimeout(() => {
