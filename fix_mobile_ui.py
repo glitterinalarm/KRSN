@@ -44,19 +44,18 @@ def fix_mobile_ui():
         if not os.path.exists(file_path): continue
         
         with open(file_path, 'r', encoding='utf-8') as f:
-            soup = BeautifulSoup(f, 'html.parser')
+            content = f.read()
 
+        import re
         # Remove old fix if exists
-        old_fix = soup.find('style', id='mobile-readability-fix')
-        if old_fix: old_fix.decompose()
-
-        # Inject in head
-        head = soup.find('head')
-        if head:
-            head.append(BeautifulSoup(style_fix, 'html.parser'))
+        content = re.sub(r'<style id="mobile-readability-fix">.*?</style>', '', content, flags=re.DOTALL)
+        
+        # Inject in head safely without parsing whole document
+        if '</head>' in content:
+            content = content.replace('</head>', f'{style_fix}\n</head>')
             
             with open(file_path, 'w', encoding='utf-8') as f:
-                f.write(str(soup))
+                f.write(content)
             print(f"Fixed readability on {file_path}")
 
 if __name__ == "__main__":

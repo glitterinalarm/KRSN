@@ -89,7 +89,7 @@ def inject_script(content):
   </script>
   <!-- SLIDESHOW_ENGINE_END -->'''
     content = re.sub(r'<!-- SLIDESHOW_ENGINE_START -->.*?<!-- SLIDESHOW_ENGINE_END -->', '', content, flags=re.DOTALL)
-    content = content.replace('<script id="slideshow-logic">', '<!-- REMOVED -->').replace('</script>', '<!-- REMOVED -->')
+    content = re.sub(r'<script id="slideshow-logic">.*?</script>', '<!-- REMOVED -->', content, flags=re.DOTALL)
     content = content.replace('<!-- REMOVED -->', '')
     return content.replace('</body>', f'{script}\n</body>')
 
