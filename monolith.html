@@ -38,64 +38,21 @@
         }
     </style>
 </head>
-<body><nav class="fixed top-0 w-full z-50 bg-black/90 backdrop-blur-md border-b border-white/10 transition-all duration-300">
-<div class="flex justify-between items-center px-6 py-4 w-full max-w-full mx-auto">
-<div class="flex items-center gap-6">
-<a class="text-xl font-black tracking-widest text-white uppercase font-inter no-underline" href="index.html">
-         PRFFN
-        </a>
-<!-- Language Toggle Next To Logo -->
-<div class="hidden md:flex items-center gap-2 font-inter text-[9px] uppercase tracking-widest text-outline-variant border-l border-white/10 pl-6">
-<button class="hover:text-primary transition-colors focus:outline-none" id="lang-fr" onclick="switchLang('fr')">FR</button>
-<span class="opacity-30">/</span>
-<button class="hover:text-primary transition-colors focus:outline-none" id="lang-en" onclick="switchLang('en')">EN</button>
+<body><nav class="nav-classic">
+<div class="nav-links-left">
+<div class="nav-links">
+<a href="work.html">Works</a>
+<a href="lab.html">Lab</a>
 </div>
 </div>
-<div class="hidden md:flex items-center gap-8 font-inter tracking-tighter uppercase text-xs font-light">
-<a class="text-gray-400 hover:text-white transition-all duration-300 no-underline" href="work.html#directed-by-humans" id="nav-human">By Human</a>
-<a class="text-gray-400 hover:text-white transition-all duration-300 no-underline" href="work.html#generative-systems" id="nav-ai">AI Native</a>
-<a class="text-gray-400 hover:text-white transition-all duration-300 no-underline" href="lab.html">Lab</a>
-<a class="text-gray-400 hover:text-white transition-all duration-300 no-underline" href="insights.html">Insights</a>
-<a class="text-gray-400 hover:text-white transition-all duration-300 no-underline" href="studio.html">Studio</a>
-<a class="text-gray-400 hover:text-white transition-all duration-300 no-underline" href="contact.html">Contact</a>
-</div>
-<div class="flex items-center gap-4 md:hidden">
-<!-- Mobile Lang Toggle -->
-<div class="flex items-center gap-2 font-inter text-[9px] uppercase tracking-widest text-outline-variant mr-4">
-<button class="hover:text-primary transition-colors focus:outline-none" onclick="switchLang('fr')">FR</button>
-<span class="opacity-30">/</span>
-<button class="hover:text-primary transition-colors focus:outline-none" onclick="switchLang('en')">EN</button>
-</div>
-<button class="text-white active:scale-95 duration-200" id="mobile-menu-trigger">
-<span class="material-symbols-outlined" data-icon="menu">menu</span>
-</button>
+<div class="nav-brand-center">PARAFFINE</div>
+<div class="nav-links-right">
+<div class="nav-links">
+<a href="insights.html">Insights</a>
+<a href="studio.html">Studio</a>
+<a href="contact.html">Contact</a>
 </div>
 </div>
-<script type="text/javascript">
-    function checkCurrentLang() {
-        if(window.location.pathname.startsWith('/fr')) {
-            document.querySelectorAll('#lang-fr').forEach(el => el.classList.add('text-primary'));
-        } else {
-            document.querySelectorAll('#lang-en').forEach(el => el.classList.add('text-primary'));
-        }
-    }
-    
-    function switchLang(lang) {
-        var path = window.location.pathname;
-        var file = path.split('/').pop();
-        if(!file || file === 'fr') file = 'index.html';
-        
-        var isFr = path.startsWith('/fr');
-        
-        if(lang === 'fr' && !isFr) {
-            window.location.href = '/fr/' + file;
-        } else if (lang === 'en' && isFr) {
-            window.location.href = '/' + file;
-        }
-    }
-    
-    document.addEventListener('DOMContentLoaded', checkCurrentLang);
-   </script>
 </nav>
 <div class="frame-overlay"></div>
 <div class="corner-label top-left">PRFFN.V3</div>
