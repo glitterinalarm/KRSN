@@ -174,7 +174,13 @@
                     <div class="flex gap-2 mt-4 overflow-x-auto pb-4">
                         ${(w.images || []).map(img => `<img src="${getThumb(img)}" class="h-20 w-20 object-cover border border-black shadow-sm">`).join('')}
                     </div>
-                    <span class="btn-danger" onclick="deleteWork(${i})">Delete Project</span>
+                    <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-100">
+                        <div class="flex gap-2">
+                            <button onclick="moveWork(${i}, -1)" class="px-3 py-1 bg-gray-100 text-[10px] uppercase font-bold hover:bg-black hover:text-white transition-colors" ${i === 0 ? 'disabled style="opacity:0.3"' : ''}>↑ Move Up</button>
+                            <button onclick="moveWork(${i}, 1)" class="px-3 py-1 bg-gray-100 text-[10px] uppercase font-bold hover:bg-black hover:text-white transition-colors" ${i === siteData.works.length - 1 ? 'disabled style="opacity:0.3"' : ''}>↓ Move Down</button>
+                        </div>
+                        <span class="btn-danger !mt-0" onclick="deleteWork(${i})">Delete Project</span>
+                    </div>
                 </div>
             `).join('');
 
@@ -218,7 +224,13 @@
                     <div class="flex gap-2 mt-4 overflow-x-auto pb-4">
                         ${(l.images || []).map(img => `<img src="${getThumb(img)}" class="h-20 w-20 object-cover border border-black shadow-sm">`).join('')}
                     </div>
-                    <span class="btn-danger" onclick="deleteLab(${i})">Delete Link</span>
+                    <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-100">
+                        <div class="flex gap-2">
+                            <button onclick="moveLab(${i}, -1)" class="px-3 py-1 bg-gray-100 text-[10px] uppercase font-bold hover:bg-black hover:text-white transition-colors" ${i === 0 ? 'disabled style="opacity:0.3"' : ''}>↑ Move Up</button>
+                            <button onclick="moveLab(${i}, 1)" class="px-3 py-1 bg-gray-100 text-[10px] uppercase font-bold hover:bg-black hover:text-white transition-colors" ${i === siteData.lab.length - 1 ? 'disabled style="opacity:0.3"' : ''}>↓ Move Down</button>
+                        </div>
+                        <span class="btn-danger !mt-0" onclick="deleteLab(${i})">Delete Link</span>
+                    </div>
                 </div>
             `).join('');
         }
@@ -267,6 +279,13 @@
 
         function updateWork(i, key, val) { siteData.works[i][key] = val; }
         function deleteWork(i) { siteData.works.splice(i, 1); renderAll(); }
+        function moveWork(i, direction) {
+            if (i + direction < 0 || i + direction >= siteData.works.length) return;
+            const temp = siteData.works[i];
+            siteData.works[i] = siteData.works[i + direction];
+            siteData.works[i + direction] = temp;
+            renderAll();
+        }
         function addWork() { 
             siteData.works.unshift({ title: "New Project", category: "BRANDING", year: "2026", images: [], link: "#" }); 
             renderAll(); 
@@ -274,6 +293,13 @@
 
         function updateLab(i, key, val) { siteData.lab[i][key] = val; }
         function deleteLab(i) { siteData.lab.splice(i, 1); renderAll(); }
+        function moveLab(i, direction) {
+            if (i + direction < 0 || i + direction >= siteData.lab.length) return;
+            const temp = siteData.lab[i];
+            siteData.lab[i] = siteData.lab[i + direction];
+            siteData.lab[i + direction] = temp;
+            renderAll();
+        }
         function addLab() { 
             siteData.lab.unshift({ title: "New Experiment", meta: "INSTAGRAM", images: [], link: "#" }); 
             renderAll(); 
