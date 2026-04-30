@@ -8,7 +8,7 @@ python3 add_mobile_menu.py
 python3 fix_site_navigation.py
 
 # 3. Fix Grid Alignment & Aspect Ratios
-python3 fix_grid.py
+# python3 fix_grid.py
 python3 fix_mobile_ui.py
 # python3 fix_cta_buttons.py
 python3 remove_inquire.py
