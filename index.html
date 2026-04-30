@@ -53,7 +53,28 @@
 <a href="studio.html">Studio</a>
 <a href="studio.html">Contact</a>
 </div>
+
+<div class="burger-icon" onclick="toggleMenu()">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+</div>
 </nav>
+
+<div id="mobile-menu" class="mobile-menu-overlay">
+  <div class="mobile-menu-close" onclick="toggleMenu()">✕</div>
+  <div class="mobile-menu-content">
+    <a href="lab.html">Lab</a>
+    <a href="insights.html">Insights</a>
+    <a href="work.html">Works</a>
+    <a href="studio.html">Studio</a>
+    <a href="contact.html">Contact</a>
+  </div>
+</div>
+<script>
+function toggleMenu() {
+  document.getElementById('mobile-menu').classList.toggle('active');
+}
+</script>
+
 <main class="h-screen flex flex-col justify-center items-center text-center px-4 relative">
 <!-- Textured background overlay -->
 <div class="absolute inset-0 z-0 bg-[url('https://i.ibb.co/68v8B7m/texture-overlay.png')] opacity-20 pointer-events-none mix-blend-overlay"></div>
