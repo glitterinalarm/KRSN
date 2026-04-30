@@ -3,7 +3,7 @@ import re
 from bs4 import BeautifulSoup
 
 dist_dirs = ['.', 'dist']
-ignore_files = ['error.html', '404.html']
+ignore_files = ['error.html', '404.html', 'admin.html']
 
 # The universal nav template (ISO TRIPARTITE)
 NAV_TEMPLATE = '''

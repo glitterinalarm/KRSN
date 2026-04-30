@@ -19,6 +19,9 @@
     </style>
 
 
+    
+    
+
     <style id="mobile-readability-fix">
         @media (max-width: 768px) {
             /* Better reading for descriptions */
@@ -101,12 +104,13 @@
 <button class="text-[10px] font-bold uppercase tracking-widest ml-10" onclick="addLab()">+ Add Link</button>
 </div>
 <div id="lab-list"></div>
-</section>
-<footer class="fixed bottom-10 right-10">
-<button class="btn-black shadow-2xl" onclick="saveAll()">Deploy Changes</button>
-</footer>
-</div>
-</div>
+    </section>
+    </div> <!-- End max-w-4xl -->
+    
+    <footer class="fixed bottom-10 right-10 z-[999]">
+        <button class="btn-black shadow-2xl" onclick="saveAll()">Deploy Changes</button>
+    </footer>
+</div> <!-- End admin-container -->
 <script>
         let siteData = { works: [], lab: [] };
         const GITHUB_REPO = "glitterinalarm/KRSN";
