@@ -31,6 +31,8 @@ python3 update_dates.py
 # 5.6 Create duplicate FR pages with dictionary translation
 python3 build_i18n.py
 
+python3 inject_burger.py
+
 # 6. Push to GitHub (Vercel will deploy from /dist)
 git add .
 git commit -m "Update: Full project state sync"
