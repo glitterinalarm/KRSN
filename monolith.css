@@ -175,6 +175,9 @@ body {
 }
 
 .work-gallery-item {
+    width: 40vw; /* Shows roughly 2 items per screen */
+    min-width: 320px; /* Prevents getting too small on mobile */
+    max-width: 900px; /* Cap size on huge monitors */
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
@@ -182,7 +185,8 @@ body {
 }
 
 .work-gallery-item .media-container {
-    height: 55vh;
+    width: 100%;
+    height: auto;
     aspect-ratio: 16 / 9;
     background: #000;
     overflow: hidden;
