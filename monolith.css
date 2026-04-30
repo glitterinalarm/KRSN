@@ -253,3 +253,30 @@ body {
     gap: 80px;
     padding: 160px 80px;
 }
+
+/* RESPONSIVE LAB SPLIT */
+@media (max-width: 1024px) {
+    .lab-split-container {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr;
+    }
+    .split-side:first-child {
+        border-right: none;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+    .split-side {
+        padding: 120px 40px 40px 40px;
+    }
+    .split-side:nth-child(2) {
+        padding-top: 40px; /* No nav overlay on the second row */
+    }
+}
+
+@media (max-width: 768px) {
+    .split-side {
+        padding: 120px 20px 40px 20px;
+    }
+    .split-side:nth-child(2) {
+        padding-top: 20px;
+    }
+}
