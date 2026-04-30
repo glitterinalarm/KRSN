@@ -32,17 +32,17 @@ def get_work_media_html(urls, project_link=""):
         if vid_id:
             html += f'''
             <div class="video-hover-container absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-30 pointer-events-none">
-                <iframe class="w-full h-full object-cover" data-src="{video_embed}" frameborder="0" allow="autoplay; encrypted-media"></iframe>
+                <iframe class="w-full h-full object-contain" data-src="{video_embed}" frameborder="0" allow="autoplay; encrypted-media"></iframe>
             </div>'''
 
     # 2. Base Image / Slideshow
     if len(images) > 1:
         slides_html = ""
         for i, url in enumerate(images):
-            slides_html += f'<div class="slideshow-item absolute inset-0 transition-opacity duration-1000" style="opacity: { "1" if i == 0 else "0" }; z-index: { 1 if i == 0 else 0 };" data-index="{i}"><img src="{url}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"></div>'
+            slides_html += f'<div class="slideshow-item absolute inset-0 transition-opacity duration-1000" style="opacity: { "1" if i == 0 else "0" }; z-index: { 1 if i == 0 else 0 };" data-index="{i}"><img src="{url}" class="w-full h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-700"></div>'
         html += f'<div class="slideshow-container absolute inset-0" data-count="{len(images)}">{slides_html}</div>'
     elif images:
-        html += f'<img src="{images[0]}" class="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">'
+        html += f'<img src="{images[0]}" class="absolute inset-0 w-full h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-700">'
     
     html += '</div>'
     return html
