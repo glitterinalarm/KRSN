@@ -146,22 +146,33 @@
 <a href="studio.html">Studio</a>
 <a href="studio.html">Contact</a>
 </div>
+
+<!-- BURGER_START -->
+<div class="burger-icon" onclick="toggleMenu()">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+</div>
 </nav>
-<div class="mobile-menu-overlay" id="mobile-menu">
-<div class="mobile-menu-close" onclick="toggleMenu()">✕</div>
-<div class="mobile-menu-content">
-<a href="lab.html">Lab</a>
-<a href="insights.html">Insights</a>
-<a href="work.html">Works</a>
-<a href="studio.html">Studio</a>
-<a href="contact.html">Contact</a>
+
+<div id="mobile-menu" class="mobile-menu-overlay">
+  <div class="mobile-menu-close" onclick="toggleMenu()">✕</div>
+  <div class="mobile-menu-content">
+    <a href="lab.html">Lab</a>
+    <a href="insights.html">Insights</a>
+    <a href="work.html">Works</a>
+    <a href="studio.html">Studio</a>
+    <a href="contact.html">Contact</a>
+  </div>
 </div>
-</div>
-<script>
+<script id="burger-logic">
 function toggleMenu() {
-  document.getElementById('mobile-menu').classList.toggle('active');
+  const menu = document.getElementById('mobile-menu');
+  if (menu) menu.classList.toggle('active');
 }
 </script>
+<!-- BURGER_END -->
+
+
+
 <main class="pt-32 pb-20">
 <!-- Header Section -->
 <section class="px-10 mb-24">
@@ -260,16 +271,16 @@ function toggleMenu() {
         </div>
     </div>
     
-    <div class="flex flex-col gap-6 group cursor-pointer" onclick="window.open('https://www.dazeddigital.com/fashion/article/70153/1/going-field-mode-with-roger-scott?utm_source=Link&utm_medium=Link&utm_campaign=RSSFeed&utm_term=going-field-mode-with-roger-scott', '_blank')">
+    <div class="flex flex-col gap-6 group cursor-pointer" onclick="window.open('https://www.dazeddigital.com/life-culture/article/70178/1/infidelity-hot-people-get-cheated-on-cardi-b-klay-thompson?utm_source=Link&utm_medium=Link&utm_campaign=RSSFeed&utm_term=why-are-we-still-surprised-when-hot-people-get-cheated-on', '_blank')">
         <div class="aspect-video bg-surface-container-lowest overflow-hidden">
-            <img src="https://images-prod.dazeddigital.com/1080/0-605-1080-720/azure/dazed-prod/1440/4/1444064.png" alt="Going ‘field mode’ with Roger Scott" class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700">
+            <img src="https://images-prod.dazeddigital.com/711/0-36-711-474/azure/dazed-prod/1440/4/1444287.jpg" alt="Why are we still surprised when hot people get cheated on?" class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700">
         </div>
         <div class="flex flex-col gap-2">
             <div class="flex items-center justify-between">
                 <span class="text-[9px] font-label uppercase tracking-widest text-primary">TREND</span>
                 <span class="text-[9px] font-label uppercase tracking-widest text-outline-variant">Dazed</span>
             </div>
-            <h4 class="text-lg font-serif-italic leading-tight group-hover:text-primary transition-colors">Going ‘field mode’ with Roger Scott</h4>
+            <h4 class="text-lg font-serif-italic leading-tight group-hover:text-primary transition-colors">Why are we still surprised when hot people get cheated on?</h4>
         </div>
     </div>
     

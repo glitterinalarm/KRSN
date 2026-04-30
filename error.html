@@ -206,6 +206,9 @@ alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
     
     
 
+    
+    
+
     <style id="mobile-readability-fix">
         @media (max-width: 768px) {
             /* Better reading for descriptions */
@@ -251,6 +254,9 @@ alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
 <button class="material-symbols-outlined text-white/50 hover:text-white transition-colors md:hidden" data-icon="menu">menu</button>
 </div>
 
+
+
+<!-- BURGER_START -->
 <div class="burger-icon" onclick="toggleMenu()">
   <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
 </div>
@@ -266,11 +272,17 @@ alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
     <a href="contact.html">Contact</a>
   </div>
 </div>
-<script>
+<script id="burger-logic">
 function toggleMenu() {
-  document.getElementById('mobile-menu').classList.toggle('active');
+  const menu = document.getElementById('mobile-menu');
+  if (menu) menu.classList.toggle('active');
 }
 </script>
+<!-- BURGER_END -->
+
+
+
+
 
 <main class="h-screen w-full flex flex-col justify-center relative px-10">
 <!-- Background Monolith (The high-end abstract texture/monolith) -->
