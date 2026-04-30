@@ -175,7 +175,7 @@ body {
 }
 
 .work-gallery-item {
-    min-width: 600px;
+    width: calc(65vh * 16 / 9);
     height: 100%;
     display: flex;
     flex-direction: column;

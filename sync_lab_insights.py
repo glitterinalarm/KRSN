@@ -3,22 +3,22 @@ import os
 import re
 
 def get_work_media_html(urls):
-    """Horizontal Gallery format: scroll-snap based"""
+    """Slideshow format: 16/9 aspect ratio"""
     if not urls:
         return '<div class="bg-gray-100 flex items-center justify-center text-[9px] uppercase opacity-20">No Media</div>'
 
     urls = [u for url_list in urls for u in (url_list if isinstance(url_list, list) else [url_list]) if u]
     images = [u for u in urls if not any(x in u for x in ["youtube.com", "youtu.be", "vimeo.com"])]
     
-    # We create a scrollable container for the images
-    # The arrows in work.html will interact with this
-    html = f'<div class="work-gallery-container relative flex gap-10 overflow-x-auto snap-x snap-mandatory hide-scrollbar" style="height: 65vh;">'
+    html = f'<div class="media-container relative overflow-hidden group" style="height: 65vh; width: calc(65vh * 16 / 9);">'
     
-    for url in images:
-        html += f'''
-        <div class="work-gallery-item flex-shrink-0 snap-start" style="height: 65vh; width: calc(65vh * 16 / 9);">
-            <img src="{url}" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700">
-        </div>'''
+    if len(images) > 1:
+        slides_html = ""
+        for i, url in enumerate(images):
+            slides_html += f'<div class="slideshow-item absolute inset-0 transition-opacity duration-1000" style="opacity: { "1" if i == 0 else "0" }; z-index: { 1 if i == 0 else 0 };" data-index="{i}"><img src="{url}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"></div>'
+        html += f'<div class="slideshow-container absolute inset-0" data-count="{len(images)}">{slides_html}</div>'
+    elif len(images) == 1:
+        html += f'<img src="{images[0]}" class="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">'
     
     html += '</div>'
     return html
@@ -100,20 +100,19 @@ def update_pages():
     work_html = ""
     for item in site_data.get("works", []):
         images = item.get('images', [item.get('image', '')])
-        # Filter out empty or video URLs for the main gallery vignettes
-        images = [u for u in images if u and not any(x in u for x in ["youtube.com", "youtu.be", "vimeo.com"])]
+        # Filter and generate the media (slideshow or single image)
+        media = get_work_media_html(images)
         
-        for url in images:
-            work_html += f'''
-            <div class="work-gallery-item">
-                <div class="media-container relative overflow-hidden group" style="height: 65vh; width: calc(65vh * 16 / 9);">
-                    <img src="{url}" class="absolute inset-0 w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700">
+        work_html += f'''
+        <div class="work-gallery-item">
+            {media}
+            <div class="work-caption">
+                <h3 class="text-2xl font-black uppercase">{item['title']}</h3>
+                <div class="flex justify-between items-baseline opacity-40">
+                    <span class="label-mono uppercase">{item.get('year', '2026')} / {item.get('category', 'BRANDING')}</span>
                 </div>
-                <div class="work-caption">
-                    <h3 class="text-2xl font-black uppercase">{item['title']}</h3>
-                    <span class="label-mono opacity-40">{item.get('year', '2026')} / {item.get('category', 'BRANDING')}</span>
-                </div>
-            </div>'''
+            </div>
+        </div>'''
 
     # 2. LAB (16/9)
     lab_html = ""
