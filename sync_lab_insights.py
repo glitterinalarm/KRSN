@@ -2,22 +2,46 @@ import json
 import os
 import re
 
-def get_work_media_html(urls):
-    """Slideshow format: 16/9 aspect ratio"""
+def get_work_media_html(urls, project_link=""):
+    """Slideshow format with Video Hover support: 16/9 aspect ratio"""
     if not urls:
         return '<div class="bg-gray-100 flex items-center justify-center text-[9px] uppercase opacity-20">No Media</div>'
 
-    urls = [u for url_list in urls for u in (url_list if isinstance(url_list, list) else [url_list]) if u]
-    images = [u for u in urls if not any(x in u for x in ["youtube.com", "youtu.be", "vimeo.com"])]
+    # Flatten list if needed and filter
+    all_urls = [u for url_list in urls for u in (url_list if isinstance(url_list, list) else [url_list]) if u]
+    images = [u for u in all_urls if not any(x in u for x in ["youtube.com", "youtu.be", "vimeo.com"])]
     
-    html = f'<div class="media-container relative overflow-hidden group" style="height: 65vh; width: calc(65vh * 16 / 9);">'
+    # Use the project_link or check if any of all_urls is a video
+    video_url = project_link if any(x in project_link for x in ["youtube.com", "youtu.be", "vimeo.com"]) else ""
+    if not video_url:
+        videos = [u for u in all_urls if any(x in u for x in ["youtube.com", "youtu.be", "vimeo.com"])]
+        if videos: video_url = videos[0]
+
+    html = f'<div class="media-container relative overflow-hidden group" style="height: 60vh; width: calc(60vh * 16 / 9);">'
     
+    # 1. Video Overlay (Hidden by default, shown on hover via JS/CSS)
+    if video_url:
+        vid_id = None
+        if 'youtube.com' in video_url or 'youtu.be' in video_url:
+            vid_id = re.search(r'v=([^&]+)', video_url).group(1) if 'v=' in video_url else video_url.split('/')[-1]
+            video_embed = f"https://www.youtube.com/embed/{vid_id}?autoplay=1&mute=1&loop=1&playlist={vid_id}&controls=0&showinfo=0&rel=0&disablekb=1"
+        elif 'vimeo.com' in video_url:
+            vid_id = video_url.split('/')[-1]
+            video_embed = f"https://player.vimeo.com/video/{vid_id}?autoplay=1&muted=1&background=1&loop=1"
+        
+        if vid_id:
+            html += f'''
+            <div class="video-hover-container absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20 pointer-events-none">
+                <iframe class="w-full h-full object-cover" data-src="{video_embed}" frameborder="0" allow="autoplay; encrypted-media"></iframe>
+            </div>'''
+
+    # 2. Base Image / Slideshow
     if len(images) > 1:
         slides_html = ""
         for i, url in enumerate(images):
             slides_html += f'<div class="slideshow-item absolute inset-0 transition-opacity duration-1000" style="opacity: { "1" if i == 0 else "0" }; z-index: { 1 if i == 0 else 0 };" data-index="{i}"><img src="{url}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"></div>'
         html += f'<div class="slideshow-container absolute inset-0" data-count="{len(images)}">{slides_html}</div>'
-    elif len(images) == 1:
+    elif images:
         html += f'<img src="{images[0]}" class="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">'
     
     html += '</div>'
@@ -73,10 +97,34 @@ def inject_script(content):
             }
         });
     }
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initSlideshows);
-    } else {
+    
+    function initVideoHovers() {
+        document.querySelectorAll('.media-container').forEach(container => {
+            const videoContainer = container.querySelector('.video-hover-container');
+            if (!videoContainer) return;
+            const iframe = videoContainer.querySelector('iframe');
+            
+            container.addEventListener('mouseenter', () => {
+                if (iframe && iframe.dataset.src) {
+                    iframe.src = iframe.dataset.src;
+                }
+            });
+            
+            container.addEventListener('mouseleave', () => {
+                if (iframe) iframe.src = '';
+            });
+        });
+    }
+
+    function initAll() {
         initSlideshows();
+        initVideoHovers();
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initAll);
+    } else {
+        initAll();
     }
   </script>
   <!-- SLIDESHOW_ENGINE_END -->'''
@@ -101,7 +149,7 @@ def update_pages():
     for item in site_data.get("works", []):
         images = item.get('images', [item.get('image', '')])
         # Filter and generate the media (slideshow or single image)
-        media = get_work_media_html(images)
+        media = get_work_media_html(images, item.get('link', ''))
         
         work_html += f'''
         <div class="work-gallery-item">
