@@ -18,9 +18,8 @@ python3 remove_inquire.py
 mkdir -p assets/uploads
 cp -r assets_manager/uploads/* assets/uploads/
 
-# 4. Sync Projects (Titles, Categories, Media, Video)
-# This uses the data from projects_state.json
-python3 sync_projects.py
+# 4. Sync Projects, Lab & Insights from site_data.json
+python3 sync_lab_insights.py
 
 # 5. Inject Kérosène News
 python3 inject_kerosene.py
