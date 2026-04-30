@@ -193,10 +193,34 @@
             }
         });
     }
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initSlideshows);
-    } else {
+    
+    function initVideoHovers() {
+        document.querySelectorAll('.media-container').forEach(container => {
+            const videoContainer = container.querySelector('.video-hover-container');
+            if (!videoContainer) return;
+            const iframe = videoContainer.querySelector('iframe');
+            
+            container.addEventListener('mouseenter', () => {
+                if (iframe && iframe.dataset.src) {
+                    iframe.src = iframe.dataset.src;
+                }
+            });
+            
+            container.addEventListener('mouseleave', () => {
+                if (iframe) iframe.src = '';
+            });
+        });
+    }
+
+    function initAll() {
         initSlideshows();
+        initVideoHovers();
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initAll);
+    } else {
+        initAll();
     }
   </script>
   <!-- SLIDESHOW_ENGINE_END -->
