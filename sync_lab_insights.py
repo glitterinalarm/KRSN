@@ -17,7 +17,7 @@ def get_work_media_html(urls, project_link=""):
         videos = [u for u in all_urls if any(x in u for x in ["youtube.com", "youtu.be", "vimeo.com"])]
         if videos: video_url = videos[0]
 
-    html = f'<div class="media-container relative overflow-hidden group" style="height: 60vh; width: calc(60vh * 16 / 9);">'
+    html = f'<div class="media-container relative overflow-hidden group" style="height: 55vh; aspect-ratio: 16 / 9;">'
     
     # 1. Video Overlay (Hidden by default, shown on hover via JS/CSS)
     if video_url:
@@ -31,7 +31,7 @@ def get_work_media_html(urls, project_link=""):
         
         if vid_id:
             html += f'''
-            <div class="video-hover-container absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20 pointer-events-none">
+            <div class="video-hover-container absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-30 pointer-events-none">
                 <iframe class="w-full h-full object-cover" data-src="{video_embed}" frameborder="0" allow="autoplay; encrypted-media"></iframe>
             </div>'''
 
