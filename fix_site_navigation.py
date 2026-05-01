@@ -10,7 +10,7 @@ NAV_TEMPLATE = '''
 <nav class="nav-split">
     <div class="nav-group-left">
         <a href="lab.html">Lab</a>
-        <a href="insights.html">Insights</a>
+        <a href="lab.html#insights">Insights</a>
     </div>
     <a href="index.html" class="nav-logo-center">PARAFFINE</a>
     <div class="nav-group-right">
