@@ -42,11 +42,18 @@ for filename in html_files:
     # 2. Clean up legacy versions from add_mobile_menu.py
     content = re.sub(r'<!-- Mobile Menu Overlay -->.*?<script>.*?const menuBtn = document\.getElementById\(\'mobile-menu-trigger\'\);.*?</script>', '', content, flags=re.DOTALL)
     
-    # 3. Also clean up other legacy versions
+    # 3. Clean up other variations of the mobile menu and redundant markers
     content = re.sub(r'<div class="burger-icon".*?</div>', '', content, flags=re.DOTALL)
-    content = re.sub(r'<div id="mobile-menu" class="mobile-menu-overlay">.*?</div>\s*</div>', '', content, flags=re.DOTALL)
+    # Target mobile-menu-overlay with any attribute order
+    content = re.sub(r'<div[^>]*class="mobile-menu-overlay"[^>]*>.*?</div>\s*</div>', '', content, flags=re.DOTALL)
+    content = re.sub(r'<div[^>]*id="mobile-menu"[^>]*class="mobile-menu-overlay"[^>]*>.*?</div>\s*</div>', '', content, flags=re.DOTALL)
+    
+    # Remove toggle script
     content = re.sub(r'<script id="burger-logic">.*?</script>', '', content, flags=re.DOTALL)
     content = re.sub(r'<script>\s*function toggleMenu\(\).*?\s*</script>', '', content, flags=re.DOTALL)
+    
+    # Remove lingering markers
+    content = re.sub(r'<!-- BURGER_(START|END) -->', '', content)
 
     if "</nav>" in content:
         # Inject the new burger bundle by replacing the closing </nav>
