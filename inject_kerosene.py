@@ -161,4 +161,33 @@ except Exception as e:
 with open(path, "w") as f:
     f.write(content)
 
-print("Full Kérosène integration complete (Hero + Grid)")
+# 3. Inject into lab.html
+lab_path = "lab.html"
+if os.path.exists(lab_path):
+    with open(lab_path, "r") as f:
+        lab_content = f.read()
+    
+    if "<!-- START_INSIGHTS_FEED -->" in lab_content and "<!-- END_INSIGHTS_FEED -->" in lab_content:
+        # Build smaller items for lab.html split view
+        lab_insights_html = ""
+        for category, news in news_by_category.items():
+            lab_insights_html += f'''
+                <div class="insight-item">
+                    <img class="w-full aspect-[21/9] object-cover mb-6" src="{news['image']}"/>
+                    <div class="insight-content">
+                        <div class="text-[9px] opacity-40 uppercase tracking-widest mb-4">{category} // {news['source']}</div>
+                        <h3 class="text-3xl font-bold uppercase leading-tight mb-4">{news['title']}</h3>
+                        <p class="text-sm opacity-60 leading-relaxed mb-6">Latest transmission from the creative front.</p>
+                        <a class="text-[9px] font-bold uppercase tracking-widest border-b border-black pb-1 hover:opacity-50 transition-opacity" href="{news['link']}" target="_blank">READ DEEP DIVE ></a>
+                    </div>
+                </div>'''
+        
+        parts = lab_content.split("<!-- START_INSIGHTS_FEED -->")
+        rest = parts[1].split("<!-- END_INSIGHTS_FEED -->")
+        lab_content = parts[0] + "<!-- START_INSIGHTS_FEED -->\n" + lab_insights_html + "\n<!-- END_INSIGHTS_FEED -->" + rest[1]
+        
+        with open(lab_path, "w") as f:
+            f.write(lab_content)
+        print("✓ lab.html updated with dynamic Kérosène Insights")
+
+print("Full Kérosène integration complete (Hero + Grid + Lab)")
