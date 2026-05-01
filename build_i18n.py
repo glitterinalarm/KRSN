@@ -81,6 +81,11 @@ for filename in files:
     # Safety: rewrite relative links so that Vercel trailing slash behavior doesn't break navigation in the /fr/ folder
     fr_content = re.sub(r'href="([^"]+\.html)(#[^"]*)?"', r'href="/fr/\1\2"', fr_content)
     
+    # Fix asset paths for CSS and Favicon
+    fr_content = fr_content.replace('href="monolith.css"', 'href="../monolith.css"')
+    fr_content = fr_content.replace('href="/favicon.png"', 'href="../favicon.png"')
+    fr_content = fr_content.replace('src="/favicon.png"', 'src="../favicon.png"')
+    
     with open(dst_path, 'w') as f:
         f.write(fr_content)
     

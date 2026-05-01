@@ -19,7 +19,7 @@ burger_html = """
     <a href="insights.html">Insights</a>
     <a href="work.html">Works</a>
     <a href="studio.html">Studio</a>
-    <a href="contact.html">Contact</a>
+    <a href="studio.html">Contact</a>
   </div>
 </div>
 <script id="burger-logic">
