@@ -32,20 +32,19 @@ function toggleMenu() {
 """
 
 for filename in html_files:
-    if filename == "old_insights.html": continue
+    if filename in ["old_insights.html", "admin.html"]: continue
     with open(filename, 'r', encoding='utf-8') as f:
         content = f.read()
     
     # 1. Clean up any existing burger menu parts to ensure a fresh injection
     content = re.sub(r'<!-- BURGER_START -->.*?<!-- BURGER_END -->', '', content, flags=re.DOTALL)
     
-    # Also clean up legacy versions that might not have markers
+    # 2. Clean up legacy versions from add_mobile_menu.py
+    content = re.sub(r'<!-- Mobile Menu Overlay -->.*?<script>.*?const menuBtn = document\.getElementById\(\'mobile-menu-trigger\'\);.*?</script>', '', content, flags=re.DOTALL)
+    
+    # 3. Also clean up other legacy versions
     content = re.sub(r'<div class="burger-icon".*?</div>', '', content, flags=re.DOTALL)
-    # Match the overlay div and its content more carefully
-    # Use a non-greedy match for the content between overlay start and end
     content = re.sub(r'<div id="mobile-menu" class="mobile-menu-overlay">.*?</div>\s*</div>', '', content, flags=re.DOTALL)
-    content = re.sub(r'<div class="mobile-menu-overlay" id="mobile-menu">.*?</div>\s*</div>', '', content, flags=re.DOTALL)
-    # Remove toggle script
     content = re.sub(r'<script id="burger-logic">.*?</script>', '', content, flags=re.DOTALL)
     content = re.sub(r'<script>\s*function toggleMenu\(\).*?\s*</script>', '', content, flags=re.DOTALL)
 

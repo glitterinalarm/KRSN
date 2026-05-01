@@ -4,8 +4,9 @@
 echo "Starting site synchronization v2.0..."
 
 # 1. Processing local modifications
-python3 add_mobile_menu.py
+# python3 add_mobile_menu.py
 python3 fix_site_navigation.py
+python3 inject_burger.py
 
 # 3. Fix Grid Alignment & Aspect Ratios
 # python3 fix_grid.py
@@ -31,7 +32,7 @@ python3 update_dates.py
 # 5.6 Create duplicate FR pages with dictionary translation
 python3 build_i18n.py
 
-python3 inject_burger.py
+# python3 inject_burger.py
 
 # 6. Push to GitHub (Vercel will deploy from /dist)
 git add .

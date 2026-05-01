@@ -2,13 +2,13 @@ import os
 import shutil
 import re
 
-dist_dir = 'dist'
-fr_dir = os.path.join(dist_dir, 'fr')
+dist_dir = '.'
+fr_dir = 'fr'
 
 if not os.path.exists(fr_dir):
     os.makedirs(fr_dir)
 
-files = [f for f in os.listdir(dist_dir) if f.endswith('.html')]
+files = [f for f in os.listdir(dist_dir) if f.endswith('.html') and f not in ['admin.html', 'error.html', '404.html']]
 
 dictionary = {
     # Manifesto & Navigation items avoided intentionally
@@ -47,6 +47,9 @@ dictionary = {
     r'AI Native': 'IA Native',
     r'Laboratory': 'Laboratoire',
     r'\bWork\b': 'Travaux',
+    r'\bWorks\b': 'Travaux',
+    r'\bLab\b': 'Lab',
+    r'\bInsights\b': 'Insights',
     r'\bStudio\b': 'Studio',
     r'\bContact\b': 'Contact',
     r'\bHome\b': 'Accueil',

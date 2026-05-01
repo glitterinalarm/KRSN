@@ -2,7 +2,7 @@ import os
 import re
 from bs4 import BeautifulSoup
 
-dist_dirs = ['.', 'dist']
+dist_dirs = ['.', 'dist', 'fr']
 ignore_files = ['error.html', '404.html', 'admin.html']
 
 # The universal nav template (ISO TRIPARTITE)
@@ -10,13 +10,13 @@ NAV_TEMPLATE = '''
 <nav class="nav-split">
     <div class="nav-group-left">
         <a href="lab.html">Lab</a>
-        <a href="lab.html">Insights</a>
+        <a href="insights.html">Insights</a>
     </div>
     <a href="index.html" class="nav-logo-center">PARAFFINE</a>
     <div class="nav-group-right">
         <a href="work.html">Works</a>
         <a href="studio.html">Studio</a>
-        <a href="studio.html">Contact</a>
+        <a href="contact.html">Contact</a>
     </div>
 </nav>
 '''

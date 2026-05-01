@@ -1,15 +1,15 @@
 import os
 import re
 
-dist_dir = "dist"
-index_path = os.path.join(dist_dir, "index.html")
+dist_dirs = [".", "fr"]
+index_path = "index.html"
 
 # 1. Extract nav from index.html
 with open(index_path, "r") as f:
     index_content = f.read()
 
 # Look for the nav block
-nav_match = re.search(r'(<!-- Ultra-Minimalist Navigation -->\s*)?<nav.*?</nav>', index_content, re.DOTALL)
+nav_match = re.search(r'(<!--.*?Navigation.*?-->\s*)?<nav.*?</nav>', index_content, re.DOTALL | re.IGNORECASE)
 if not nav_match:
     print("Could not find nav in index.html")
     exit(1)
@@ -18,10 +18,14 @@ home_nav = nav_match.group(0)
 print("Extracted home nav")
 
 # 2. Apply to other files
-files = [f for f in os.listdir(dist_dir) if f.endswith(".html") and f != "index.html"]
+files = []
+for d in dist_dirs:
+    if os.path.exists(d):
+        for f in os.listdir(d):
+            if f.endswith(".html") and f not in ["admin.html", "error.html", "index.html"]:
+                files.append(os.path.join(d, f))
 
-for filename in files:
-    path = os.path.join(dist_dir, filename)
+for path in files:
     with open(path, "r") as f:
         content = f.read()
     

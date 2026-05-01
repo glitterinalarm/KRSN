@@ -138,13 +138,13 @@
 <nav class="nav-split">
 <div class="nav-group-left">
 <a href="lab.html">Lab</a>
-<a href="lab.html">Insights</a>
+<a href="insights.html">Insights</a>
 </div>
 <a class="nav-logo-center" href="index.html">PARAFFINE</a>
 <div class="nav-group-right">
 <a href="work.html">Works</a>
 <a href="studio.html">Studio</a>
-<a href="studio.html">Contact</a>
+<a href="contact.html">Contact</a>
 </div>
 
 <!-- BURGER_START -->
@@ -171,8 +171,18 @@ function toggleMenu() {
 </script>
 <!-- BURGER_END -->
 
+<div class="mobile-menu-overlay" id="mobile-menu">
+<div class="mobile-menu-close" onclick="toggleMenu()">✕</div>
+<div class="mobile-menu-content">
+<a href="lab.html">Lab</a>
+<a href="insights.html">Insights</a>
+<a href="work.html">Works</a>
+<a href="studio.html">Studio</a>
+<a href="contact.html">Contact</a>
+</div>
+</div>
 
-
+<!-- BURGER_END -->
 <!-- BURGER_END -->
 <!-- BURGER_END -->
 <main class="pt-32 pb-20">
@@ -234,16 +244,16 @@ function toggleMenu() {
 </div>
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
 
-    <div class="flex flex-col gap-6 group cursor-pointer" onclick="window.open('https://www.itsnicethat.com/articles/anais-kugel-photography-discover-300426', '_blank')">
+    <div class="flex flex-col gap-6 group cursor-pointer" onclick="window.open('https://www.itsnicethat.com/articles/nicer-tuesdays-london-april-intra-010526', '_blank')">
         <div class="aspect-video bg-surface-container-lowest overflow-hidden">
-            <img src="https://admin.itsnicethat.com/images/T3rd_4Kg2bTQbFP7epY8rr1dxUw=/277085/width-1440/WEBaDSC_5368.jpg" alt="Anaïs Kugel’s portraits are unmistakably from the female gaze" class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700">
+            <img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1000&auto=format&fit=crop" alt="Intra on the rewarding process of recognising the art in obscure everyday life" class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700">
         </div>
         <div class="flex flex-col gap-2">
             <div class="flex items-center justify-between">
                 <span class="text-[9px] font-label uppercase tracking-widest text-primary">GRAPHISME</span>
                 <span class="text-[9px] font-label uppercase tracking-widest text-outline-variant">It's Nice That</span>
             </div>
-            <h4 class="text-lg font-serif-italic leading-tight group-hover:text-primary transition-colors">Anaïs Kugel’s portraits are unmistakably from the female gaze</h4>
+            <h4 class="text-lg font-serif-italic leading-tight group-hover:text-primary transition-colors">Intra on the rewarding process of recognising the art in obscure everyday life</h4>
         </div>
     </div>
     
@@ -342,37 +352,5 @@ function toggleMenu() {
 </div>
 </div>
 </footer>
-<!-- Mobile Menu Overlay -->
-<div class="fixed inset-0 z-[100] flex flex-col justify-center items-center gap-12 transition-all duration-500 opacity-0 pointer-events-none md:hidden" id="mobile-menu" style="background-color: rgba(0,0,0,0.95);">
-<button class="absolute top-8 right-10 material-symbols-outlined text-white text-3xl" id="close-menu">close</button>
-<a class="text-4xl font-serif-italic text-white hover:text-primary transition-colors" href="index.html">Home</a>
-<a class="text-4xl font-serif-italic text-white hover:text-primary transition-colors" href="work.html">Work</a>
-<a class="text-4xl font-serif-italic text-white hover:text-primary transition-colors" href="lab.html">Laboratory</a>
-<a class="text-4xl font-serif-italic text-white hover:text-primary transition-colors" href="insights.html">Insights</a>
-<a class="text-4xl font-serif-italic text-white hover:text-primary transition-colors" href="studio.html">Studio</a>
-<a class="text-4xl font-serif-italic text-white hover:text-primary transition-colors" href="contact.html">Contact</a>
-</div>
-<script>
-    const menuBtn = document.getElementById('mobile-menu-trigger');
-    const mobileMenu = document.getElementById('mobile-menu');
-    const closeBtn = document.getElementById('close-menu');
-    const menuLinks = mobileMenu ? mobileMenu.querySelectorAll('a') : [];
 
-    function toggleMenu() {
-        mobileMenu.classList.toggle('opacity-0');
-        mobileMenu.classList.toggle('pointer-events-none');
-        document.body.classList.toggle('overflow-hidden');
-    }
-
-    if (menuBtn && mobileMenu) menuBtn.addEventListener('click', toggleMenu);
-    if (closeBtn && mobileMenu) closeBtn.addEventListener('click', toggleMenu);
-    
-    menuLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            mobileMenu.classList.add('opacity-0');
-            mobileMenu.classList.add('pointer-events-none');
-            document.body.classList.remove('overflow-hidden');
-        });
-    });
-</script>
 </body></html>

@@ -1,8 +1,13 @@
 import os
 import re
 
-dist_dir = "dist"
-files = [f for f in os.listdir(dist_dir) if f.endswith(".html")]
+dist_dirs = [".", "fr"]
+files = []
+for d in dist_dirs:
+    if os.path.exists(d):
+        for f in os.listdir(d):
+            if f.endswith(".html") and f not in ["admin.html", "error.html"]:
+                files.append(os.path.join(d, f))
 
 mobile_menu_html = '''
 <!-- Mobile Menu Overlay -->
@@ -40,8 +45,7 @@ mobile_menu_html = '''
 </script>
 '''
 
-for filename in files:
-    path = os.path.join(dist_dir, filename)
+for path in files:
     with open(path, "r") as f:
         content = f.read()
     
