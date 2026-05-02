@@ -217,12 +217,12 @@ body {
 /* RE-CENTER GALLERY AS TITLES ARE NOW ABOVE */
 .work-gallery-wrapper {
     display: flex;
-    align-items: flex-end;
+    align-items: center; /* Center to ensure visibility of full height */
     height: 100%;
-    padding: 0 10vw 18vh 10vw; /* Significantly increased bottom padding to raise the gallery */
+    padding: 0 10vw;
     width: max-content;
     will-change: transform;
-    margin-top: 0;
+    margin-top: 10vh; /* Move down slightly to clear main title */
 }
 
 .work-gallery-item {
@@ -239,10 +239,10 @@ body {
     animation-delay: calc(var(--index, 0) * 0.1s);
 }
 
-/* TIGHTER STAGGERED OFFSETS - Relative to bottom alignment */
-.stagger-up { --stagger-offset: -12vh; }
-.stagger-down { --stagger-offset: 0; } /* Flush with bottom */
-.stagger-center { --stagger-offset: -6vh; }
+/* BALANCED STAGGERED OFFSETS - For centered alignment */
+.stagger-up { --stagger-offset: -8vh; }
+.stagger-down { --stagger-offset: 8vh; }
+.stagger-center { --stagger-offset: 0; }
 
 @keyframes stagger-up {
     from {
