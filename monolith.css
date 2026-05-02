@@ -197,19 +197,19 @@ body {
     display: flex;
     align-items: center;
     height: 100%;
-    padding: 0 15vw;
+    padding: 0 10vw;
+    width: max-content; /* CRITICAL: Ensure wrapper expands to fit items */
     will-change: transform;
-    transition: transform 0.1s linear;
 }
 
 .work-gallery-item {
     position: relative;
     flex-shrink: 0;
-    margin-right: 12vw;
+    margin-right: 8vw;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    width: 38vw;
+    width: 42vw;
     opacity: 0;
     animation: stagger-up 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     animation-delay: calc(var(--index, 0) * 0.1s);
