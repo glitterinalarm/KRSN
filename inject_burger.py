@@ -15,8 +15,8 @@ burger_html = """
 <div id="mobile-menu" class="mobile-menu-overlay">
   <div class="mobile-menu-close" onclick="toggleMenu()">✕</div>
   <div class="mobile-menu-content">
-    <a href="lab.html">Lab</a>
-    <a href="insights.html">Insights</a>
+    <a href="lab.html#lab">Lab</a>
+    <a href="lab.html#insights">Insights</a>
     <a href="work.html">Works</a>
     <a href="studio.html">Studio</a>
     <a href="studio.html">Contact</a>
