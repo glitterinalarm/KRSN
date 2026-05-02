@@ -24,8 +24,8 @@ if not os.path.exists(WORK_FILE):
 with open(WORK_FILE, 'r') as f:
     soup = BeautifulSoup(f, 'html.parser')
 
-# Find all project containers (.group)
-projects = soup.find_all(class_="group")
+# Find all project containers (.work-gallery-item)
+projects = soup.find_all(class_="work-gallery-item")
 
 # Map slots by original titles
 slot_map = [

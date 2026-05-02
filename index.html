@@ -39,55 +39,137 @@
     </style>
     
 </head>
-<body class="bg-black text-white">
+<body class="bg-black text-white selection:bg-accent selection:text-white">
 <div class="site-frame"></div>
-<div class="side-label">EST. 2004 — NYC / LDN</div>
-<nav class="nav-split">
-<div class="nav-group-left">
-<a href="lab.html#lab">Lab</a>
-<a href="lab.html#insights">Insights</a>
-</div>
-<a class="nav-logo-center" href="index.html">PARAFFINE</a>
-<div class="nav-group-right">
-<a href="work.html">Works</a>
-<a href="studio.html">Studio</a>
-<a href="studio.html">Contact</a>
-</div>
 
-<!-- BURGER_START -->
-<div class="burger-icon" onclick="toggleMenu()">
-  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
-</div>
-</nav>
+<header class="flex justify-between items-center px-8 py-6 fixed top-0 w-full z-[1000] mix-blend-difference">
+    <a href="index.html" class="logo font-bold tracking-tighter text-xl text-white no-underline">PARAFFINE</a>
+    <nav class="hidden md:flex gap-8 uppercase text-[10px] tracking-[0.3em] font-medium">
+        <a href="work.html" class="text-white no-underline hover:opacity-50 transition-opacity">Works</a>
+        <a href="lab.html" class="text-white no-underline hover:opacity-50 transition-opacity">Lab</a>
+        <a href="studio.html" class="text-white no-underline hover:opacity-50 transition-opacity">Studio</a>
+    </nav>
+    <div class="burger-icon md:hidden cursor-pointer" onclick="toggleMenu()">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+    </div>
+</header>
 
 <div id="mobile-menu" class="mobile-menu-overlay">
   <div class="mobile-menu-close" onclick="toggleMenu()">✕</div>
   <div class="mobile-menu-content">
-    <a href="lab.html#lab">Lab</a>
-    <a href="lab.html#insights">Insights</a>
     <a href="work.html">Works</a>
+    <a href="lab.html">Lab</a>
     <a href="studio.html">Studio</a>
-    <a href="studio.html">Contact</a>
   </div>
 </div>
-<script id="burger-logic">
+
+<main class="relative h-screen w-full overflow-hidden flex items-center justify-center">
+    <!-- Hero Image Background with Parallax/Zoom effect -->
+    <div class="absolute inset-0 z-0">
+        <img src="paraffine_hero_1777725302192.png" alt="Paraffine Hero" class="w-full h-full object-cover opacity-60 scale-110 animate-slow-zoom">
+        <div class="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/80"></div>
+    </div>
+
+    <div class="relative z-10 text-center">
+        <div class="overflow-hidden">
+            <h1 class="text-[12vw] md:text-[15vw] font-black leading-[0.8] tracking-[-0.05em] uppercase reveal-text">
+                PARAFFINE
+            </h1>
+        </div>
+        <div class="mt-6 overflow-hidden">
+            <p class="subtitle-hero text-sm md:text-base uppercase tracking-[0.5em] opacity-0 animate-fade-in-up">
+                Creative Direction & Motion Augmented by AI
+            </p>
+        </div>
+    </div>
+
+    <!-- Scroll Indicator -->
+    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 opacity-50">
+        <span class="uppercase text-[8px] tracking-[0.3em]">Explore</span>
+        <div class="w-[1px] h-12 bg-white/30 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-full bg-white -translate-y-full animate-scroll-line"></div>
+        </div>
+    </div>
+</main>
+
+<style>
+    @keyframes slow-zoom {
+        0% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+    .animate-slow-zoom {
+        animation: slow-zoom 20s ease-out forwards;
+    }
+    
+    @keyframes reveal {
+        0% { transform: translateY(100%); }
+        100% { transform: translateY(0); }
+    }
+    .reveal-text {
+        animation: reveal 1.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+    }
+
+    @keyframes fade-in-up {
+        0% { opacity: 0; transform: translateY(20px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in-up {
+        animation: fade-in-up 1.5s cubic-bezier(0.19, 1, 0.22, 1) 0.5s forwards;
+    }
+
+    @keyframes scroll-line {
+        0% { transform: translateY(-100%); }
+        50% { transform: translateY(0); }
+        100% { transform: translateY(100%); }
+    }
+    .animate-scroll-line {
+        animation: scroll-line 2s infinite cubic-bezier(0.19, 1, 0.22, 1);
+    }
+    
+    .mobile-menu-overlay {
+        position: fixed;
+        inset: 0;
+        background: black;
+        z-index: 2000;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.5s ease;
+    }
+    .mobile-menu-overlay.active {
+        opacity: 1;
+        pointer-events: auto;
+    }
+    .mobile-menu-content {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        text-align: center;
+    }
+    .mobile-menu-content a {
+        font-size: 2rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        text-decoration: none;
+        color: white;
+    }
+    .mobile-menu-close {
+        position: absolute;
+        top: 2rem;
+        right: 2rem;
+        font-size: 2rem;
+        cursor: pointer;
+    }
+</style>
+
+<script>
 function toggleMenu() {
   const menu = document.getElementById('mobile-menu');
   if (menu) menu.classList.toggle('active');
 }
 </script>
-<!-- BURGER_END -->
-
-
-
-
-<main class="h-screen flex flex-col justify-center items-center text-center px-4 relative">
-<!-- Textured background overlay -->
-<div class="absolute inset-0 z-0 bg-[url('https://i.ibb.co/68v8B7m/texture-overlay.png')] opacity-20 pointer-events-none mix-blend-overlay"></div>
-<div class="relative z-10 flex flex-col items-center">
-<h1 class="text-[clamp(4rem,18vw,20rem)] font-[800] leading-[0.8] tracking-[-0.03em] uppercase">PARAFFINE</h1>
-<p class="subtitle-hero mt-8">Creative Direction &amp; Motion Augmented by AI</p>
-</div>
-</main>
 </body>
 </html>
