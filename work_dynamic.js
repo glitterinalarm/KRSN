@@ -12,7 +12,7 @@ class HorizontalGallery {
         this.targetX = 0;
         this.currentX = 0;
         this.velocity = 0;
-        this.lerpAmount = 0.08;
+        this.lerpAmount = 0.06; // Slightly slower for more "weight"
         
         this.isDragging = false;
         this.startX = 0;
@@ -42,15 +42,40 @@ class HorizontalGallery {
             this.clampTarget();
         }, { passive: true });
 
-        // Stagger & Parallax Setup
+        // DESYNCHRONIZED STAGGER & PARALLAX
         this.items.forEach((item, index) => {
+            // Add varied delays and durations for non-uniform reveal
+            const randomDelay = (index * 0.15) + (Math.random() * 0.3);
+            const randomDuration = 1 + (Math.random() * 0.5);
+            item.style.animationDelay = `${randomDelay}s`;
+            item.style.animationDuration = `${randomDuration}s`;
+            
             item.style.setProperty('--index', index);
+            
+            // Varied speeds for horizontal parallax (Detroit style)
+            item.setAttribute('data-speed', 0.8 + (Math.random() * 0.4));
+
             if (index % 2 === 1) item.classList.add('stagger-down');
             else if (index % 3 === 0) item.classList.add('stagger-center');
             else item.classList.add('stagger-up');
         });
 
         this.animate();
+        this.fixVideos();
+    }
+
+    // Fix YouTube embeds to avoid Error 153 and domain restrictions
+    fixVideos() {
+        document.querySelectorAll('img[data-video]').forEach(img => {
+            let url = img.getAttribute('data-video');
+            if (url.includes('youtube.com')) {
+                // Ensure origin is set and playsinline is active
+                if (!url.includes('origin=')) {
+                    url += `&origin=${window.location.origin}&playsinline=1`;
+                    img.setAttribute('data-video', url);
+                }
+            }
+        });
     }
 
     updateBounds() {
@@ -85,29 +110,25 @@ class HorizontalGallery {
         this.currentX += (this.targetX - this.currentX) * this.lerpAmount;
         this.velocity = this.currentX - lastX;
 
-        // Apply global transform
         this.wrapper.style.transform = `translate3d(${this.currentX}px, 0, 0)`;
 
-        // Velocity-based effects on items (Skew & Scale)
-        const skew = this.velocity * 0.1;
-        const scale = 1 - Math.abs(this.velocity) * 0.001;
+        const skew = this.velocity * 0.08;
+        const scale = 1 - Math.abs(this.velocity) * 0.0005;
 
         this.items.forEach((item, i) => {
             const img = item.querySelector('img');
             const caption = item.querySelector('.work-caption');
+            const speed = parseFloat(item.getAttribute('data-speed') || 1);
             
-            // Individual Parallax: calculate relative position to viewport
             const rect = item.getBoundingClientRect();
             const centerDist = (rect.left + rect.width / 2) / window.innerWidth - 0.5;
             
             if (img) {
-                // Parallax shift on image
-                const imgShift = centerDist * -60; 
+                const imgShift = centerDist * -80 * speed; 
                 img.style.transform = `scale(${scale}) skewX(${skew}deg) translateY(${imgShift}px)`;
             }
             if (caption) {
-                // Slower parallax on caption
-                caption.style.transform = `translateX(${centerDist * 40}px)`;
+                caption.style.transform = `translateX(${centerDist * 50 * (2 - speed)}px)`;
             }
         });
 
