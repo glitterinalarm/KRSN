@@ -217,9 +217,9 @@ body {
 /* RE-CENTER GALLERY AS TITLES ARE NOW ABOVE */
 .work-gallery-wrapper {
     display: flex;
-    align-items: flex-end; /* Align all items to the bottom */
+    align-items: flex-end;
     height: 100%;
-    padding: 0 10vw 8vh 10vw; /* Added bottom padding for the label */
+    padding: 0 10vw 18vh 10vw; /* Significantly increased bottom padding to raise the gallery */
     width: max-content;
     will-change: transform;
     margin-top: 0;
@@ -228,11 +228,12 @@ body {
 .work-gallery-item {
     position: relative;
     flex-shrink: 0;
-    margin-right: 8vw;
+    margin-right: 10vw;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    width: 42vw;
+    width: 32vw; /* Reduced from 42vw to ensure height fits on screen */
+    max-height: 55vh; /* Safety limit for height */
     opacity: 0;
     animation: stagger-up 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     animation-delay: calc(var(--index, 0) * 0.1s);
