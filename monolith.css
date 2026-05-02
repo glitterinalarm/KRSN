@@ -214,6 +214,7 @@ body {
     pointer-events: auto;
 }
 
+/* RE-CENTER GALLERY AS TITLES ARE NOW ABOVE */
 .work-gallery-wrapper {
     display: flex;
     align-items: center;
@@ -221,7 +222,7 @@ body {
     padding: 0 10vw;
     width: max-content;
     will-change: transform;
-    margin-top: -12vh; /* Raise the gallery further to show captions */
+    margin-top: 0; /* Reset margin */
 }
 
 .work-gallery-item {
@@ -297,6 +298,33 @@ body {
     text-transform: uppercase;
     opacity: 0.6;
     margin-bottom: 0.8rem;
+}
+
+.work-caption {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    text-align: left;
+    width: 100%;
+}
+
+.work-caption h3 {
+    font-size: 0.75rem !important;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+}
+
+.work-caption p {
+    font-size: 0.65rem !important;
+    text-transform: uppercase;
+    opacity: 0.6;
+    letter-spacing: 0.05em;
+    display: inline-block;
+}
+
+.work-caption p.font-light {
+    display: none; /* Hide long description in gallery view to match Detroit */
 }
 
 .work-title {
