@@ -194,14 +194,21 @@ body {
 }
 
 /* Lower the main title and container */
-.work-gallery-container h1 {
-    margin-top: 18vh !important;
+.work-section {
+    padding-top: 15vh;
+}
+
+.work-gallery-container h1, 
+.work-section h1 {
+    margin-top: 5vh !important;
+    margin-left: 5vw !important;
 }
 
 /* Ensure the fixed top menu doesn't fight with the title */
 .fixed.top-0.left-0.w-full {
     background: transparent;
     pointer-events: none;
+    z-index: 100;
 }
 .fixed.top-0.left-0.w-full > * {
     pointer-events: auto;
