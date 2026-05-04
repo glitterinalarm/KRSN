@@ -146,13 +146,13 @@ def update_pages():
 
     # 1. WORKS (GALLERY)
     work_html = ""
-    for item in site_data.get("works", []):
+    for i, item in enumerate(site_data.get("works", [])):
         images = item.get('images', [item.get('image', '')])
         # Filter and generate the media (slideshow or single image)
         media = get_work_media_html(images, item.get('link', ''))
         
         work_html += f'''
-        <div class="work-gallery-item">
+        <div class="work-gallery-item" style="--index: {i}">
             {media}
             <div class="work-caption">
                 <h3 class="text-2xl font-black uppercase">{item['title']}</h3>
@@ -183,7 +183,9 @@ def update_pages():
     for item in site_data.get("insights", []):
         insights_html += f'''
                 <div class="insight-item">
-                    <img class="w-full aspect-[21/9] object-cover mb-6" src="{item['image']}"/>
+                    <div class="aspect-video w-full overflow-hidden mb-6">
+                        <img class="w-full h-full object-cover" src="{item['image']}"/>
+                    </div>
                     <div class="insight-content">
                         <div class="text-[9px] opacity-40 uppercase tracking-widest mb-4">{item['title']}</div>
                         <h3 class="text-3xl font-bold uppercase leading-tight mb-4">{item['description'][:60]}...</h3>
@@ -209,9 +211,15 @@ def update_pages():
             parts = content.split("<!-- START_LAB_FEED -->")
             rest = parts[1].split("<!-- END_LAB_FEED -->")
             content = parts[0] + "<!-- START_LAB_FEED -->\n" + lab_html + "\n<!-- END_LAB_FEED -->" + rest[1]
+        
+        if "<!-- START_INSIGHTS_FEED -->" in content and "<!-- END_INSIGHTS_FEED -->" in content:
+            parts = content.split("<!-- START_INSIGHTS_FEED -->")
+            rest = parts[1].split("<!-- END_INSIGHTS_FEED -->")
+            content = parts[0] + "<!-- START_INSIGHTS_FEED -->\n" + insights_html + "\n<!-- END_INSIGHTS_FEED -->" + rest[1]
+
         content = inject_script(content)
         with open("lab.html", "w", encoding="utf-8") as f: f.write(content)
-        print("✓ lab.html updated (16/9)")
+        print("✓ lab.html updated (LAB & INSIGHTS 16/9)")
 
 if __name__ == "__main__":
     update_pages()

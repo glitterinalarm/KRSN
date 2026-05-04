@@ -37,10 +37,15 @@ class HorizontalGallery {
         window.addEventListener('touchend', () => this.stopDragging());
 
         window.addEventListener('wheel', (e) => {
-            const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-            this.targetX -= delta * 1.5;
+            // Support both vertical and horizontal scroll (trackpads, magic mouse)
+            this.targetX -= (e.deltaX + e.deltaY) * 1.5;
             this.clampTarget();
-        }, { passive: true });
+            
+            // Prevent "swipe to go back" browser gesture
+            if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+                e.preventDefault();
+            }
+        }, { passive: false });
 
         // DESYNCHRONIZED STAGGER & PARALLAX
         this.items.forEach((item, index) => {
@@ -58,6 +63,11 @@ class HorizontalGallery {
             if (index % 2 === 1) item.classList.add('stagger-down');
             else if (index % 3 === 0) item.classList.add('stagger-center');
             else item.classList.add('stagger-up');
+
+            // Trigger animation after setting all styles
+            requestAnimationFrame(() => {
+                item.classList.add('is-revealed');
+            });
         });
 
         this.animate();
@@ -159,8 +169,3 @@ function initCustomCursor() {
         el.addEventListener('mouseleave', () => cursor.classList.remove('cursor-hover'));
     });
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-    new HorizontalGallery();
-    // initCustomCursor(); // Optional: add if we want a custom cursor
-});
