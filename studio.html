@@ -689,7 +689,15 @@ async function loadStudio() {
 }
 
 document.addEventListener('DOMContentLoaded', initLang);
-loadStudio().then(() => applyLang());
+loadStudio().then(() => {
+  applyLang();
+  if (window.location.hash === '#contact') {
+    setTimeout(() => {
+      const el = document.getElementById('contact');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }, 300);
+  }
+});
 </script>
 </body>
 </html>
