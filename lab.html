@@ -252,7 +252,7 @@ body {
   .lab-layout {
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 80px); /* nav */
+    height: 100vh;
     padding-top: 80px;
     overflow: hidden;
   }
@@ -273,24 +273,27 @@ body {
     pointer-events: none;
   }
 
-  /* Each half takes 50% of viewport height */
+  /* Each half: flex column so label + strip share space cleanly */
   .col {
-    height: 50%;
-    max-height: 50%;
+    flex: 1;
+    min-height: 0;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
     padding: 0;
   }
 
-  /* Horizontal scroll inner strip */
+  /* Horizontal scroll inner strip — takes remaining height after label */
   .col-inner {
+    flex: 1;
+    min-height: 0;
     display: flex;
     flex-direction: row;
-    height: 100%;
     overflow-x: auto;
     overflow-y: hidden;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
-    padding: 16px 24px 16px 24px;
+    padding: 14px 24px 14px 24px;
     gap: 16px;
   }
   .col-inner::-webkit-scrollbar { display: none; }
@@ -298,7 +301,7 @@ body {
   /* Mobile cards in strip */
   .mob-card {
     flex-shrink: 0;
-    width: 65vw;
+    width: 68vw;
     scroll-snap-align: start;
     display: flex;
     flex-direction: column;
@@ -309,7 +312,7 @@ body {
 
   .mob-thumb {
     width: 100%;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 4 / 3;
     object-fit: cover;
     background: #eee;
     margin-bottom: 10px;
@@ -332,6 +335,18 @@ body {
     text-transform: uppercase;
     line-height: 0.92;
     letter-spacing: -0.01em;
+    margin-bottom: 7px;
+  }
+
+  .mob-desc {
+    font-size: 10px;
+    line-height: 1.55;
+    opacity: 0.5;
+    letter-spacing: 0.01em;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   /* Hide desktop-only col header on mobile */
@@ -352,7 +367,7 @@ body {
     flex-shrink: 0;
   }
 
-  .col-right .mob-card { width: 60vw; }
+  .col-right .mob-card { width: 68vw; }
 
   /* Hide desktop-only elements on mobile */
   .desktop-only { display: none !important; }
@@ -521,6 +536,7 @@ function renderLab(items) {
       ${thumb ? `<img class="mob-thumb" src="${thumb}" alt="${item.title || ''}" loading="lazy"/>` : `<div class="mob-thumb"></div>`}
       <div class="mob-meta">${item.meta || ''}</div>
       <div class="mob-title">${item.title || ''}</div>
+      ${item.description ? `<div class="mob-desc">${t(item.description)}</div>` : ''}
     `;
     mobile.appendChild(m);
   });
@@ -560,6 +576,7 @@ function renderInsights(items) {
       ${item.image ? `<img class="mob-thumb" src="${item.image}" alt="${item.title || ''}" loading="lazy"/>` : `<div class="mob-thumb"></div>`}
       <div class="mob-meta">${extractCat(item.title)}</div>
       <div class="mob-title">${cleanTitle(item.title)}</div>
+      ${item.description ? `<div class="mob-desc">${item.description}</div>` : ''}
     `;
     mobile.appendChild(m);
   });
