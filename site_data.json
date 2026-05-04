@@ -95,19 +95,6 @@
     },
     "works": [
         {
-            "title": "WESTFIELD",
-            "category": "BROADCAST",
-            "year": "2026",
-            "images": [
-                "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777909349/zmtrwygqzolmoj16d3gq.gif",
-                "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777909380/pe72xzkjzygmgoyp4rud.png",
-                "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777909393/jlxemoentdivgm2bssit.png",
-                "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777909373/fy5niwlxdfnhxndnljxp.png"
-            ],
-            "link": "",
-            "videoLink": ""
-        },
-        {
             "title": "AXEPTA",
             "category": "BRANDING & EVENT",
             "year": "2026",
@@ -119,6 +106,19 @@
                 "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777910345/n98vafxdvvkgcjmswezy.jpg"
             ],
             "link": "#"
+        },
+        {
+            "title": "WESTFIELD",
+            "category": "BROADCAST",
+            "year": "2026",
+            "images": [
+                "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777909349/zmtrwygqzolmoj16d3gq.gif",
+                "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777909380/pe72xzkjzygmgoyp4rud.png",
+                "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777909393/jlxemoentdivgm2bssit.png",
+                "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777909373/fy5niwlxdfnhxndnljxp.png"
+            ],
+            "link": "",
+            "videoLink": ""
         },
         {
             "id": "dgpn-02",
@@ -133,6 +133,20 @@
                 "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777910397/vaukxou1ocu15en3hyuv.jpg",
                 "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777910381/flvieppq8fapo2cxvwuk.png"
             ]
+        },
+        {
+            "id": "tourisme-01",
+            "title": "TOURISME",
+            "category": "BRANDING",
+            "year": "2026",
+            "image": "/assets/uploads/new_project_1776441848129_TOURISME.jpg",
+            "link": "#",
+            "images": [
+                "https://www.youtube.com/watch?v=LN0UTmC-ms4",
+                "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777910446/pizwafljee8pjw0ofj8m.jpg",
+                "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777910502/icewceglvzdqtk3fwmdz.png"
+            ],
+            "videoLink": "https://www.youtube.com/watch?v=LN0UTmC-ms4"
         },
         {
             "id": "lbc-00",
@@ -151,20 +165,6 @@
                 "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777910421/hoj5eoq8vruecyqlengb.jpg"
             ],
             "videoLink": "https://youtu.be/CyRHzEbjWuE"
-        },
-        {
-            "id": "tourisme-01",
-            "title": "TOURISME",
-            "category": "BRANDING",
-            "year": "2026",
-            "image": "/assets/uploads/new_project_1776441848129_TOURISME.jpg",
-            "link": "#",
-            "images": [
-                "https://www.youtube.com/watch?v=LN0UTmC-ms4",
-                "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777910446/pizwafljee8pjw0ofj8m.jpg",
-                "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777910502/icewceglvzdqtk3fwmdz.png"
-            ],
-            "videoLink": "https://www.youtube.com/watch?v=LN0UTmC-ms4"
         }
     ],
     "lab": [
