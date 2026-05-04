@@ -465,7 +465,29 @@ async function init() {
   }
 
   renderLab(data.lab || []);
-  renderInsights(data.insights || []);
+
+  // Fetch live Kérosène editorial and prepend with priority
+  let keroseneItems = [];
+  try {
+    const keroRes = await fetch('https://2vFZWMQqWS8H2xfv.public.blob.vercel-storage.com/editorial/daily.json?t=' + Date.now());
+    if (keroRes.ok) {
+      const keroData = await keroRes.json();
+      if (Array.isArray(keroData.articles)) {
+        keroseneItems = keroData.articles
+          .filter(a => a.imageUrl && !a.imageUrl.includes('unsplash.com'))
+          .map(a => ({
+            image: a.imageUrl,
+            title: 'KÉROSÈNE // ' + (a.title || ''),
+            description: (a.insight || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 140),
+            link: 'https://veille-creative.vercel.app/article/' + encodeURIComponent(a.id),
+          }));
+      }
+    }
+  } catch (e) {
+    console.warn('Kérosène feed unavailable', e);
+  }
+
+  renderInsights([...keroseneItems, ...(data.insights || [])]);
 }
 
 // ─── LAB ─────────────────────────────────────────────────────
