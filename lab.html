@@ -283,17 +283,22 @@ body {
     padding: 0;
   }
 
+  /* Insights col: vertically center label + strip in its half */
+  .col-right {
+    justify-content: center;
+  }
+
   /* Horizontal scroll inner strip — takes remaining height after label */
   .col-inner {
-    flex: 1;
-    min-height: 0;
+    flex: 0 0 auto;
     display: flex;
     flex-direction: row;
     overflow-x: auto;
     overflow-y: hidden;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
-    padding: 14px 24px 14px 24px;
+    /* no left/right padding — use margin on first/last card instead (Safari overflow bug) */
+    padding: 14px 0;
     gap: 16px;
   }
   .col-inner::-webkit-scrollbar { display: none; }
@@ -308,11 +313,13 @@ body {
     justify-content: flex-start;
   }
 
-  .mob-card:first-child { margin-left: 0; }
+  /* Left/right inset via margin on edge cards — works in Safari overflow */
+  .mob-card:first-child { margin-left: 24px; }
+  .mob-card:last-child  { margin-right: 24px; }
 
   .mob-thumb {
     width: 100%;
-    aspect-ratio: 16 / 7;
+    aspect-ratio: 3 / 2;
     object-fit: cover;
     background: #eee;
     margin-bottom: 10px;
@@ -367,7 +374,7 @@ body {
     flex-shrink: 0;
   }
 
-  .col-right .mob-card { width: 68vw; }
+  /* col-right card width matches global .mob-card */
 
   /* Hide desktop-only elements on mobile */
   .desktop-only { display: none !important; }
