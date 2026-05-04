@@ -582,9 +582,6 @@ function toggleMenu() {
   if (m) m.classList.toggle('active');
 }
 
-if (window.location.hash === '#contact') {
-  setTimeout(() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }), 100);
-}
 
 if (new URLSearchParams(window.location.search).get('sent') === '1') {
   document.getElementById('contact-form').style.display = 'none';
