@@ -469,7 +469,7 @@ async function init() {
   // Fetch live Kérosène editorial and prepend with priority
   let keroseneItems = [];
   try {
-    const keroRes = await fetch('https://2vFZWMQqWS8H2xfv.public.blob.vercel-storage.com/editorial/daily.json?t=' + Date.now());
+    const keroRes = await fetch('https://2vfzwmqqws8h2xfv.public.blob.vercel-storage.com/editorial/daily.json?t=' + Date.now());
     if (keroRes.ok) {
       const keroData = await keroRes.json();
       if (Array.isArray(keroData.articles)) {
