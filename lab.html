@@ -474,9 +474,7 @@ function renderLab(items) {
   const mobile  = document.getElementById('lab-feed-mobile');
 
   items.forEach(item => {
-    const thumb = (item.images && item.images[0] && !item.images[0].startsWith('data:'))
-      ? item.images[0]
-      : (item.image || '');
+    const thumb = (item.images && item.images[0]) ? item.images[0] : (item.image || '');
 
     // Desktop card
     const d = document.createElement('div');

@@ -290,8 +290,9 @@ function makeCard(proj) {
   el.className = 'work-card';
   const timers = [];
 
-  // Slides
-  (proj.images || []).forEach((src, i) => {
+  // Slides — exclude YouTube/Vimeo URLs (not valid img.src)
+  const imgSrcs = (proj.images || []).filter(s => !ytId(s) && !s.includes('vimeo.com'));
+  imgSrcs.forEach((src, i) => {
     const s   = document.createElement('div');
     s.className = 'slide' + (i === 0 ? ' active' : '');
     const img = document.createElement('img');
@@ -314,8 +315,8 @@ function makeCard(proj) {
     timers.push(t);
   }
 
-  // YouTube video on hover (desktop)
-  const vid = ytId(proj.link);
+  // YouTube video on hover (desktop) — videoLink takes priority over link
+  const vid = ytId(proj.videoLink) || ytId(proj.link);
   if (vid) {
     let iframe = null;
     el.addEventListener('mouseenter', () => {
