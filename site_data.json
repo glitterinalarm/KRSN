@@ -140,7 +140,7 @@
             "category": "PLATFORM",
             "year": "2025",
             "image": "/assets/uploads/LBC_00.jpg",
-            "link": "#",
+            "link": "https://youtu.be/CyRHzEbjWuE",
             "images": [
                 "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777910413/ggfwtqomm9fv3wyo9ngl.jpg",
                 "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777910415/te4ss8fg3yrms540jrgf.jpg",
@@ -149,7 +149,8 @@
                 "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777910418/qrwcmyng9grexvcvgvpk.jpg",
                 "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777910420/xt2g2dnsbt4mdwt5krls.jpg",
                 "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777910421/hoj5eoq8vruecyqlengb.jpg"
-            ]
+            ],
+            "videoLink": "https://youtu.be/CyRHzEbjWuE"
         },
         {
             "id": "tourisme-01",
