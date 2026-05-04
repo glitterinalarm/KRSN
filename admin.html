@@ -459,7 +459,7 @@ function toggleMenu() {
                             <div class="text-[10px] font-mono bg-gray-50 p-4 border border-gray-100 mt-2 break-all max-h-20 overflow-y-auto">
                                 ${(w.images || []).map((img, idx) => `
                                     <div class="mb-2 flex justify-between items-center">
-                                        <span class="opacity-40">${img.startsWith('data:') ? '[INTERNAL_MEDIA_UPLOAD]' : img.substring(0, 40) + '...'}</span>
+                                        <span class="opacity-40">${img.startsWith('data:') ? '[LEGACY BASE64 — resave to migrate]' : img.substring(0, 50) + '...'}</span>
                                         <button onclick="removeImage(${i}, ${idx})" class="text-red-500 hover:underline ml-4">REMOVE</button>
                                     </div>
                                 `).join('') || '<span class="opacity-20">No media yet</span>'}
@@ -535,7 +535,7 @@ function toggleMenu() {
                             <div class="text-[10px] font-mono bg-gray-50 p-4 border border-gray-100 mt-2 break-all max-h-20 overflow-y-auto">
                                 ${(l.images || []).map((img, idx) => `
                                     <div class="mb-2 flex justify-between items-center">
-                                        <span class="opacity-40">${img.startsWith('data:') ? '[INTERNAL_MEDIA_UPLOAD]' : img.substring(0, 40) + '...'}</span>
+                                        <span class="opacity-40">${img.startsWith('data:') ? '[LEGACY BASE64 — resave to migrate]' : img.substring(0, 50) + '...'}</span>
                                         <button onclick="removeLabImage(${i}, ${idx})" class="text-red-500 hover:underline ml-4">REMOVE</button>
                                     </div>
                                 `).join('') || '<span class="opacity-20">No media yet</span>'}
@@ -611,18 +611,37 @@ function toggleMenu() {
             renderAll();
         }
 
+        async function uploadToCloudinary(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', 'paraffine_media');
+            const res = await fetch('https://api.cloudinary.com/v1_1/dxrvmrbst/upload', {
+                method: 'POST',
+                body: formData
+            });
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(err.error?.message || `Cloudinary error ${res.status}`);
+            }
+            return (await res.json()).secure_url;
+        }
+
         async function handleDrop(e, type, index) {
             e.preventDefault();
             const files = Array.from(e.dataTransfer.files);
             if (!files.length) return;
+            const dropZone = e.currentTarget;
+            const originalHTML = dropZone.innerHTML;
+            dropZone.innerHTML = `<p style="opacity:.5;font-size:11px;text-align:center;padding:1rem;">⏳ Upload Cloudinary… (${files.length} fichier${files.length > 1 ? 's' : ''})</p>`;
             const newUrls = [];
             for (const file of files) {
-                const reader = new FileReader();
-                const promise = new Promise(resolve => {
-                    reader.onload = (event) => resolve(event.target.result);
-                });
-                reader.readAsDataURL(file);
-                newUrls.push(await promise);
+                try {
+                    newUrls.push(await uploadToCloudinary(file));
+                } catch (err) {
+                    alert(`Échec upload ${file.name}: ${err.message}`);
+                    dropZone.innerHTML = originalHTML;
+                    return;
+                }
             }
             const target = type === 'work' ? siteData.works[index] : siteData.lab[index];
             if (!target.images) target.images = target.image ? [target.image] : [];
@@ -744,23 +763,61 @@ function toggleMenu() {
             badge.innerText = "SAVING...";
             badge.style.background = "#ffcc00";
             try {
-                const getRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${DATA_PATH}`, {
-                    headers: { 'Authorization': `token ${token}` }
+                const headers = { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' };
+                const api = `https://api.github.com/repos/${GITHUB_REPO}`;
+
+                // 1. Récupère le SHA du dernier commit sur main
+                const refRes = await fetch(`${api}/git/refs/heads/main`, { headers });
+                if (!refRes.ok) {
+                    const e = await refRes.json().catch(() => ({}));
+                    throw new Error(`Ref failed (${refRes.status}): ${e.message || ''}${refRes.status === 401 ? ' — Token invalide' : ''}`);
+                }
+                const latestCommitSha = (await refRes.json()).object.sha;
+
+                // 2. Récupère le SHA du tree courant
+                const commitRes = await fetch(`${api}/git/commits/${latestCommitSha}`, { headers });
+                const treeSha = (await commitRes.json()).tree.sha;
+
+                // 3. Crée un blob avec le contenu brut (pas de limite 1MB)
+                const rawContent = JSON.stringify(siteData, null, 4);
+                const blobRes = await fetch(`${api}/git/blobs`, {
+                    method: 'POST', headers,
+                    body: JSON.stringify({ content: rawContent, encoding: 'utf-8' })
                 });
-                const fileData = await getRes.json();
-                const sha = fileData.sha;
-                const content = btoa(unescape(encodeURIComponent(JSON.stringify(siteData, null, 4))));
-                const putRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${DATA_PATH}`, {
-                    method: 'PUT',
-                    headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: "Admin: Update content", content: content, sha: sha })
+                if (!blobRes.ok) {
+                    const e = await blobRes.json().catch(() => ({}));
+                    throw new Error(`Blob failed (${blobRes.status}): ${e.message || ''}`);
+                }
+                const blobSha = (await blobRes.json()).sha;
+
+                // 4. Crée un nouveau tree
+                const treeRes = await fetch(`${api}/git/trees`, {
+                    method: 'POST', headers,
+                    body: JSON.stringify({ base_tree: treeSha, tree: [{ path: DATA_PATH, mode: '100644', type: 'blob', sha: blobSha }] })
                 });
-                if(putRes.ok) {
-                    badge.innerText = "SUCCESS // DEPLOYING";
-                    badge.style.background = "#00cc00";
-                    setTimeout(() => { badge.innerText = "CONNECTED"; badge.style.background = "black"; }, 5000);
-                    alert("Changes saved! Vercel is now deploying. (Wait 1-2 mins)");
-                } else { throw new Error("GitHub API Error"); }
+                const newTreeSha = (await treeRes.json()).sha;
+
+                // 5. Crée un commit
+                const newCommitRes = await fetch(`${api}/git/commits`, {
+                    method: 'POST', headers,
+                    body: JSON.stringify({ message: 'Admin: Update content', tree: newTreeSha, parents: [latestCommitSha] })
+                });
+                const newCommitSha = (await newCommitRes.json()).sha;
+
+                // 6. Avance la branche main
+                const updateRes = await fetch(`${api}/git/refs/heads/main`, {
+                    method: 'PATCH', headers,
+                    body: JSON.stringify({ sha: newCommitSha })
+                });
+                if (!updateRes.ok) {
+                    const e = await updateRes.json().catch(() => ({}));
+                    throw new Error(`Update ref failed (${updateRes.status}): ${e.message || ''}`);
+                }
+
+                badge.innerText = "SUCCESS // DEPLOYING";
+                badge.style.background = "#00cc00";
+                setTimeout(() => { badge.innerText = "CONNECTED"; badge.style.background = "black"; }, 5000);
+                alert("Changes saved! Vercel is now deploying. (Wait 1-2 mins)");
             } catch (e) {
                 badge.innerText = "ERROR"; badge.style.background = "red";
                 alert("Error saving: " + e.message);
