@@ -42,24 +42,35 @@
 <body class="bg-black text-white selection:bg-accent selection:text-white">
 <div class="site-frame"></div>
 
-<header class="flex justify-between items-center px-8 py-6 fixed top-0 w-full z-[1000] mix-blend-difference">
-    <a href="index.html" class="logo font-bold tracking-tighter text-xl text-white no-underline">PARAFFINE</a>
-    <nav class="hidden md:flex gap-8 uppercase text-[10px] tracking-[0.3em] font-medium">
-        <a href="work.html" class="text-white no-underline hover:opacity-50 transition-opacity">Works</a>
-        <a href="lab.html" class="text-white no-underline hover:opacity-50 transition-opacity">Lab</a>
-        <a href="studio.html" class="text-white no-underline hover:opacity-50 transition-opacity">Studio</a>
-    </nav>
-    <div class="burger-icon md:hidden cursor-pointer" onclick="toggleMenu()">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+<nav class="nav-split">
+    <div class="nav-group-left">
+        <a href="lab.html">Lab</a>
+        <a href="lab.html#insights">Insights</a>
     </div>
-</header>
+    <a href="index.html" class="nav-logo-center">PARAFFINE</a>
+    <div class="nav-group-right">
+        <a href="work.html">Works</a>
+        <a href="studio.html">Studio</a>
+        <a href="studio.html">Contact</a>
+        <div class="lang-toggle">
+          <button class="lang-btn" data-lang="fr" onclick="setLang('fr')">FR</button>
+          <span class="lang-sep">/</span>
+          <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+        </div>
+    </div>
+    <div class="burger-icon" onclick="toggleMenu()">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+    </div>
+</nav>
 
 <div id="mobile-menu" class="mobile-menu-overlay">
   <div class="mobile-menu-close" onclick="toggleMenu()">✕</div>
   <div class="mobile-menu-content">
-    <a href="work.html">Works</a>
     <a href="lab.html">Lab</a>
+    <a href="lab.html#insights">Insights</a>
+    <a href="work.html">Works</a>
     <a href="studio.html">Studio</a>
+    <a href="studio.html">Contact</a>
   </div>
 </div>
 
@@ -77,7 +88,9 @@
             </h1>
         </div>
         <div class="mt-6 overflow-hidden">
-            <p class="subtitle-hero text-sm md:text-base uppercase tracking-[0.5em] opacity-0 animate-fade-in-up">
+            <p class="subtitle-hero text-sm md:text-base uppercase tracking-[0.5em] opacity-0 animate-fade-in-up"
+               data-fr="Direction Artistique & Motion Augmentés par l'IA"
+               data-en="Creative Direction & Motion Augmented by AI">
                 Creative Direction & Motion Augmented by AI
             </p>
         </div>
@@ -165,11 +178,13 @@
     }
 </style>
 
+<script src="lang.js"></script>
 <script>
 function toggleMenu() {
   const menu = document.getElementById('mobile-menu');
   if (menu) menu.classList.toggle('active');
 }
+document.addEventListener('DOMContentLoaded', initLang);
 </script>
 </body>
 </html>

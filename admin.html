@@ -202,20 +202,135 @@ function toggleMenu() {
 <p class="text-[9px] opacity-40 mt-4 italic">This token is stored locally in your browser. It allows the console to push updates to your GitHub repository.</p>
 </div>
 </section>
+
 <section class="mb-20">
+  <h2 class="text-xs font-bold uppercase tracking-[0.3em] mb-10 border-b border-black pb-4">00 — Studio Profile (Page Contact)</h2>
+  <div class="admin-card">
+    <p class="text-[9px] opacity-40 italic mb-6">Ces informations alimentent la partie gauche de la page Studio / Contact.</p>
+    <div class="grid grid-cols-2 gap-6">
+
+      <div class="col-span-2">
+        <label class="text-[9px] uppercase font-bold tracking-widest">Bio</label>
+        <textarea id="studio-bio" rows="5" onchange="siteData.studio.bio = this.value" style="width:100%;padding:0.8rem;border:1px solid #eee;margin-top:0.5rem;font-family:'JetBrains Mono',monospace;font-size:12px;resize:vertical"></textarea>
+        <p class="text-[9px] opacity-30 mt-2 italic">Texte libre. Supporte le HTML simple (&lt;strong&gt;, &lt;br/&gt;).</p>
+      </div>
+
+      <div>
+        <label class="text-[9px] uppercase font-bold tracking-widest">Stat 1 — Valeur</label>
+        <input type="text" id="studio-stat1-val" placeholder="20+" onchange="siteData.studio.stats[0].value = this.value">
+      </div>
+      <div>
+        <label class="text-[9px] uppercase font-bold tracking-widest">Stat 1 — Label</label>
+        <input type="text" id="studio-stat1-label" placeholder="Ans d'exp." onchange="siteData.studio.stats[0].label = this.value">
+      </div>
+      <div>
+        <label class="text-[9px] uppercase font-bold tracking-widest">Stat 2 — Valeur</label>
+        <input type="text" id="studio-stat2-val" placeholder="50+" onchange="siteData.studio.stats[1].value = this.value">
+      </div>
+      <div>
+        <label class="text-[9px] uppercase font-bold tracking-widest">Stat 2 — Label</label>
+        <input type="text" id="studio-stat2-label" placeholder="Clients" onchange="siteData.studio.stats[1].label = this.value">
+      </div>
+      <div>
+        <label class="text-[9px] uppercase font-bold tracking-widest">Stat 3 — Valeur</label>
+        <input type="text" id="studio-stat3-val" placeholder="Paris" onchange="siteData.studio.stats[2].value = this.value">
+      </div>
+      <div>
+        <label class="text-[9px] uppercase font-bold tracking-widest">Stat 3 — Label</label>
+        <input type="text" id="studio-stat3-label" placeholder="Base" onchange="siteData.studio.stats[2].label = this.value">
+      </div>
+
+      <div class="col-span-2">
+        <label class="text-[9px] uppercase font-bold tracking-widest">Clients (séparés par virgule)</label>
+        <textarea id="studio-clients" rows="3" onchange="siteData.studio.clients = this.value.split(',').map(s=>s.trim()).filter(Boolean)" style="width:100%;padding:0.8rem;border:1px solid #eee;margin-top:0.5rem;font-family:'JetBrains Mono',monospace;font-size:12px;resize:vertical"></textarea>
+        <p class="text-[9px] opacity-30 mt-2 italic">Ex: Police Nationale, BNP Paribas, Croix Rouge</p>
+      </div>
+
+      <div class="col-span-2">
+        <label class="text-[9px] uppercase font-bold tracking-widest">Email de contact</label>
+        <input type="text" id="studio-email" placeholder="germain@paraffine.studio" onchange="siteData.studio.email = this.value">
+      </div>
+
+      <div class="col-span-2">
+        <label class="text-[9px] uppercase font-bold tracking-widest">Disponibilité (badge)</label>
+        <input type="text" id="studio-availability" placeholder="Disponible — Projets 2026" onchange="siteData.studio.availability = this.value">
+      </div>
+    </div>
+
+    <!-- AWARDS -->
+    <div style="margin-top:2rem">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+        <label class="text-[9px] uppercase font-bold tracking-widest">Prix &amp; Distinctions</label>
+        <button onclick="addAward()" class="text-[10px] font-bold uppercase tracking-widest">+ Ajouter</button>
+      </div>
+      <div id="awards-list"></div>
+    </div>
+
+    <!-- SOCIAL LINKS -->
+    <div style="margin-top:2rem">
+      <label class="text-[9px] uppercase font-bold tracking-widest block mb-4">Réseaux &amp; Liens</label>
+      <div id="social-list"></div>
+      <button onclick="addSocial()" class="text-[10px] font-bold uppercase tracking-widest mt-4">+ Ajouter un lien</button>
+    </div>
+  </div>
+</section>
+
+<section class="mb-20">
+  <h2 class="text-xs font-bold uppercase tracking-[0.3em] mb-10 border-b border-black pb-4">01 — Home Video</h2>
+  <div class="admin-card">
+    <div class="grid grid-cols-2 gap-6">
+      <div class="col-span-2">
+        <label class="text-[9px] uppercase font-bold tracking-widest">Video URL (YouTube or Vimeo)</label>
+        <div class="flex gap-2 mt-2">
+          <input type="text" id="home-video-url" placeholder="https://youtu.be/... or https://vimeo.com/..." class="flex-grow !mt-0" oninput="updateHomeVideo()">
+        </div>
+        <p class="text-[9px] opacity-40 mt-3 italic">This video plays full-screen on the home page. Format toggles between 16/9 (desktop) and 9/16 (mobile).</p>
+      </div>
+      <div>
+        <label class="text-[9px] uppercase font-bold tracking-widest">Format</label>
+        <select id="home-video-format" onchange="updateHomeVideoFormat(this.value)" style="margin-top:0.5rem">
+          <option value="16/9">16/9 — Landscape (Desktop)</option>
+          <option value="9/16">9/16 — Portrait (Mobile)</option>
+          <option value="auto">Auto — Both</option>
+        </select>
+      </div>
+      <div id="home-video-preview" style="display:none">
+        <label class="text-[9px] uppercase font-bold tracking-widest">Preview</label>
+        <div id="home-video-embed" style="margin-top:0.5rem;width:100%;aspect-ratio:16/9;background:#000;"></div>
+      </div>
+    </div>
+  </div>
+</section>
 <div class="flex justify-between items-baseline mb-10">
-<h2 class="text-xs font-bold uppercase tracking-[0.3em] border-b border-black pb-4 flex-grow">Works Portfolio</h2>
+<h2 class="text-xs font-bold uppercase tracking-[0.3em] border-b border-black pb-4 flex-grow">02 — Works Portfolio</h2>
 <button class="text-[10px] font-bold uppercase tracking-widest ml-10" onclick="addWork()">+ Add Project</button>
 </div>
 <div id="works-list"></div>
 </section>
 <section class="mb-20">
-<div class="flex justify-between items-baseline mb-10">
-<h2 class="text-xs font-bold uppercase tracking-[0.3em] border-b border-black pb-4 flex-grow">Lab Experiments</h2>
-<button class="text-[10px] font-bold uppercase tracking-widest ml-10" onclick="addLab()">+ Add Link</button>
-</div>
-<div id="lab-list"></div>
-    </section>
+  <div class="flex justify-between items-baseline mb-10">
+    <h2 class="text-xs font-bold uppercase tracking-[0.3em] border-b border-black pb-4 flex-grow">03 — Lab Experiments</h2>
+    <button class="text-[10px] font-bold uppercase tracking-widest ml-10" onclick="addLab()">+ Add Item</button>
+  </div>
+  <div class="admin-card mb-8">
+    <label class="text-[9px] uppercase font-bold tracking-widest block mb-4">Texte intro — Lab (colonne gauche)</label>
+    <div class="grid grid-cols-2 gap-6">
+      <div>
+        <label class="text-[9px] uppercase tracking-widest opacity-50 block mb-1">FR</label>
+        <textarea id="lab-desc-fr" rows="3"
+          style="width:100%;padding:0.8rem;border:1px solid #eee;margin-top:0;font-family:'JetBrains Mono',monospace;font-size:12px;resize:vertical"
+          oninput="siteData.labDescription = siteData.labDescription || {}; siteData.labDescription.fr = this.value"></textarea>
+      </div>
+      <div>
+        <label class="text-[9px] uppercase tracking-widest opacity-50 block mb-1">EN</label>
+        <textarea id="lab-desc-en" rows="3"
+          style="width:100%;padding:0.8rem;border:1px solid #eee;margin-top:0;font-family:'JetBrains Mono',monospace;font-size:12px;resize:vertical"
+          oninput="siteData.labDescription = siteData.labDescription || {}; siteData.labDescription.en = this.value"></textarea>
+      </div>
+    </div>
+  </div>
+  <div id="lab-list"></div>
+</section>
     </div> <!-- End max-w-4xl -->
     
     <footer class="fixed bottom-10 right-10 z-[999]">
@@ -223,7 +338,30 @@ function toggleMenu() {
     </footer>
 </div> <!-- End admin-container -->
 <script>
-        let siteData = { works: [], lab: [] };
+        let siteData = {
+            homeVideo: { url: '', format: '16/9' },
+            studio: {
+                bio: 'Creative Director with 20 years of expertise across motion, advertising, branding, and emerging AI workflows.',
+                stats: [
+                    { value: '20+', label: 'Ans d\'exp.' },
+                    { value: '50+', label: 'Clients' },
+                    { value: 'Paris', label: 'Base' }
+                ],
+                clients: ['Police Nationale','Ministère Économie','BNP Paribas','CASDEN','Croix Rouge','E. Leclerc','LeBonCoin','Westfield','RAJA'],
+                awards: [
+                    { name: 'Grand Prix Stratégies', client: 'Police Nationale — Brand Film', year: '2024' },
+                    { name: 'Sélection Officielle', client: 'Ministère de l\'Economie — Motion', year: '2023' }
+                ],
+                socials: [
+                    { icon: 'LinkedIn', name: 'Germain Trillat', handle: 'linkedin.com/in/germaintrillat', url: 'https://www.linkedin.com/in/germaintrillat' },
+                    { icon: 'Behance', name: 'glitterinalarm', handle: 'behance.net/glitterinalarm', url: 'https://www.behance.net/glitterinalarm' },
+                    { icon: 'Instagram', name: '@glitterin77alarm', handle: 'instagram.com/glitterin77alarm', url: 'http://instagram.com/glitterin77alarm/' }
+                ],
+                availability: 'Disponible — Projets 2026',
+                email: 'germain@paraffine.studio'
+            },
+            works: [], lab: [], insights: []
+        };
         const GITHUB_REPO = "glitterinalarm/KRSN";
         const DATA_PATH = "site_data.json";
 
@@ -239,7 +377,15 @@ function toggleMenu() {
         async function loadData() {
             try {
                 const res = await fetch('site_data.json?t=' + Date.now());
-                siteData = await res.json();
+                const loaded = await res.json();
+                siteData = {
+                    homeVideo: loaded.homeVideo || { url: '', format: 'auto' },
+                    studio: loaded.studio || siteData.studio,
+                    works: loaded.works || [],
+                    lab: loaded.lab || [],
+                    labDescription: loaded.labDescription || { fr: '', en: '' },
+                    insights: loaded.insights || []
+                };
                 renderAll();
             } catch (e) {
                 console.error("Failed to load data", e);
@@ -249,6 +395,36 @@ function toggleMenu() {
         }
 
         function renderAll() {
+            // ─ Studio fields
+            const s = siteData.studio || {};
+            const setVal = (id, v) => { const el = document.getElementById(id); if(el) el.value = v || ''; };
+            setVal('studio-bio', s.bio);
+            setVal('studio-stat1-val',   s.stats?.[0]?.value);
+            setVal('studio-stat1-label', s.stats?.[0]?.label);
+            setVal('studio-stat2-val',   s.stats?.[1]?.value);
+            setVal('studio-stat2-label', s.stats?.[1]?.label);
+            setVal('studio-stat3-val',   s.stats?.[2]?.value);
+            setVal('studio-stat3-label', s.stats?.[2]?.label);
+            setVal('studio-clients', (s.clients || []).join(', '));
+            setVal('studio-email', s.email);
+            setVal('studio-availability', s.availability);
+            renderAwards();
+            renderSocials();
+
+            // ─ Lab description
+            const ld = siteData.labDescription || {};
+            setVal('lab-desc-fr', ld.fr);
+            setVal('lab-desc-en', ld.en);
+
+            // ─ Home video section
+            const hvUrl = siteData.homeVideo?.url || '';
+            const hvFmt = siteData.homeVideo?.format || 'auto';
+            const hvInput = document.getElementById('home-video-url');
+            const hvFormat = document.getElementById('home-video-format');
+            if (hvInput) hvInput.value = hvUrl;
+            if (hvFormat) hvFormat.value = hvFmt;
+            renderVideoPreview(hvUrl);
+
             const worksList = document.getElementById('works-list');
             worksList.innerHTML = siteData.works.map((w, i) => `
                 <div class="admin-card">
@@ -258,12 +434,21 @@ function toggleMenu() {
                             <input type="text" value="${w.title}" onchange="updateWork(${i}, 'title', this.value)">
                         </div>
                         <div>
+                            <label class="text-[9px] uppercase font-bold tracking-widest">Category</label>
+                            <input type="text" value="${w.category || ''}" placeholder="BRANDING / EVENT / BROADCAST" onchange="updateWork(${i}, 'category', this.value)">
+                        </div>
+                        <div>
                             <label class="text-[9px] uppercase font-bold tracking-widest">Year</label>
-                            <input type="text" value="${w.year}" onchange="updateWork(${i}, 'year', this.value)">
+                            <input type="text" value="${w.year || ''}" onchange="updateWork(${i}, 'year', this.value)">
+                        </div>
+                        <div>
+                            <label class="text-[9px] uppercase font-bold tracking-widest">Project Link (on click)</label>
+                            <input type="text" value="${w.link || '#'}" onchange="updateWork(${i}, 'link', this.value)">
                         </div>
                         <div class="col-span-2">
-                            <label class="text-[9px] uppercase font-bold tracking-widest">Project Link (Where to go on click)</label>
-                            <input type="text" value="${w.link || '#'}" onchange="updateWork(${i}, 'link', this.value)">
+                            <label class="text-[9px] uppercase font-bold tracking-widest">🎬 YouTube / Vimeo — Hover Video (optional)</label>
+                            <input type="text" value="${w.videoLink || ''}" placeholder="https://youtu.be/... — plays on hover instead of images" onchange="updateWork(${i}, 'videoLink', this.value)">
+                            <p class="text-[9px] opacity-30 mt-2 italic">Leave empty to show image slideshow on hover. Add a link to override with video.</p>
                         </div>
                         <div class="col-span-2">
                             <label class="text-[9px] uppercase font-bold tracking-widest">Media Assets</label>
@@ -319,6 +504,23 @@ function toggleMenu() {
                         <div>
                             <label class="text-[9px] uppercase font-bold tracking-widest">Meta</label>
                             <input type="text" value="${l.meta}" onchange="updateLab(${i}, 'meta', this.value)">
+                        </div>
+                        <div class="col-span-2">
+                            <label class="text-[9px] uppercase font-bold tracking-widest block mb-1">Description</label>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="text-[9px] uppercase tracking-widest opacity-50 block mb-1">FR</label>
+                                    <textarea rows="2" style="width:100%;padding:0.6rem;border:1px solid #eee;font-family:'JetBrains Mono',monospace;font-size:11px;resize:vertical"
+                                        oninput="siteData.lab[${i}].description = siteData.lab[${i}].description || {}; siteData.lab[${i}].description.fr = this.value"
+                                    >${(l.description?.fr) || ''}</textarea>
+                                </div>
+                                <div>
+                                    <label class="text-[9px] uppercase tracking-widest opacity-50 block mb-1">EN</label>
+                                    <textarea rows="2" style="width:100%;padding:0.6rem;border:1px solid #eee;font-family:'JetBrains Mono',monospace;font-size:11px;resize:vertical"
+                                        oninput="siteData.lab[${i}].description = siteData.lab[${i}].description || {}; siteData.lab[${i}].description.en = this.value"
+                                    >${(l.description?.en) || ''}</textarea>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-span-2">
                             <label class="text-[9px] uppercase font-bold tracking-widest">Link URL (Where to go on click)</label>
@@ -428,8 +630,56 @@ function toggleMenu() {
             renderAll();
         }
 
+        // ─── AWARDS
+        function renderAwards() {
+            const awards = siteData.studio?.awards || [];
+            const container = document.getElementById('awards-list');
+            if (!container) return;
+            container.innerHTML = awards.map((a, i) => `
+                <div style="display:grid;grid-template-columns:2fr 2fr 1fr auto;gap:8px;margin-bottom:8px;align-items:center">
+                    <input type="text" value="${a.name || ''}" placeholder="Nom du prix" style="padding:0.6rem;border:1px solid #eee;font-size:12px;font-family:'JetBrains Mono',monospace" onchange="siteData.studio.awards[${i}].name=this.value">
+                    <input type="text" value="${a.client || ''}" placeholder="Client / Campagne" style="padding:0.6rem;border:1px solid #eee;font-size:12px;font-family:'JetBrains Mono',monospace" onchange="siteData.studio.awards[${i}].client=this.value">
+                    <input type="text" value="${a.year || ''}" placeholder="Année" style="padding:0.6rem;border:1px solid #eee;font-size:12px;font-family:'JetBrains Mono',monospace" onchange="siteData.studio.awards[${i}].year=this.value">
+                    <button onclick="removeAward(${i})" style="color:#ff4444;font-weight:bold;padding:0 8px;cursor:pointer">✕</button>
+                </div>
+            `).join('');
+        }
+        function addAward() {
+            if (!siteData.studio.awards) siteData.studio.awards = [];
+            siteData.studio.awards.push({ name: '', client: '', year: '' });
+            renderAwards();
+        }
+        function removeAward(i) {
+            siteData.studio.awards.splice(i, 1);
+            renderAwards();
+        }
+
+        // ─── SOCIALS
+        function renderSocials() {
+            const socials = siteData.studio?.socials || [];
+            const container = document.getElementById('social-list');
+            if (!container) return;
+            container.innerHTML = socials.map((s, i) => `
+                <div style="display:grid;grid-template-columns:1fr 1fr 2fr auto;gap:8px;margin-bottom:8px;align-items:center">
+                    <input type="text" value="${s.icon || ''}" placeholder="Label (LinkedIn)" style="padding:0.6rem;border:1px solid #eee;font-size:12px;font-family:'JetBrains Mono',monospace" onchange="siteData.studio.socials[${i}].icon=this.value">
+                    <input type="text" value="${s.name || ''}" placeholder="Nom affiché" style="padding:0.6rem;border:1px solid #eee;font-size:12px;font-family:'JetBrains Mono',monospace" onchange="siteData.studio.socials[${i}].name=this.value">
+                    <input type="text" value="${s.url || ''}" placeholder="https://..." style="padding:0.6rem;border:1px solid #eee;font-size:12px;font-family:'JetBrains Mono',monospace" onchange="siteData.studio.socials[${i}].url=this.value; siteData.studio.socials[${i}].handle=this.value.replace('https://','').replace('http://','')">
+                    <button onclick="removeSocial(${i})" style="color:#ff4444;font-weight:bold;padding:0 8px;cursor:pointer">✕</button>
+                </div>
+            `).join('');
+        }
+        function addSocial() {
+            if (!siteData.studio.socials) siteData.studio.socials = [];
+            siteData.studio.socials.push({ icon: '', name: '', handle: '', url: '' });
+            renderSocials();
+        }
+        function removeSocial(i) {
+            siteData.studio.socials.splice(i, 1);
+            renderSocials();
+        }
+
         function updateWork(i, key, val) { siteData.works[i][key] = val; }
-        function deleteWork(i) { siteData.works.splice(i, 1); renderAll(); }
+        function deleteWork(i) { if(!confirm('Delete this project?')) return; siteData.works.splice(i, 1); renderAll(); }
         function moveWork(i, direction) {
             if (i + direction < 0 || i + direction >= siteData.works.length) return;
             const temp = siteData.works[i];
@@ -438,12 +688,12 @@ function toggleMenu() {
             renderAll();
         }
         function addWork() { 
-            siteData.works.unshift({ title: "New Project", category: "BRANDING", year: "2026", images: [], link: "#" }); 
+            siteData.works.unshift({ title: "New Project", category: "BRANDING", year: "2026", images: [], link: "#", videoLink: "" }); 
             renderAll(); 
         }
 
         function updateLab(i, key, val) { siteData.lab[i][key] = val; }
-        function deleteLab(i) { siteData.lab.splice(i, 1); renderAll(); }
+        function deleteLab(i) { if(!confirm('Delete this lab item?')) return; siteData.lab.splice(i, 1); renderAll(); }
         function moveLab(i, direction) {
             if (i + direction < 0 || i + direction >= siteData.lab.length) return;
             const temp = siteData.lab[i];
@@ -452,8 +702,38 @@ function toggleMenu() {
             renderAll();
         }
         function addLab() { 
-            siteData.lab.unshift({ title: "New Experiment", meta: "INSTAGRAM", images: [], link: "#" }); 
+            siteData.lab.unshift({ title: "New Lab Item", meta: "R&D // EXPERIMENT", images: [], link: "#" }); 
             renderAll(); 
+        }
+
+        // Home video helpers
+        function updateHomeVideo() {
+            const url = document.getElementById('home-video-url').value.trim();
+            if (!siteData.homeVideo) siteData.homeVideo = {};
+            siteData.homeVideo.url = url;
+            renderVideoPreview(url);
+        }
+        function updateHomeVideoFormat(val) {
+            if (!siteData.homeVideo) siteData.homeVideo = {};
+            siteData.homeVideo.format = val;
+        }
+        function renderVideoPreview(url) {
+            const preview = document.getElementById('home-video-preview');
+            const embed = document.getElementById('home-video-embed');
+            if (!preview || !embed) return;
+            if (!url) { preview.style.display = 'none'; embed.innerHTML = ''; return; }
+            preview.style.display = 'block';
+            let src = '';
+            if (url.includes('youtube') || url.includes('youtu.be')) {
+                const id = url.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/)?.[1];
+                if (id) src = `https://www.youtube.com/embed/${id}?autoplay=0&controls=1`;
+            } else if (url.includes('vimeo')) {
+                const id = url.match(/vimeo\.com\/(\d+)/)?.[1];
+                if (id) src = `https://player.vimeo.com/video/${id}`;
+            }
+            embed.innerHTML = src
+                ? `<iframe src="${src}" style="width:100%;height:100%;border:none" allowfullscreen></iframe>`
+                : `<div style="color:#fff;padding:1rem;font-size:10px;opacity:.4">Unsupported URL format</div>`;
         }
 
         async function saveAll() {
