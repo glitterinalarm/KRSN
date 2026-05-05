@@ -179,7 +179,9 @@
             "meta": "AI CURATED // WEBZINE",
             "image": "https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?auto=format&fit=crop&w=800",
             "link": "https://veille-creative.vercel.app/",
-            "images": [],
+            "images": [
+                "https://res.cloudinary.com/dxrvmrbst/image/upload/v1778016831/itbogywbtqddethkozpk.png"
+            ],
             "description": {
                 "fr": "Agrégateur de veille pour créatifs — curation IA de références motion, branding et culture visuelle.",
                 "en": "A research aggregator for creatives — AI curation of motion, branding and visual culture references."
