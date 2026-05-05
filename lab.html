@@ -261,10 +261,11 @@ body {
   .lab-layout::before { display: none; }
 
   /* Horizontal divider between two halves */
+  /* top: 50% would be 50vh, but layout has padding-top: 80px so content split is at 50vh + 40px */
   .lab-layout::after {
     content: '';
     position: absolute;
-    top: 50%;
+    top: calc(50% + 40px);
     left: 0;
     right: 0;
     height: 1px;
