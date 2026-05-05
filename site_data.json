@@ -120,7 +120,7 @@
             ],
             "link": "",
             "videoLink": "",
-            "description": "Un centre commercial, une génération blasée, un glitch sur un écran. Et tout bascule.\nPour les Westfield Days 2025, on a conçu un film héro surréaliste — Where Future Meets Style — où la mode transcende le réel à travers des séquences impossibles et poétiques. Pensé social first, déclinable en capsules, posts et contenus immersifs pour capter les 18-25 ans là où ils sont.\nParce qu'un centre commercial peut devenir un portail vers autre chose.\n"
+            "description": "Un centre commercial, une génération blasée, un glitch sur un écran. Et tout bascule.\nPour les Westfield Days 2025, on a conçu un film héro surréaliste \" Where Future Meets Style \" où la mode transcende le réel à travers des séquences impossibles et poétiques. Pensé social first, déclinable en capsules, posts et contenus immersifs pour capter les 18-25 ans là où ils sont.\nParce qu'un centre commercial peut devenir un portail vers autre chose.\n"
         },
         {
             "id": "dgpn-02",
@@ -135,7 +135,7 @@
                 "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777910397/vaukxou1ocu15en3hyuv.jpg",
                 "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777910381/flvieppq8fapo2cxvwuk.png"
             ],
-            "description": "7 000 postes à pourvoir. Et une génération à convaincre.\nOn est partis de leurs valeurs — curiosité, engagement, solidarité, endurance — pour projeter les 18-25 ans dans le quotidien concret des métiers de la police. 3 films, 2 spots radio, 6 créations digitales. Un message taillé pour chaque communauté d'intérêt, multicanal, ultra-ciblé.\nRésultat : la police, enfin vue comme un choix. Pas un défaut d'orientation."
+            "description": "7 000 postes à pourvoir. Et une génération à convaincre.\nOn est partis de leurs valeurs : curiosité, engagement, solidarité, endurance, pour projeter les 18-25 ans dans le quotidien concret des métiers de la police. 3 films, 2 spots radio, 6 créations digitales. Un message taillé pour chaque communauté d'intérêt, multicanal, ultra-ciblé.\nRésultat : la police, enfin vue comme un choix. Pas un défaut d'orientation."
         },
         {
             "id": "tourisme-01",
@@ -147,10 +147,11 @@
             "images": [
                 "https://www.youtube.com/watch?v=LN0UTmC-ms4",
                 "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777910446/pizwafljee8pjw0ofj8m.jpg",
-                "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777910502/icewceglvzdqtk3fwmdz.png"
+                "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777910502/icewceglvzdqtk3fwmdz.png",
+                "https://youtu.be/0_dR6UlzNn4"
             ],
             "videoLink": "https://www.youtube.com/watch?v=LN0UTmC-ms4",
-            "description": "Hôtelier, perchman, agent événementiel — vous connaissiez ?\nDerrière le mot \"tourisme\", il y a des centaines de métiers que personne ne voit. On a changé ça avec un dispositif full digital étalé sur un an : un film héro et des capsules tournées aux quatre coins de la France, chacune dédiée à un métier, une histoire, un visage. Conçu pour les 16-25 ans, avec en toile de fond un objectif concret — recruter avant la Coupe du Monde de Rugby 2023.\nDonner envie, c'est déjà recruter."
+            "description": "Hôtelier, perchman, agent événementiel — vous connaissiez ?\nDerrière le mot \"tourisme\", il y a des centaines de métiers que personne ne voit. On a changé ça avec un dispositif full digital étalé sur un an : un film héro et des capsules tournées aux quatre coins de la France, chacune dédiée à un métier, une histoire, un visage. Conçu pour les 16-25 ans, avec en toile de fond un objectif concret : recruter avant la Coupe du Monde de Rugby 2023.\nDonner envie, c'est déjà recruter."
         },
         {
             "id": "lbc-00",
