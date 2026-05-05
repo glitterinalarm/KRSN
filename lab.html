@@ -278,9 +278,7 @@ body {
     flex-direction: column;
     padding: 0;
   }
-  .col-right { order: 1; justify-content: center; }
-  .col-left  { order: 2; }
-  .mob-divider { order: 1; } /* stays between right(1) and left(2) */
+  .col-right { justify-content: center; }
 
   /* Horizontal scroll inner strip */
   .col-inner {
@@ -370,6 +368,10 @@ body {
 
   /* col-right card width matches global .mob-card */
 
+  /* scroll-margin-top: quand le browser ancre sur #insights, il laisse
+     de l'espace au-dessus pour que le label + 2 lignes soient visibles */
+  #insights { scroll-margin-top: 60px; }
+
   /* Hide desktop-only elements on mobile */
   .desktop-only { display: none !important; }
   .mobile-only { display: flex !important; }
@@ -409,7 +411,7 @@ body {
 <div id="mobile-menu" class="mobile-menu-overlay">
   <div class="mobile-menu-close" onclick="toggleMenu()">✕</div>
   <div class="mobile-menu-content">
-    <a href="lab.html">Lab</a>
+    <a href="lab.html#insights">Lab</a>
     <a href="lab.html#insights">Insights</a>
     <a href="work.html">Works</a>
     <a href="studio.html">Studio</a>
