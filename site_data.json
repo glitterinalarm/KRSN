@@ -125,7 +125,7 @@
         {
             "id": "dgpn-02",
             "title": "POLICE NATIONALE",
-            "category": "CAMPAIGN",
+            "category": "CAMPAGNE 360",
             "year": "2026",
             "image": "https://i.ibb.co/pqrVWtc/DGPN02.png",
             "link": "#https://www.youtube.com/watch?v=_Rr_aqBYW14",
@@ -140,7 +140,7 @@
         {
             "id": "tourisme-01",
             "title": "TOURISME",
-            "category": "BRANDING",
+            "category": "CAMPAGNE 360",
             "year": "2026",
             "image": "/assets/uploads/new_project_1776441848129_TOURISME.jpg",
             "link": "#",
@@ -151,12 +151,12 @@
                 "https://youtu.be/0_dR6UlzNn4"
             ],
             "videoLink": "https://www.youtube.com/watch?v=LN0UTmC-ms4",
-            "description": "Hôtelier, perchman, agent événementiel — vous connaissiez ?\nDerrière le mot \"tourisme\", il y a des centaines de métiers que personne ne voit. On a changé ça avec un dispositif full digital étalé sur un an : un film héro et des capsules tournées aux quatre coins de la France, chacune dédiée à un métier, une histoire, un visage. Conçu pour les 16-25 ans, avec en toile de fond un objectif concret : recruter avant la Coupe du Monde de Rugby 2023.\nDonner envie, c'est déjà recruter."
+            "description": "Hôtelier, perchman, agent événementiel, vous connaissiez ?\nDerrière le mot \"tourisme\", il y a des centaines de métiers que personne ne voit. On a changé ça avec un dispositif full digital étalé sur un an : un film héro et des capsules tournées aux quatre coins de la France, chacune dédiée à un métier, une histoire, un visage. Conçu pour les 16-25 ans, avec en toile de fond un objectif concret : recruter avant la Coupe du Monde de Rugby 2023.\nDonner envie, c'est déjà recruter."
         },
         {
             "id": "lbc-00",
             "title": "LEBONCOIN",
-            "category": "PLATFORM",
+            "category": "MOTION",
             "year": "2025",
             "image": "/assets/uploads/LBC_00.jpg",
             "link": "https://youtu.be/CyRHzEbjWuE",
