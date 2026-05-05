@@ -268,17 +268,29 @@ body {
     background: rgba(0,0,0,0.1);
   }
 
-  /* Each half: flex column so label + strip share space cleanly */
-  /* Insights on top on mobile (user prefers that view) */
+  /* Column base */
   .col {
-    flex: 1;
-    min-height: 0;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     padding: 0;
   }
-  .col-right { justify-content: center; }
+
+  /* LAB: prend tout l'espace disponible après INSIGHTS */
+  .col-left {
+    flex: 1;
+    min-height: 0;
+  }
+
+  /* INSIGHTS: hauteur auto basée sur son contenu → callée en bas de page */
+  .col-right {
+    flex: 0 0 auto;
+  }
+
+  /* Breathing room sous le logo PARAFFINE */
+  .col-left .mob-section-label {
+    padding-top: 22px;
+  }
 
   /* Horizontal scroll inner strip */
   .col-inner {
