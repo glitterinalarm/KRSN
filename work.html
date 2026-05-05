@@ -310,15 +310,21 @@ function makeCard(proj) {
   el.className = 'work-card';
   const timers = [];
 
-  // Slides — exclude YouTube/Vimeo URLs (not valid img.src)
-  const imgSrcs = (proj.images || []).filter(s => !ytId(s) && !s.includes('vimeo.com'));
+  // Slides — YouTube URLs become thumbnails, Vimeo skipped
+  const imgSrcs = (proj.images || []).map(s => {
+    const id = ytId(s);
+    if (id) return `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+    if (s.includes('vimeo.com')) return null;
+    return s;
+  }).filter(Boolean);
+
   imgSrcs.forEach((src, i) => {
     const s   = document.createElement('div');
     s.className = 'slide' + (i === 0 ? ' active' : '');
     const img = document.createElement('img');
     img.src    = src;
     img.alt    = proj.title || '';
-    img.loading = i === 0 ? 'eager' : 'lazy';
+    img.loading = 'eager'; // always eager — lazy breaks GIF animation while opacity:0
     s.appendChild(img);
     el.appendChild(s);
   });
@@ -359,7 +365,8 @@ function makeCard(proj) {
     ? `<div class="card-desc">${proj.description}</div>`
     : '';
   ov.innerHTML = `<div class="card-cat">${proj.category || ''}</div><div class="card-title">${proj.title || ''}</div>${descHtml}`;
-  if (proj.description) el.classList.add('has-desc');
+  // Full dark overlay only when description present AND no hover video (video takes priority)
+  if (proj.description && !vid) el.classList.add('has-desc');
   el.appendChild(ov);
 
   return { el, timers };
