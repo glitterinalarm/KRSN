@@ -57,7 +57,7 @@ body {
   display: block;
 }
 
-/* HOVER OVERLAY */
+/* HOVER OVERLAY — default: gradient + title at bottom */
 .card-overlay {
   position: absolute;
   inset: 0;
@@ -65,31 +65,49 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 1.2rem 1.4rem 1.4rem;
-  background: linear-gradient(transparent 40%, rgba(0,0,0,0.65) 100%);
+  padding: 1.4rem 1.6rem;
+  background: linear-gradient(transparent 45%, rgba(0,0,0,0.7) 100%);
   opacity: 0;
-  transition: opacity 0.35s ease;
+  transition: opacity 0.4s ease;
   pointer-events: none;
 }
 .work-card:hover .card-overlay,
 .work-card.touched .card-overlay { opacity: 1; }
+
+/* Cards with description: full dark overlay, content centered */
+.work-card.has-desc .card-overlay {
+  background: rgba(0,0,0,0.82);
+  justify-content: center;
+  padding: 2rem;
+}
 
 .card-cat {
   font-family: 'JetBrains Mono', monospace;
   font-size: 8px;
   letter-spacing: 0.38em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.6);
-  margin-bottom: 5px;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 8px;
 }
 .card-title {
   font-family: 'Barlow Condensed', sans-serif;
   font-weight: 900;
-  font-size: clamp(16px, 2vw, 36px);
+  font-size: clamp(18px, 2.2vw, 40px);
   text-transform: uppercase;
   color: #fff;
   line-height: 0.92;
   letter-spacing: -0.01em;
+  margin-bottom: 0;
+}
+.card-desc {
+  font-size: clamp(10px, 0.8vw, 13px);
+  line-height: 1.7;
+  color: rgba(255,255,255,0.65);
+  margin-top: 14px;
+  display: -webkit-box;
+  -webkit-line-clamp: 7;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 /* VIDEO */
@@ -131,46 +149,6 @@ body {
   body { cursor: auto; }
 }
 
-/* EDITORIAL CAPTION PANEL */
-.work-caption {
-  position: fixed;
-  bottom: 80px;
-  left: 80px;
-  width: 260px;
-  z-index: 50;
-  opacity: 0;
-  transform: translateY(8px);
-  transition: opacity 0.4s ease, transform 0.4s ease;
-  pointer-events: none;
-}
-.work-caption.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-.caption-cat {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 8px;
-  letter-spacing: 0.38em;
-  text-transform: uppercase;
-  opacity: 0.35;
-  margin-bottom: 8px;
-}
-.caption-title {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 900;
-  font-size: 26px;
-  text-transform: uppercase;
-  line-height: 0.92;
-  letter-spacing: -0.01em;
-  margin-bottom: 14px;
-}
-.caption-desc {
-  font-size: 11px;
-  line-height: 1.7;
-  opacity: 0.5;
-  letter-spacing: 0.01em;
-}
-@media (max-width: 768px) { .work-caption { display: none; } }
 
 /* CURSOR (desktop only) */
 .cursor {
@@ -234,11 +212,6 @@ body {
 
 <div id="works-scene"></div>
 
-<div id="work-caption" class="work-caption">
-  <div class="caption-cat"></div>
-  <div class="caption-title"></div>
-  <div class="caption-desc"></div>
-</div>
 
 <div class="works-bar">
   <span data-fr="Travaux Sélectionnés" data-en="Selected Works">Selected Works</span>
@@ -379,23 +352,15 @@ function makeCard(proj) {
     });
   }
 
-  // Overlay (category + title on card)
+  // Overlay — full-card dark with description if available, bottom gradient otherwise
   const ov = document.createElement('div');
   ov.className = 'card-overlay';
-  ov.innerHTML = `<div class="card-cat">${proj.category || ''}</div><div class="card-title">${proj.title || ''}</div>`;
+  const descHtml = proj.description
+    ? `<div class="card-desc">${proj.description}</div>`
+    : '';
+  ov.innerHTML = `<div class="card-cat">${proj.category || ''}</div><div class="card-title">${proj.title || ''}</div>${descHtml}`;
+  if (proj.description) el.classList.add('has-desc');
   el.appendChild(ov);
-
-  // Editorial caption panel (desktop only)
-  if (proj.description) {
-    const cap = document.getElementById('work-caption');
-    el.addEventListener('mouseenter', () => {
-      cap.querySelector('.caption-cat').textContent = proj.category || '';
-      cap.querySelector('.caption-title').textContent = proj.title || '';
-      cap.querySelector('.caption-desc').textContent = proj.description;
-      cap.classList.add('visible');
-    });
-    el.addEventListener('mouseleave', () => cap.classList.remove('visible'));
-  }
 
   return { el, timers };
 }
