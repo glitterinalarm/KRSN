@@ -105,7 +105,8 @@
                 "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777910331/fuydwrtllhgdd0bnfrt7.jpg",
                 "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777910345/n98vafxdvvkgcjmswezy.jpg"
             ],
-            "link": "#"
+            "link": "#",
+            "description": "Plateforme de marque pour Axepta by BNP Paribas. Signature READY SET PAY — trois temps qui transforment le geste de paiement en acte identitaire. L'univers graphique s'articule autour d'un triptyque : utilisateur / moment Axepta / transaction, liés par un glitch qui matérialise le flux de données en temps réel. Dix portraits commandités. Dispositif événementiel pour la nouvelle brandline."
         },
         {
             "title": "WESTFIELD",
@@ -118,7 +119,8 @@
                 "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777909373/fy5niwlxdfnhxndnljxp.png"
             ],
             "link": "",
-            "videoLink": ""
+            "videoLink": "",
+            "description": ""
         },
         {
             "id": "dgpn-02",
@@ -132,7 +134,8 @@
                 "https://www.youtube.com/watch?v=_Rr_aqBYW14",
                 "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777910397/vaukxou1ocu15en3hyuv.jpg",
                 "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777910381/flvieppq8fapo2cxvwuk.png"
-            ]
+            ],
+            "description": ""
         },
         {
             "id": "tourisme-01",
@@ -146,7 +149,8 @@
                 "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777910446/pizwafljee8pjw0ofj8m.jpg",
                 "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777910502/icewceglvzdqtk3fwmdz.png"
             ],
-            "videoLink": "https://www.youtube.com/watch?v=LN0UTmC-ms4"
+            "videoLink": "https://www.youtube.com/watch?v=LN0UTmC-ms4",
+            "description": ""
         },
         {
             "id": "lbc-00",
@@ -164,7 +168,8 @@
                 "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777910420/xt2g2dnsbt4mdwt5krls.jpg",
                 "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777910421/hoj5eoq8vruecyqlengb.jpg"
             ],
-            "videoLink": "https://youtu.be/CyRHzEbjWuE"
+            "videoLink": "https://youtu.be/CyRHzEbjWuE",
+            "description": ""
         }
     ],
     "lab": [

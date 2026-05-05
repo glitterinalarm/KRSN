@@ -131,6 +131,47 @@ body {
   body { cursor: auto; }
 }
 
+/* EDITORIAL CAPTION PANEL */
+.work-caption {
+  position: fixed;
+  bottom: 80px;
+  left: 80px;
+  width: 260px;
+  z-index: 50;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  pointer-events: none;
+}
+.work-caption.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.caption-cat {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.38em;
+  text-transform: uppercase;
+  opacity: 0.35;
+  margin-bottom: 8px;
+}
+.caption-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900;
+  font-size: 26px;
+  text-transform: uppercase;
+  line-height: 0.92;
+  letter-spacing: -0.01em;
+  margin-bottom: 14px;
+}
+.caption-desc {
+  font-size: 11px;
+  line-height: 1.7;
+  opacity: 0.5;
+  letter-spacing: 0.01em;
+}
+@media (max-width: 768px) { .work-caption { display: none; } }
+
 /* CURSOR (desktop only) */
 .cursor {
   position: fixed;
@@ -192,6 +233,12 @@ body {
 </div>
 
 <div id="works-scene"></div>
+
+<div id="work-caption" class="work-caption">
+  <div class="caption-cat"></div>
+  <div class="caption-title"></div>
+  <div class="caption-desc"></div>
+</div>
 
 <div class="works-bar">
   <span data-fr="Travaux Sélectionnés" data-en="Selected Works">Selected Works</span>
@@ -332,11 +379,23 @@ function makeCard(proj) {
     });
   }
 
-  // Overlay
+  // Overlay (category + title on card)
   const ov = document.createElement('div');
   ov.className = 'card-overlay';
   ov.innerHTML = `<div class="card-cat">${proj.category || ''}</div><div class="card-title">${proj.title || ''}</div>`;
   el.appendChild(ov);
+
+  // Editorial caption panel (desktop only)
+  if (proj.description) {
+    const cap = document.getElementById('work-caption');
+    el.addEventListener('mouseenter', () => {
+      cap.querySelector('.caption-cat').textContent = proj.category || '';
+      cap.querySelector('.caption-title').textContent = proj.title || '';
+      cap.querySelector('.caption-desc').textContent = proj.description;
+      cap.classList.add('visible');
+    });
+    el.addEventListener('mouseleave', () => cap.classList.remove('visible'));
+  }
 
   return { el, timers };
 }
