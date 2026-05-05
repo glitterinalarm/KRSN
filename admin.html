@@ -451,6 +451,14 @@ function toggleMenu() {
                             <p class="text-[9px] opacity-30 mt-2 italic">Leave empty to show image slideshow on hover. Add a link to override with video.</p>
                         </div>
                         <div class="col-span-2">
+                            <label class="text-[9px] uppercase font-bold tracking-widest">✏️ Description éditoriale — Texte au hover</label>
+                            <textarea rows="4" style="width:100%;padding:0.8rem;border:1px solid #eee;margin-top:0.5rem;font-family:'JetBrains Mono',monospace;font-size:12px;resize:vertical"
+                                oninput="siteData.works[${i}].description = this.value"
+                                placeholder="Texte éditorial affiché en overlay sombre au survol de la carte (optionnel)..."
+                            >${w.description || ''}</textarea>
+                            <p class="text-[9px] opacity-30 mt-2 italic">Laisser vide pour n'afficher que titre + catégorie. Rempli → overlay plein-carte noir au hover.</p>
+                        </div>
+                        <div class="col-span-2">
                             <label class="text-[9px] uppercase font-bold tracking-widest">Media Assets</label>
                             <div class="flex gap-2 mt-2">
                                 <input type="text" id="url-input-${i}" placeholder="Paste Image or YouTube URL here..." class="flex-grow !mt-0">
