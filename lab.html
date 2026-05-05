@@ -247,34 +247,29 @@ body {
 
 /* ─── MOBILE ──────────────────────────────────────────────── */
 @media (max-width: 768px) {
-  body { overflow: hidden; }
-
   .lab-layout {
     display: flex;
     flex-direction: column;
     height: 100vh;
+    height: 100svh; /* stable: doesn't shift when Safari URL bar appears/hides */
     padding-top: 80px;
     overflow: hidden;
   }
 
-  /* Remove vertical divider on mobile */
-  .lab-layout::before { display: none; }
+  /* Remove both pseudo-elements — divider is now a real flex child */
+  .lab-layout::before,
+  .lab-layout::after { display: none; }
 
-  /* Horizontal divider between two halves */
-  /* top: 50% would be 50vh, but layout has padding-top: 80px so content split is at 50vh + 40px */
-  .lab-layout::after {
-    content: '';
-    position: absolute;
-    top: calc(50% + 40px);
-    left: 0;
-    right: 0;
+  /* Real divider element — always exactly between the two cols */
+  .mob-divider {
+    flex-shrink: 0;
+    width: 100%;
     height: 1px;
     background: rgba(0,0,0,0.1);
-    z-index: 5;
-    pointer-events: none;
   }
 
   /* Each half: flex column so label + strip share space cleanly */
+  /* Insights on top on mobile (user prefers that view) */
   .col {
     flex: 1;
     min-height: 0;
@@ -283,13 +278,11 @@ body {
     flex-direction: column;
     padding: 0;
   }
+  .col-right { order: 1; justify-content: center; }
+  .col-left  { order: 2; }
+  .mob-divider { order: 1; } /* stays between right(1) and left(2) */
 
-  /* Insights col: vertically center label + strip in its half */
-  .col-right {
-    justify-content: center;
-  }
-
-  /* Horizontal scroll inner strip — takes remaining height after label */
+  /* Horizontal scroll inner strip */
   .col-inner {
     flex: 0 0 auto;
     display: flex;
@@ -297,8 +290,8 @@ body {
     overflow-x: auto;
     overflow-y: hidden;
     scroll-snap-type: x mandatory;
+    scroll-padding-left: 24px; /* tells snap engine where cards should start */
     scrollbar-width: none;
-    /* no left/right padding — use margin on first/last card instead (Safari overflow bug) */
     padding: 14px 0;
     gap: 16px;
   }
@@ -314,7 +307,7 @@ body {
     justify-content: flex-start;
   }
 
-  /* Left/right inset via margin on edge cards — works in Safari overflow */
+  /* margin-left on first child + scroll-padding-left on container = reliable indent on all browsers */
   .mob-card:first-child { margin-left: 24px; }
   .mob-card:last-child  { margin-right: 24px; }
 
@@ -442,6 +435,9 @@ body {
     <!-- Mobile horizontal strip -->
     <div class="col-inner mobile-only" id="lab-feed-mobile"></div>
   </div>
+
+  <!-- Mobile divider — real element so position is always exact -->
+  <div class="mob-divider mobile-only"></div>
 
   <!-- RIGHT: INSIGHTS FEED -->
   <div class="col col-right" id="insights">
