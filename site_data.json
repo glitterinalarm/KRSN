@@ -29,7 +29,7 @@
                 }
             },
             {
-                "value": "50+",
+                "value": "20+",
                 "label": {
                     "fr": "Clients",
                     "en": "Clients"
@@ -56,19 +56,19 @@
         ],
         "awards": [
             {
-                "name": "Grand Prix Stratégies",
-                "client": "Police Nationale — Brand Film",
-                "year": "2024"
-            },
-            {
-                "name": "Sélection Officielle",
-                "client": "Ministère de l'Économie — Motion",
+                "name": "Grand Prix RH",
+                "client": "E. Leclerc",
                 "year": "2023"
             },
             {
-                "name": "AI Experimentations",
-                "client": "R&D — Generative AI Branding",
-                "year": "2022–"
+                "name": "TOPCOM",
+                "client": "Ministère du Toursime",
+                "year": "2023"
+            },
+            {
+                "name": "TOPCOM",
+                "client": "Croix Rouge Française",
+                "year": "2021"
             }
         ],
         "socials": [
