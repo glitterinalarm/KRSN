@@ -117,7 +117,13 @@
 <main class="relative h-screen w-full overflow-hidden flex items-center justify-center">
     <!-- Hero Image Background with Parallax/Zoom effect -->
     <div class="absolute inset-0 z-0">
-        <img src="hero_bg.png" alt="Paraffine Hero" class="w-full h-full object-cover opacity-60 scale-110 animate-slow-zoom">
+        <img id="hero-img" src="hero_01.png" alt="Paraffine Hero" class="w-full h-full object-cover opacity-60 scale-110 animate-slow-zoom">
+        <script>
+          (function(){
+            var imgs = ['hero_01.png','hero_02.png','hero_03.png','hero_04.png','hero_05.png','hero_06.png'];
+            document.getElementById('hero-img').src = imgs[Math.floor(Math.random() * imgs.length)];
+          })();
+        </script>
         <div class="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/80"></div>
     </div>
 
