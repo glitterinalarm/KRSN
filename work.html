@@ -274,23 +274,27 @@ function buildConfig() {
   const mobile = IS_MOBILE();
 
   if (!mobile) {
-    // HORIZONTAL — width varies by X, height = width * ASPECT, cards centered vertically
+    // HORIZONTAL — all cards same size, strict 16/9, height fits viewport
+    const NAV_H = 80;
+    const cardH = Math.round((H - NAV_H) * 0.86);
+    const cardW = Math.round(cardH * 16 / 9);
     CFG = {
       mode:      'H',
-      W_MAX:     Math.round(W * 0.56),
-      W_MIN:     Math.round(W * 0.13),
+      W_MAX:     cardW,
+      W_MIN:     cardW,   // uniform size — no perspective shrink
       CENTER_Y:  Math.round(H * 0.54),
-      BUFFER:    Math.round(W * 0.6),
+      BUFFER:    Math.round(cardW * 1.1),
     };
   } else {
-    // VERTICAL — width varies by Y (big at top, small at bottom), cards centered horizontally
+    // VERTICAL — all cards same width, 16/9 height
+    const cardW = Math.round(W * 0.88);
     CFG = {
       mode:      'V',
-      W_MAX:     Math.round(W * 0.88),  // widest card (top)
-      W_MIN:     Math.round(W * 0.46),  // narrowest card (bottom)
+      W_MAX:     cardW,
+      W_MIN:     cardW,   // uniform size
       CENTER_X:  Math.round(W / 2),
-      BUFFER:    Math.round(H * 0.5),
-      NAV_OFF:   90,                     // offset from top to clear nav
+      BUFFER:    Math.round(cardW * ASPECT * 1.1),
+      NAV_OFF:   90,
     };
   }
 }
