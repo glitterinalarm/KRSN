@@ -626,7 +626,7 @@ if (new URLSearchParams(window.location.search).get('sent') === '1') {
 // ─── Load studio data from site_data.json
 async function loadStudio() {
   try {
-    const res = await fetch('site_data.json?t=' + Date.now());
+    const res = await fetch('/api/site-data?t=' + Date.now());
     const data = await res.json();
     const s = data.studio || {};
 

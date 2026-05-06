@@ -576,7 +576,7 @@ async function init() {
 
   // Load projects
   try {
-    const res = await fetch('site_data.json?t=' + Date.now());
+    const res = await fetch('/api/site-data?t=' + Date.now());
     const data = await res.json();
     PROJECTS = data.works || [];
   } catch (_) {
