@@ -142,11 +142,19 @@
         </div>
     </div>
 
-    <!-- Scroll Indicator -->
-    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 opacity-50">
-        <span class="uppercase text-[8px] tracking-[0.3em]">Explore</span>
-        <div class="w-[1px] h-12 bg-white/30 relative overflow-hidden">
-            <div class="absolute top-0 left-0 w-full h-full bg-white -translate-y-full animate-scroll-line"></div>
+    <!-- Bottom info bar inside hero -->
+    <div class="absolute bottom-10 left-0 right-0 px-10 flex justify-between items-end">
+        <div style="font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.35);">
+            <span>© 2026 PARAFFINE</span>
+            <span style="margin-left:2rem; color:rgba(255,255,255,0.5);">PARAFFINE.STUDIO</span>
+            <span style="margin-left:2rem;">Paris</span>
+        </div>
+        <!-- Scroll Indicator -->
+        <div class="flex flex-col items-center gap-4 opacity-50">
+            <span class="uppercase text-[8px] tracking-[0.3em]">Explore</span>
+            <div class="w-[1px] h-12 bg-white/30 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-full bg-white -translate-y-full animate-scroll-line"></div>
+            </div>
         </div>
     </div>
 </main>
@@ -233,10 +241,5 @@ function toggleMenu() {
 document.addEventListener('DOMContentLoaded', initLang);
 </script>
 
-<footer style="border-top: 1px solid rgba(255,255,255,0.08); padding: 2rem 3rem; display: flex; justify-content: space-between; align-items: center; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.35); flex-wrap: wrap; gap: 1rem;">
-  <span>© 2026 PARAFFINE</span>
-  <a href="https://paraffine.studio" style="color: rgba(255,255,255,0.5); text-decoration: none; letter-spacing: 0.2em;">PARAFFINE.STUDIO</a>
-  <span>Paris — Direction de création &amp; Motion augmentés par l'IA</span>
-</footer>
 </body>
 </html>
