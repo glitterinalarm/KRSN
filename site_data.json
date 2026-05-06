@@ -56,19 +56,19 @@
         ],
         "awards": [
             {
-                "name": "TopCom",
-                "client": "Ministère du Tourisme",
+                "name": "Grand Prix Stratégies",
+                "client": "Police Nationale — Brand Film",
+                "year": "2024"
+            },
+            {
+                "name": "Sélection Officielle",
+                "client": "Ministère de l'Économie — Motion",
                 "year": "2023"
             },
             {
-                "name": "TopCom",
-                "client": "Croix Rouge Française",
-                "year": "2021"
-            },
-            {
-                "name": "Grand Prix de la créativité RH",
-                "client": "E.Leclerc",
-                "year": "2023"
+                "name": "AI Experimentations",
+                "client": "R&D — Generative AI Branding",
+                "year": "2022–"
             }
         ],
         "socials": [
@@ -95,23 +95,8 @@
     },
     "works": [
         {
-            "title": "CROIX ROUGE FRANÇAISE",
-            "category": "CAMPAGNE 360",
-            "year": "2021",
-            "images": [
-                "https://res.cloudinary.com/dxrvmrbst/image/upload/v1778072266/fvrg1jgxfxnxb0h3yvb0.jpg",
-                "https://res.cloudinary.com/dxrvmrbst/image/upload/v1778083532/cfa1hoq5rjnlodkyfq2n.jpg",
-                "https://res.cloudinary.com/dxrvmrbst/image/upload/v1778072267/adz0j7b06hvv4jiv6j6k.jpg",
-                "https://res.cloudinary.com/dxrvmrbst/image/upload/v1778083533/irxlffvh0ok8m3tvstaq.jpg",
-                "https://res.cloudinary.com/dxrvmrbst/image/upload/v1778071767/u3bhybs6nomhy46mnqsy.webp"
-            ],
-            "link": "#",
-            "videoLink": "https://www.youtube.com/watch?v=0f4YQc95uUo&list=PL9tJFzSvOEC0qFlnSfJhbwWS7ndOTVm0W&index=5",
-            "description": "Les dons hivernaux baissent, la précarité augmente, et les gens donnent moins quand ils ne voient pas à qui ça va. L'enjeu : remettre des visages humains sur une cause qui devient abstraite à force d'être médiatisée. Deux saisons, 6 portraits face cam, aidés et aidants, bruts, sans reconstitution."
-        },
-        {
             "title": "AXEPTA",
-            "category": "BRANDING PHOTOSHOOT & EVENT",
+            "category": "BRANDING, PHOTOSHOOT & EVENT",
             "year": "2026",
             "images": [
                 "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777910305/wauydacdx51yvre85j5q.jpg",
@@ -121,7 +106,7 @@
                 "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777910345/n98vafxdvvkgcjmswezy.jpg"
             ],
             "link": "#",
-            "description": "Une solution d'encaissement puissante, complète, pensée pour tous les types d'entreprises mais invisible parce que noyée dans des codes corporate qui se ressemblent tous. L'enjeu : faire d'Axepta une marque que les commerçants choisissent parce qu'elle leur ressemble. Nouveau positionnement, signature Ready Set Pay, photoshot, scénographie Paris Retail Week."
+            "description": "L'encaissement, c'est pas sexy. On a changé ça.\nNouveau positionnement, nouvelle signature : Ready Set Pay, et un univers visuel construit autour d'un triptyque : le client, l'accroche, le produit. Shooting photo avec un casting moderne, déclinaisons complètes, et une scénographie event à la Paris Retail Week tirée de l'identité qu'on avait créée.\nRésultat : une marque B2B qui ressemble enfin à ses clients."
         },
         {
             "title": "WESTFIELD",
@@ -135,7 +120,7 @@
             ],
             "link": "",
             "videoLink": "",
-            "description": "Les centres commerciaux se vident, les 18-25 ans shoppent en ligne, et Westfield doit redevenir un endroit où on a envie d'aller, pas juste un endroit où on passe. L'enjeu : réenchanter l'expérience physique aux yeux d'une génération ultra-connectée et ultra-blasée. Un film héro surréaliste Where Future Meets Style pensé social first."
+            "description": "Un centre commercial, une génération blasée, un glitch sur un écran. Et tout bascule.\nPour les Westfield Days 2025, on a conçu un film héro surréaliste \" Where Future Meets Style \" où la mode transcende le réel à travers des séquences impossibles et poétiques. Pensé social first, déclinable en capsules, posts et contenus immersifs pour capter les 18-25 ans là où ils sont.\nParce qu'un centre commercial peut devenir un portail vers autre chose.\n"
         },
         {
             "id": "dgpn-02",
@@ -150,7 +135,7 @@
                 "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777910397/vaukxou1ocu15en3hyuv.jpg",
                 "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777910381/flvieppq8fapo2cxvwuk.png"
             ],
-            "description": "7000 gardiens de la paix à recruter en un an, auprès d'une génération qui ne se reconnaît pas dans l'image institutionnelle de la police. Le défi : entrer dans leur champ de considération sans les brusquer, en partant de leurs valeurs. 3 films, 2 spots radio, 6 créations digitales, un message par communauté d'intérêt."
+            "description": "7 000 postes à pourvoir. Et une génération à convaincre.\nOn est partis de leurs valeurs : curiosité, engagement, solidarité, endurance, pour projeter les 18-25 ans dans le quotidien concret des métiers de la police. 3 films, 2 spots radio, 6 créations digitales. Un message taillé pour chaque communauté d'intérêt, multicanal, ultra-ciblé.\nRésultat : la police, enfin vue comme un choix. Pas un défaut d'orientation."
         },
         {
             "id": "tourisme-01",
@@ -166,7 +151,7 @@
                 "https://youtu.be/0_dR6UlzNn4"
             ],
             "videoLink": "https://www.youtube.com/watch?v=LN0UTmC-ms4",
-            "description": "Le tourisme souffre d'un problème d'image autant que d'un problème de recrutement : les métiers existent, les postes sont ouverts, mais personne ne les voit ni ne les désire. L'enjeu : rendre une filière entière désirable aux yeux d'une génération en pleine orientation. Un film héro, des capsules terrain, un dispositif 100% digital."
+            "description": "Hôtelier, perchman, agent événementiel, vous connaissiez ?\nDerrière le mot \"tourisme\", il y a des centaines de métiers que personne ne voit. On a changé ça avec un dispositif full digital étalé sur un an : un film héro et des capsules tournées aux quatre coins de la France, chacune dédiée à un métier, une histoire, un visage. Conçu pour les 16-25 ans, avec en toile de fond un objectif concret : recruter avant la Coupe du Monde de Rugby 2023.\nDonner envie, c'est déjà recruter."
         },
         {
             "id": "lbc-00",
@@ -185,7 +170,7 @@
                 "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777910421/hoj5eoq8vruecyqlengb.jpg"
             ],
             "videoLink": "https://youtu.be/CyRHzEbjWuE",
-            "description": "Une app que tout le monde utilise mais que personne ne connaît vraiment : trois univers distincts, immobilier, pro, grand public, chacun avec ses usages et ses blocages. L'objectif : faire adopter les fonctionnalités par des gens qui n'ont pas le temps de lire une FAQ. 3D, vidéo, typo, formats courts. Expliquez sans que ça ressemble à une explication.\n"
+            "description": "Expliquer sans ennuyer. C'est tout l'enjeu.\nPour LeBonCoin, on a conçu une série de motions pour présenter les fonctionnalités de l'app — immobilier, pro, tutos grand public. Le principe : mêler 3D, vidéo et typographie dans des formats courts, ludiques, et toujours didactiques. Accessible pour tout le monde, utile pour les professionnel.\nParce qu'un bon produit mérite un bon tuto."
         }
     ],
     "lab": [
@@ -195,7 +180,7 @@
             "image": "https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?auto=format&fit=crop&w=800",
             "link": "https://veille-creative.vercel.app/",
             "images": [
-                "https://res.cloudinary.com/dxrvmrbst/image/upload/v1778016831/itbogywbtqddethkozpk.png"
+                "https://res.cloudinary.com/dxrvmrbst/image/upload/v1778107670/tc9mttmshdfvuh49vm1n.png"
             ],
             "description": {
                 "fr": "Agrégateur de veille pour créatifs — curation IA de références motion, branding et culture visuelle.",
@@ -208,7 +193,8 @@
             "image": "https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?auto=format&fit=crop&w=800",
             "link": "https://www.youtube.com/@TL3BDR",
             "images": [
-                "https://res.cloudinary.com/dxrvmrbst/image/upload/v1778017253/yx3gcbczqcwvtc0occpv.png"
+                "https://res.cloudinary.com/dxrvmrbst/image/upload/v1778107679/go2f1voi7qtktxrub0lb.png",
+                "https://res.cloudinary.com/dxrvmrbst/image/upload/v1778107690/fqgwyunahlfv6fuvbsak.png"
             ],
             "description": {
                 "fr": "",
