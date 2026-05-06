@@ -99,16 +99,14 @@
             "category": "CAMPAGNE 360",
             "year": "2021",
             "images": [
-                "https://res.cloudinary.com/dxrvmrbst/image/upload/v1778075515/qoo21trbwsjorfwmok1q.jpg",
-                "https://res.cloudinary.com/dxrvmrbst/image/upload/v1778072266/fvrg1jgxfxnxb0h3yvb0.jpg",
                 "https://res.cloudinary.com/dxrvmrbst/image/upload/v1778072265/autolbrbia8i433ry1vi.jpg",
-                "https://res.cloudinary.com/dxrvmrbst/image/upload/v1778072267/adz0j7b06hvv4jiv6j6k.jpg",
-                "https://res.cloudinary.com/dxrvmrbst/image/upload/v1778075519/vdbymmzs62udozfk3bxy.jpg",
-                "https://res.cloudinary.com/dxrvmrbst/image/upload/v1778071767/u3bhybs6nomhy46mnqsy.webp"
+                "https://res.cloudinary.com/dxrvmrbst/image/upload/v1778071767/u3bhybs6nomhy46mnqsy.webp",
+                "https://res.cloudinary.com/dxrvmrbst/image/upload/v1778072266/fvrg1jgxfxnxb0h3yvb0.jpg",
+                "https://res.cloudinary.com/dxrvmrbst/image/upload/v1778072267/adz0j7b06hvv4jiv6j6k.jpg"
             ],
             "link": "#",
             "videoLink": "https://www.youtube.com/watch?v=0f4YQc95uUo&list=PL9tJFzSvOEC0qFlnSfJhbwWS7ndOTVm0W&index=5",
-            "description": "Marie, 20 ans, 100€ sur son compte en début de mois. Olivier, retraité, qui consacre ses mardis à distribuer des légumes devant une fac de Tours.\nCe sont eux qu'on a mis face à la caméra. Pas des acteurs, pas des témoignages reconstitués — des vrais gens qui racontent leur vraie vie. Deux saisons de films, post-covid puis l'année suivante. À chaque fois, 3 personnes aidées, 3 bénévoles."
+            "description": "Les dons hivernaux baissent, la précarité augmente, et les gens donnent moins quand ils ne voient pas à qui ça va. L'enjeu : remettre des visages humains sur une cause qui devient abstraite à force d'être médiatisée. Deux saisons, 6 portraits face cam, aidés et aidants, bruts, sans reconstitution."
         },
         {
             "title": "AXEPTA",
@@ -122,7 +120,7 @@
                 "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777910345/n98vafxdvvkgcjmswezy.jpg"
             ],
             "link": "#",
-            "description": "Le brief était simple : faire d'une solution d'encaissement une vraie marque. Pas un logo sur un terminal de paiement. Une marque avec un point de vue, une énergie, un casting qui ressemble aux gens qui l'utilisent.\nJ'ai construit ça de A à Z : positionnement, signature , univers photo, déclinaisons, et une scénographie pour la Paris Retail Week."
+            "description": "Une solution d'encaissement puissante, complète, pensée pour tous les types d'entreprises mais invisible parce que noyée dans des codes corporate qui se ressemblent tous. L'enjeu : faire d'Axepta une marque que les commerçants choisissent parce qu'elle leur ressemble. Nouveau positionnement, signature Ready Set Pay, photoshot, scénographie Paris Retail Week."
         },
         {
             "title": "WESTFIELD",
@@ -136,7 +134,7 @@
             ],
             "link": "",
             "videoLink": "",
-            "description": "L'idée de départ : une fille blasée dans un centre commercial qui touche un écran et bascule dans un autre monde. Simple à écrire, beaucoup moins à concevoir.\nOn a développé 3 pistes créatives pour ce film héro Where Future Meets Style, surréaliste, poétique, social first, avec toutes les déclinaisons qui vont avec. Le brief demandait de capter les 18-25 ans. On a choisi de les surprendre plutôt que de les cibler."
+            "description": "Les centres commerciaux se vident, les 18-25 ans shoppent en ligne, et Westfield doit redevenir un endroit où on a envie d'aller, pas juste un endroit où on passe. L'enjeu : réenchanter l'expérience physique aux yeux d'une génération ultra-connectée et ultra-blasée. Un film héro surréaliste Where Future Meets Style pensé social first."
         },
         {
             "id": "dgpn-02",
@@ -151,7 +149,7 @@
                 "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777910397/vaukxou1ocu15en3hyuv.jpg",
                 "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777910381/flvieppq8fapo2cxvwuk.png"
             ],
-            "description": "7 000 gardiens de la paix à recruter en un an. La cible : des 18-25 ans qui ne pensaient pas à la police comme option.\nJe suis parti de ce qu'ils sont : curieux, engagés, solidaires, plutôt que de ce qu'on voulait leur vendre. 3 films, 2 spots radio, 6 créations digitales, un message différent pour chaque communauté d'intérêt. La campagne parlait à des gens, pas à un segment."
+            "description": "7000 gardiens de la paix à recruter en un an, auprès d'une génération qui ne se reconnaît pas dans l'image institutionnelle de la police. Le défi : entrer dans leur champ de considération sans les brusquer, en partant de leurs valeurs. 3 films, 2 spots radio, 6 créations digitales, un message par communauté d'intérêt."
         },
         {
             "id": "tourisme-01",
@@ -167,7 +165,7 @@
                 "https://youtu.be/0_dR6UlzNn4"
             ],
             "videoLink": "https://www.youtube.com/watch?v=LN0UTmC-ms4",
-            "description": "On a tous une image floue du \"secteur tourisme\". Hôtelier, ok. Mais perchman ? Agent événementiel ? Responsable d'hébergement de plein air ?\nJ'ai passé quasi un an à faire exister ces métiers : un film héro, des capsules tournées partout en France, un dispositif 100% digital ciblé 16-25 ans. Pas pour faire joli. Pour remplir des postes avant la Coupe du Monde de Rugby 2023."
+            "description": "Le tourisme souffre d'un problème d'image autant que d'un problème de recrutement : les métiers existent, les postes sont ouverts, mais personne ne les voit ni ne les désire. L'enjeu : rendre une filière entière désirable aux yeux d'une génération en pleine orientation. Un film héro, des capsules terrain, un dispositif 100% digital."
         },
         {
             "id": "lbc-00",
@@ -186,7 +184,7 @@
                 "https://res.cloudinary.com/dxrvmrbst/image/upload/v1777910421/hoj5eoq8vruecyqlengb.jpg"
             ],
             "videoLink": "https://youtu.be/CyRHzEbjWuE",
-            "description": "leboncoin c'est trois applications dans une. Immobilier, pro, grand public — trois cibles, trois façons d'expliquer. Le défi c'était pas le fond, c'était la forme : comment on rend ça désirable à regarder ?\nJ'ai mélangé 3D, vidéo réelle et typo pour faire des motions courts qui montrent sans ennuyer. Le résultat ressemble moins à un tuto qu'à quelque chose qu'on regarde jusqu'au bout."
+            "description": "Une app que tout le monde utilise mais que personne ne connaît vraiment : trois univers distincts, immobilier, pro, grand public, chacun avec ses usages et ses blocages. L'objectif : faire adopter les fonctionnalités par des gens qui n'ont pas le temps de lire une FAQ. 3D, vidéo, typo, formats courts. Expliquez sans que ça ressemble à une explication.\n"
         }
     ],
     "lab": [
