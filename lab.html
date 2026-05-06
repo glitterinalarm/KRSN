@@ -502,7 +502,7 @@ const IS_MOBILE = () => window.innerWidth <= 768;
 async function init() {
   let data = null;
   try {
-    const res = await fetch('site_data.json?t=' + Date.now());
+    const res = await fetch('/api/site-data?t=' + Date.now());
     data = await res.json();
   } catch (e) {
     console.error('Failed to load site_data.json', e);

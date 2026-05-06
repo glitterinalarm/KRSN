@@ -11,3 +11,5 @@ __pycache__/
 !dist/
 .vercel
 .env*.local
+site_data.json
+node_modules/

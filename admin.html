@@ -376,7 +376,7 @@ function toggleMenu() {
 
         async function loadData() {
             try {
-                const res = await fetch('site_data.json?t=' + Date.now());
+                const res = await fetch('/api/site-data?t=' + Date.now());
                 const loaded = await res.json();
                 siteData = {
                     homeVideo: loaded.homeVideo || { url: '', format: 'auto' },
@@ -764,71 +764,25 @@ function toggleMenu() {
         }
 
         async function saveAll() {
-            const token = document.getElementById('gh-token').value;
-            if(!token) { alert("Please provide a GitHub Token to save changes."); return; }
-            localStorage.setItem('gh_token', token);
             const badge = document.getElementById('status-badge');
             badge.innerText = "SAVING...";
             badge.style.background = "#ffcc00";
             try {
-                const headers = { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' };
-                const api = `https://api.github.com/repos/${GITHUB_REPO}`;
-
-                // 1. Récupère le SHA du dernier commit sur main
-                const refRes = await fetch(`${api}/git/refs/heads/main`, { headers });
-                if (!refRes.ok) {
-                    const e = await refRes.json().catch(() => ({}));
-                    throw new Error(`Ref failed (${refRes.status}): ${e.message || ''}${refRes.status === 401 ? ' — Token invalide' : ''}`);
+                const res = await fetch('/api/site-data', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-Admin-Key': window._adminKey || '' },
+                    body: JSON.stringify(siteData)
+                });
+                if (!res.ok) {
+                    const e = await res.json().catch(() => ({}));
+                    throw new Error(e.error || res.statusText);
                 }
-                const latestCommitSha = (await refRes.json()).object.sha;
-
-                // 2. Récupère le SHA du tree courant
-                const commitRes = await fetch(`${api}/git/commits/${latestCommitSha}`, { headers });
-                const treeSha = (await commitRes.json()).tree.sha;
-
-                // 3. Crée un blob avec le contenu brut (pas de limite 1MB)
-                const rawContent = JSON.stringify(siteData, null, 4);
-                const blobRes = await fetch(`${api}/git/blobs`, {
-                    method: 'POST', headers,
-                    body: JSON.stringify({ content: rawContent, encoding: 'utf-8' })
-                });
-                if (!blobRes.ok) {
-                    const e = await blobRes.json().catch(() => ({}));
-                    throw new Error(`Blob failed (${blobRes.status}): ${e.message || ''}`);
-                }
-                const blobSha = (await blobRes.json()).sha;
-
-                // 4. Crée un nouveau tree
-                const treeRes = await fetch(`${api}/git/trees`, {
-                    method: 'POST', headers,
-                    body: JSON.stringify({ base_tree: treeSha, tree: [{ path: DATA_PATH, mode: '100644', type: 'blob', sha: blobSha }] })
-                });
-                const newTreeSha = (await treeRes.json()).sha;
-
-                // 5. Crée un commit
-                const newCommitRes = await fetch(`${api}/git/commits`, {
-                    method: 'POST', headers,
-                    body: JSON.stringify({ message: 'Admin: Update content', tree: newTreeSha, parents: [latestCommitSha] })
-                });
-                const newCommitSha = (await newCommitRes.json()).sha;
-
-                // 6. Avance la branche main
-                const updateRes = await fetch(`${api}/git/refs/heads/main`, {
-                    method: 'PATCH', headers,
-                    body: JSON.stringify({ sha: newCommitSha })
-                });
-                if (!updateRes.ok) {
-                    const e = await updateRes.json().catch(() => ({}));
-                    throw new Error(`Update ref failed (${updateRes.status}): ${e.message || ''}`);
-                }
-
-                badge.innerText = "SUCCESS // DEPLOYING";
+                badge.innerText = "SAVED ✓";
                 badge.style.background = "#00cc00";
-                setTimeout(() => { badge.innerText = "CONNECTED"; badge.style.background = "black"; }, 5000);
-                alert("Changes saved! Vercel is now deploying. (Wait 1-2 mins)");
+                setTimeout(() => { badge.innerText = "CONNECTED"; badge.style.background = "black"; }, 3000);
             } catch (e) {
                 badge.innerText = "ERROR"; badge.style.background = "red";
-                alert("Error saving: " + e.message);
+                alert("Erreur lors de la sauvegarde : " + e.message);
             }
         }
 
@@ -840,6 +794,7 @@ function toggleMenu() {
             const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
             if (hashHex === 'cecd08cd2d64e39f8266e707b2e3d32cb687cb0b5b6b4bde2b1086b31e1f716e') {
+                    window._adminKey = hashHex;
                 document.getElementById('login-overlay').style.opacity = '0';
                 setTimeout(() => {
                     document.getElementById('login-overlay').style.display = 'none';
