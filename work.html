@@ -5,6 +5,35 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Works — PARAFFINE</title>
 <meta name="description" content="Selected works by PARAFFINE — Creative Direction & Motion augmented by AI."/>
+<link rel="canonical" href="https://paraffine.studio/work"/>
+<link rel="icon" href="/favicon.png" type="image/png"/>
+<!-- Open Graph -->
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://paraffine.studio/work"/>
+<meta property="og:title" content="Works — PARAFFINE"/>
+<meta property="og:description" content="Selected works by PARAFFINE — Creative Direction & Motion augmented by AI."/>
+<meta property="og:image" content="https://paraffine.studio/paraffine_hero_1777725302192.png"/>
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:url" content="https://paraffine.studio/work"/>
+<meta name="twitter:title" content="Works — PARAFFINE"/>
+<meta name="twitter:description" content="Selected works by PARAFFINE — Creative Direction & Motion augmented by AI."/>
+<meta name="twitter:image" content="https://paraffine.studio/paraffine_hero_1777725302192.png"/>
+<!-- JSON-LD -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Works — PARAFFINE",
+  "description": "Selected works by PARAFFINE — Creative Direction & Motion augmented by AI.",
+  "url": "https://paraffine.studio/work",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "PARAFFINE",
+    "url": "https://paraffine.studio"
+  }
+}
+</script>
 <link href="monolith.css" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@900&family=Inter:wght@400;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet"/>
 <style>
@@ -74,13 +103,6 @@ body {
 .work-card:hover .card-overlay,
 .work-card.touched .card-overlay { opacity: 1; }
 
-/* Cards with description: full dark overlay, content centered */
-.work-card.has-desc .card-overlay {
-  background: rgba(0,0,0,0.82);
-  justify-content: center;
-  padding: 2rem;
-}
-
 .card-cat {
   font-family: 'JetBrains Mono', monospace;
   font-size: 8px;
@@ -110,13 +132,15 @@ body {
   overflow: hidden;
 }
 
-/* VIDEO */
+/* HOVER VIDEO — extended to clip YouTube chrome via overflow:hidden on .work-card */
 .card-video {
   position: absolute;
-  inset: 0;
+  top: -50px;
+  left: 0;
+  right: 0;
+  bottom: -80px;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: calc(100% + 130px);
   opacity: 0;
   transition: opacity 0.5s ease;
   z-index: 2;
@@ -306,25 +330,27 @@ function ytId(url) {
 }
 
 function makeCard(proj) {
-  const el  = document.createElement('div');
+  const el = document.createElement('div');
   el.className = 'work-card';
   const timers = [];
 
-  // Slides — YouTube URLs become thumbnails, Vimeo skipped
-  const imgSrcs = (proj.images || []).map(s => {
+  // Build slides — YouTube URLs become thumbnails (autoplay off-screen is unreliable), Vimeo skipped
+  const slideData = (proj.images || []).map(s => {
     const id = ytId(s);
-    if (id) return `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+    if (id) return { type: 'yt', id };
     if (s.includes('vimeo.com')) return null;
-    return s;
+    return { type: 'img', src: s };
   }).filter(Boolean);
 
-  imgSrcs.forEach((src, i) => {
-    const s   = document.createElement('div');
+  slideData.forEach((data, i) => {
+    const s = document.createElement('div');
     s.className = 'slide' + (i === 0 ? ' active' : '');
     const img = document.createElement('img');
-    img.src    = src;
-    img.alt    = proj.title || '';
-    img.loading = 'eager'; // always eager — lazy breaks GIF animation while opacity:0
+    img.src = data.type === 'yt'
+      ? `https://img.youtube.com/vi/${data.id}/hqdefault.jpg`
+      : data.src;
+    img.alt = proj.title || '';
+    img.loading = 'eager';
     s.appendChild(img);
     el.appendChild(s);
   });
@@ -341,15 +367,23 @@ function makeCard(proj) {
     timers.push(t);
   }
 
-  // YouTube video on hover (desktop) — videoLink takes priority over link
-  const vid = ytId(proj.videoLink) || ytId(proj.link);
-  if (vid) {
+  // Collect ALL YouTube IDs from the project — playlist hover plays them all in sequence
+  const ytIds = [];
+  const primaryId = ytId(proj.videoLink) || ytId(proj.link);
+  if (primaryId) ytIds.push(primaryId);
+  (proj.images || []).forEach(s => {
+    const id = ytId(s);
+    if (id && !ytIds.includes(id)) ytIds.push(id);
+  });
+
+  if (ytIds.length > 0) {
+    const embedUrl = `https://www.youtube.com/embed/${ytIds[0]}?playlist=${ytIds.join(',')}&autoplay=1&mute=1&loop=1&controls=0&modestbranding=1&playsinline=1`;
     let iframe = null;
     el.addEventListener('mouseenter', () => {
       if (iframe) return;
       iframe = document.createElement('iframe');
       iframe.className = 'card-video';
-      iframe.src = `https://www.youtube.com/embed/${vid}?autoplay=1&mute=1&loop=1&playlist=${vid}&controls=0&modestbranding=1&playsinline=1`;
+      iframe.src = embedUrl;
       iframe.allow = 'autoplay; encrypted-media';
       el.appendChild(iframe);
     });
@@ -358,15 +392,13 @@ function makeCard(proj) {
     });
   }
 
-  // Overlay — full-card dark with description if available, bottom gradient otherwise
+  // Overlay — bottom gradient for all cards, description shown below title
   const ov = document.createElement('div');
   ov.className = 'card-overlay';
   const descHtml = proj.description
     ? `<div class="card-desc">${proj.description}</div>`
     : '';
   ov.innerHTML = `<div class="card-cat">${proj.category || ''}</div><div class="card-title">${proj.title || ''}</div>${descHtml}`;
-  // Full dark overlay only when description present AND no hover video (video takes priority)
-  if (proj.description && !vid) el.classList.add('has-desc');
   el.appendChild(ov);
 
   return { el, timers };
