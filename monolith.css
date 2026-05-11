@@ -497,3 +497,17 @@ body {
         padding: 120px 20px 40px 20px;
     }
 }
+
+
+/* Visually hidden — accessible to crawlers, invisible to users */
+.seo-static {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
