@@ -577,28 +577,45 @@ async function init() {
 
   renderLab(data.lab || []);
 
-  // Fetch live Kérosène editorial and prepend with priority
-  let keroseneItems = [];
+  // Charge tous les articles hero depuis l'archive complète Kérosène
+  const BLOB = 'https://2vfzwmqqws8h2xfv.public.blob.vercel-storage.com';
+  let heroItems = [];
   try {
-    const keroRes = await fetch('https://2vfzwmqqws8h2xfv.public.blob.vercel-storage.com/editorial/daily.json?t=' + Date.now());
-    if (keroRes.ok) {
-      const keroData = await keroRes.json();
-      if (Array.isArray(keroData.articles)) {
-        keroseneItems = keroData.articles
-          .filter(a => a.imageUrl && !a.imageUrl.includes('unsplash.com'))
-          .map(a => ({
+    let dates = [];
+    try {
+      const idxRes = await fetch(`${BLOB}/editorial/index.json?t=${Date.now()}`);
+      if (idxRes.ok) dates = await idxRes.json();
+    } catch {}
+
+    // daily.json + toutes les archives datées (max 20), dédupliqués
+    const paths = ['editorial/daily.json', ...dates.map(d => `editorial/${d}.json`)];
+    const unique = [...new Set(paths)].slice(0, 20);
+
+    const results = await Promise.allSettled(
+      unique.map(p => fetch(`${BLOB}/${p}?t=${Date.now()}`).then(r => r.ok ? r.json() : null))
+    );
+
+    const seenIds = new Set();
+    for (const r of results) {
+      if (r.status !== 'fulfilled' || !r.value?.articles) continue;
+      for (const a of r.value.articles) {
+        if (a.category === 'HERO' && a.imageUrl && !seenIds.has(a.id)) {
+          seenIds.add(a.id);
+          heroItems.push({
             image: a.imageUrl,
-            title: 'KÉROSÈNE // ' + (a.title || ''),
+            cat: 'KÉROSÈNE',
+            title: a.title || '',
             description: (a.insight || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 140),
             link: 'https://veille-creative.vercel.app/article/' + encodeURIComponent(a.id),
-          }));
+          });
+        }
       }
     }
   } catch (e) {
-    console.warn('Kérosène feed unavailable', e);
+    console.warn('Kérosène archive unavailable', e);
   }
 
-  renderInsights([...keroseneItems, ...(data.insights || [])]);
+  renderInsights(heroItems);
 }
 
 // ─── LAB ─────────────────────────────────────────────────────
@@ -645,10 +662,16 @@ function renderInsights(items) {
   const desktop = document.getElementById('insights-feed-desktop');
   const mobile  = document.getElementById('insights-feed-mobile');
 
-  if (!items.length) return;
+  if (!items.length) {
+    desktop.innerHTML = '<p style="font-size:10px; opacity:0.35; letter-spacing:0.15em; text-transform:uppercase; padding:24px 0; font-family:\'JetBrains Mono\',monospace;">Première génération en cours —</p>';
+    return;
+  }
 
-  // Desktop: all items same format — 16/9 thumb + cat + title + desc
   items.forEach((item, idx) => {
+    const cat   = item.cat || extractCat(item.title);
+    const title = item.cat ? item.title : cleanTitle(item.title);
+
+    // Desktop
     const a = document.createElement('a');
     a.className = 'insight-card';
     a.href = item.link || '#';
@@ -656,26 +679,24 @@ function renderInsights(items) {
     a.rel = 'noopener';
     a.innerHTML = `
       <div class="insight-card-thumb">
-        ${item.image ? `<img src="${item.image}" alt="${item.title || ''}" loading="${idx === 0 ? 'eager' : 'lazy'}"/>` : ''}
+        ${item.image ? `<img src="${item.image}" alt="${title}" loading="${idx === 0 ? 'eager' : 'lazy'}"/>` : ''}
         <div class="insight-overlay">
           ${item.description ? `<div class="insight-overlay-desc">${item.description}</div>` : ''}
         </div>
       </div>
-      <div class="insight-cat">${extractCat(item.title)}</div>
-      <div class="insight-card-title">${cleanTitle(item.title)}</div>
+      <div class="insight-cat">${cat}</div>
+      <div class="insight-card-title">${title}</div>
     `;
     desktop.appendChild(a);
-  });
 
-  // Mobile: same cards horizontal strip
-  items.forEach(item => {
+    // Mobile
     const m = document.createElement('div');
     m.className = 'mob-card';
     m.onclick = () => item.link && window.open(item.link, '_blank');
     m.innerHTML = `
-      ${item.image ? `<img class="mob-thumb" src="${item.image}" alt="${item.title || ''}" loading="lazy"/>` : `<div class="mob-thumb"></div>`}
-      <div class="mob-meta">${extractCat(item.title)}</div>
-      <div class="mob-title">${cleanTitle(item.title)}</div>
+      ${item.image ? `<img class="mob-thumb" src="${item.image}" alt="${title}" loading="lazy"/>` : `<div class="mob-thumb"></div>`}
+      <div class="mob-meta">${cat}</div>
+      <div class="mob-title">${title}</div>
       ${item.description ? `<div class="mob-desc">${item.description}</div>` : ''}
     `;
     mobile.appendChild(m);
