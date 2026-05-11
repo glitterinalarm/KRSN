@@ -634,6 +634,17 @@ async function init() {
   renderInsights(heroItems);
 }
 
+// Échappe les attributs HTML pour éviter les injections dans data-fr/data-en
+function escAttr(s) {
+  return (s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// Génère les attributs data-fr / data-en si le champ est bilingue
+function bilingualAttrs(field) {
+  if (!field || typeof field !== 'object') return '';
+  return `data-fr="${escAttr(field.fr)}" data-en="${escAttr(field.en)}"`;
+}
+
 // ─── LAB ─────────────────────────────────────────────────────
 function renderLab(items) {
   const desktop = document.getElementById('lab-feed-desktop');
@@ -652,7 +663,7 @@ function renderLab(items) {
         <div class="lab-overlay">
           ${item.meta ? `<div class="lab-overlay-meta">${item.meta}</div>` : ''}
           <div class="lab-overlay-title">${item.title || ''}</div>
-          ${item.description ? `<div class="lab-overlay-desc">${t(item.description)}</div>` : ''}
+          ${item.description ? `<div class="lab-overlay-desc" ${bilingualAttrs(item.description)}>${t(item.description)}</div>` : ''}
           ${item.link ? `<div class="lab-overlay-link">Visit →</div>` : ''}
         </div>
       </div>
@@ -667,7 +678,7 @@ function renderLab(items) {
       ${thumb ? `<img class="mob-thumb" src="${thumb}" alt="${item.title || ''}" loading="lazy"/>` : `<div class="mob-thumb"></div>`}
       <div class="mob-meta">${item.meta || ''}</div>
       <div class="mob-title">${item.title || ''}</div>
-      ${item.description ? `<div class="mob-desc">${t(item.description)}</div>` : ''}
+      ${item.description ? `<div class="mob-desc" ${bilingualAttrs(item.description)}>${t(item.description)}</div>` : ''}
     `;
     mobile.appendChild(m);
   });
@@ -748,7 +759,7 @@ document.addEventListener('DOMContentLoaded', () => {
   <article>
     <h2>Kerosene</h2>
     
-    <p>Kérosène is the problem every creative has but nobody's actually solved. The daily watch. That indispensable, time-eating ritual — LinkedIn here, Insta there, Creapills, Highsnobiety, La Réclame, Dazed — an hour lost every morning rebuilding the same thing from scratch. So I vibe coded the site I wished existed. No dev background. Just tools and instinct. Graphic design, Advertising, Architecture, Trends, AI, Photography — all in one place, every day, fresh. For me. For my clients. To never walk into a room not knowing what just dropped.</p>
+    <p>Kérosène is the problem every creative has but nobody's actually solved. The daily watch. That indispensable, time-eating ritual, LinkedIn here, Insta there, Creapills, Highsnobiety, La Réclame, Dazed — an hour lost every morning rebuilding the same thing from scratch. So I vibe coded the site I wished existed. No dev background. Just tools and instinct. Graphic design, Advertising, Architecture, Trends, AI, Photography — all in one place, every day, fresh. For me. For my clients. To never walk into a room not knowing what just dropped.</p>
   </article>
   <article>
     <h2>TLDR CREATIVE</h2>
