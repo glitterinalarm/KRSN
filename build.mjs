@@ -12,7 +12,10 @@ function esc(s) {
 
 async function fetchData() {
   try {
-    const res = await fetch(BLOB_URL + '?t=' + Date.now());
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 8000);
+    const res = await fetch(BLOB_URL + '?t=' + Date.now(), { signal: controller.signal });
+    clearTimeout(timer);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return await res.json();
   } catch (e) {
