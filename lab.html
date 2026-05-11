@@ -235,38 +235,54 @@ body {
 .insight-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(transparent 25%, rgba(0,0,0,0.84) 100%);
+  background: linear-gradient(transparent 0%, rgba(0,0,0,0.92) 100%);
   opacity: 0;
   transition: opacity 0.4s ease;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 1.2rem 1.4rem;
+  padding: 1.4rem 1.6rem;
   pointer-events: none;
+  overflow: hidden;
 }
 .lab-item:hover .lab-overlay,
 .lab-item.touched .lab-overlay { opacity: 1; }
 .insight-card:hover .insight-overlay,
 .insight-card.touched .insight-overlay { opacity: 1; }
 
+.lab-overlay-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 7px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 6px;
+}
 .lab-overlay-title {
   font-family: 'Barlow Condensed', sans-serif;
   font-weight: 900;
-  font-size: clamp(18px, 2vw, 30px);
+  font-size: clamp(20px, 2.2vw, 34px);
   text-transform: uppercase;
   color: #fff;
   line-height: 0.92;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 .lab-overlay-desc,
 .insight-overlay-desc {
   font-size: 11px;
   line-height: 1.65;
   color: rgba(255,255,255,0.72);
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+}
+.lab-overlay-link {
+  margin-top: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+  border-bottom: 1px solid rgba(255,255,255,0.25);
+  display: inline-block;
+  padding-bottom: 2px;
 }
 .insight-overlay-cat {
   font-family: 'JetBrains Mono', monospace;
@@ -634,12 +650,12 @@ function renderLab(items) {
       <div class="lab-thumb">
         ${thumb ? `<img src="${thumb}" alt="${item.title || ''}" loading="lazy"/>` : ''}
         <div class="lab-overlay">
+          ${item.meta ? `<div class="lab-overlay-meta">${item.meta}</div>` : ''}
+          <div class="lab-overlay-title">${item.title || ''}</div>
           ${item.description ? `<div class="lab-overlay-desc">${t(item.description)}</div>` : ''}
+          ${item.link ? `<div class="lab-overlay-link">Visit →</div>` : ''}
         </div>
       </div>
-      <div class="lab-meta">${item.meta || ''}</div>
-      <div class="lab-title">${item.title || ''}</div>
-      ${item.link ? `<a class="lab-link" href="${item.link}" target="_blank" rel="noopener">Visit →</a>` : ''}
     `;
     desktop.appendChild(d);
 
@@ -732,7 +748,7 @@ document.addEventListener('DOMContentLoaded', () => {
   <article>
     <h2>Kerosene</h2>
     
-    <p>A research aggregator for creatives — AI curation of motion, branding and visual culture references.</p>
+    <p>Kérosène is the problem every creative has but nobody's actually solved. The daily watch. That indispensable, time-eating ritual — LinkedIn here, Insta there, Creapills, Highsnobiety, La Réclame, Dazed — an hour lost every morning rebuilding the same thing from scratch. So I vibe coded the site I wished existed. No dev background. Just tools and instinct. Graphic design, Advertising, Architecture, Trends, AI, Photography — all in one place, every day, fresh. For me. For my clients. To never walk into a room not knowing what just dropped.</p>
   </article>
   <article>
     <h2>TLDR CREATIVE</h2>
