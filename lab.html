@@ -227,6 +227,63 @@ body {
   overflow: hidden;
   background: #f0f0f0;
   margin-bottom: 16px;
+  position: relative;
+}
+
+/* ─── OVERLAYS (Lab + Insights) ───────────────────────────── */
+.lab-overlay,
+.insight-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(transparent 25%, rgba(0,0,0,0.84) 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.2rem 1.4rem;
+  pointer-events: none;
+}
+.lab-item:hover .lab-overlay,
+.lab-item.touched .lab-overlay { opacity: 1; }
+.insight-card:hover .insight-overlay,
+.insight-card.touched .insight-overlay { opacity: 1; }
+
+.lab-overlay-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900;
+  font-size: clamp(18px, 2vw, 30px);
+  text-transform: uppercase;
+  color: #fff;
+  line-height: 0.92;
+  margin-bottom: 8px;
+}
+.lab-overlay-desc,
+.insight-overlay-desc {
+  font-size: 11px;
+  line-height: 1.65;
+  color: rgba(255,255,255,0.72);
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.insight-overlay-cat {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 7px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 5px;
+}
+.insight-overlay-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900;
+  font-size: clamp(16px, 1.8vw, 26px);
+  text-transform: uppercase;
+  color: #fff;
+  line-height: 0.92;
+  margin-bottom: 7px;
 }
 
 .insight-card-thumb img {
@@ -559,10 +616,13 @@ function renderLab(items) {
     d.innerHTML = `
       <div class="lab-thumb">
         ${thumb ? `<img src="${thumb}" alt="${item.title || ''}" loading="lazy"/>` : ''}
+        <div class="lab-overlay">
+          <div class="lab-overlay-title">${item.title || ''}</div>
+          ${item.description ? `<div class="lab-overlay-desc">${t(item.description)}</div>` : ''}
+        </div>
       </div>
       <div class="lab-meta">${item.meta || ''}</div>
       <div class="lab-title">${item.title || ''}</div>
-      ${item.description ? `<p class="lab-desc">${t(item.description)}</p>` : ''}
       ${item.link ? `<a class="lab-link" href="${item.link}" target="_blank" rel="noopener">Visit →</a>` : ''}
     `;
     desktop.appendChild(d);
@@ -598,10 +658,14 @@ function renderInsights(items) {
     a.innerHTML = `
       <div class="insight-card-thumb">
         ${item.image ? `<img src="${item.image}" alt="${item.title || ''}" loading="${idx === 0 ? 'eager' : 'lazy'}"/>` : ''}
+        <div class="insight-overlay">
+          <div class="insight-overlay-cat">${extractCat(item.title)}</div>
+          <div class="insight-overlay-title">${cleanTitle(item.title)}</div>
+          ${item.description ? `<div class="insight-overlay-desc">${item.description}</div>` : ''}
+        </div>
       </div>
       <div class="insight-cat">${extractCat(item.title)}</div>
       <div class="insight-card-title">${cleanTitle(item.title)}</div>
-      ${item.description ? `<div class="insight-desc">${item.description}</div>` : ''}
     `;
     desktop.appendChild(a);
   });
