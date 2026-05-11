@@ -67,3 +67,14 @@ console.log(`[build] Works injected: ${data.works?.length ?? 0} items`);
 const labRaw = readFileSync('lab.html', 'utf8');
 writeFileSync('lab.html', inject(labRaw, 'SEO_INJECT_LAB', labHtml(data.lab)));
 console.log(`[build] Lab injected: ${data.lab?.length ?? 0} items`);
+
+// Update sitemap <lastmod> for dynamic pages
+const today = new Date().toISOString().split('T')[0];
+const sitemapRaw = readFileSync('sitemap.xml', 'utf8');
+const sitemapUpdated = sitemapRaw
+  .replace(/(<url>\s*<loc>https:\/\/paraffine\.studio\/(?:work|lab|insights)[^<]*<\/loc>)(\s*(?:<lastmod>[^<]*<\/lastmod>\s*)?)/g,
+    (_, locPart, rest) => `${locPart}\n    <lastmod>${today}</lastmod>\n    `)
+  .replace(/(<url>\s*<loc>https:\/\/paraffine\.studio\/<\/loc>)(\s*(?:<lastmod>[^<]*<\/lastmod>\s*)?)/g,
+    (_, locPart) => `${locPart}\n    <lastmod>${today}</lastmod>\n    `);
+writeFileSync('sitemap.xml', sitemapUpdated);
+console.log(`[build] Sitemap lastmod updated: ${today}`);
