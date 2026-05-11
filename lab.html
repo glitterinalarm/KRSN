@@ -617,7 +617,6 @@ function renderLab(items) {
       <div class="lab-thumb">
         ${thumb ? `<img src="${thumb}" alt="${item.title || ''}" loading="lazy"/>` : ''}
         <div class="lab-overlay">
-          <div class="lab-overlay-title">${item.title || ''}</div>
           ${item.description ? `<div class="lab-overlay-desc">${t(item.description)}</div>` : ''}
         </div>
       </div>
@@ -659,8 +658,6 @@ function renderInsights(items) {
       <div class="insight-card-thumb">
         ${item.image ? `<img src="${item.image}" alt="${item.title || ''}" loading="${idx === 0 ? 'eager' : 'lazy'}"/>` : ''}
         <div class="insight-overlay">
-          <div class="insight-overlay-cat">${extractCat(item.title)}</div>
-          <div class="insight-overlay-title">${cleanTitle(item.title)}</div>
           ${item.description ? `<div class="insight-overlay-desc">${item.description}</div>` : ''}
         </div>
       </div>
