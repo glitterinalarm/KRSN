@@ -724,12 +724,12 @@ function renderLab(items) {
         <div class="lab-slideshow">${slidesHtml}</div>
         ${videoHtml}
         <div class="lab-overlay">
+          ${item.meta ? `<div class="lab-overlay-meta">${item.meta}</div>` : ''}
+          <div class="lab-overlay-title">${item.title || ''}</div>
+          ${item.description ? `<div class="lab-overlay-desc" ${bilingualAttrs(item.description)}>${t(item.description)}</div>` : ''}
           ${cleanLink ? `<div class="lab-overlay-link">Visit →</div>` : ''}
         </div>
       </div>
-      ${item.meta ? `<div class="lab-meta">${item.meta}</div>` : ''}
-      <div class="lab-title">${item.title || ''}</div>
-      ${item.description ? `<div class="lab-desc" ${bilingualAttrs(item.description)}>${t(item.description)}</div>` : ''}
     `;
 
     // Slideshow auto-cycle
