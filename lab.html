@@ -149,17 +149,49 @@ body {
   position: relative;
 }
 
-.lab-thumb img {
+/* Slideshow */
+.lab-slideshow {
+  position: absolute;
+  inset: 0;
+}
+
+.lab-slide {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), filter 0.5s ease;
-  filter: grayscale(20%);
+  opacity: 0;
+  transition: opacity 1s ease, transform 8s ease;
+  transform: scale(1.04);
+  filter: grayscale(15%);
 }
 
-.lab-item:hover .lab-thumb img {
-  transform: scale(1.04);
+.lab-slide.active {
+  opacity: 1;
+  transform: scale(1);
   filter: grayscale(0%);
+}
+
+/* Video layer on hover */
+.lab-video-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  pointer-events: none;
+}
+
+.lab-video-layer.active {
+  opacity: 1;
+}
+
+.lab-video-layer iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  pointer-events: none;
 }
 
 .lab-meta {
@@ -646,36 +678,108 @@ function bilingualAttrs(field) {
 }
 
 // ─── LAB ─────────────────────────────────────────────────────
+function ytId(url) {
+  if (!url) return null;
+  const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/))([\w-]{11})/);
+  return m ? m[1] : null;
+}
+
 function renderLab(items) {
   const desktop = document.getElementById('lab-feed-desktop');
   const mobile  = document.getElementById('lab-feed-mobile');
 
   items.forEach(item => {
-    const thumb = (item.images && item.images[0]) ? item.images[0] : (item.image || '');
+    const allImages = item.images || (item.image ? [item.image] : []);
 
-    // Desktop card
+    // Séparer YouTube des images statiques
+    const videoId = allImages.map(ytId).find(Boolean) || null;
+    const staticImgs = allImages.filter(u => !ytId(u));
+
+    // Toutes les vignettes : thumbnail YT en premier si dispo, puis images statiques
+    const thumbs = videoId
+      ? [`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`, ...staticImgs]
+      : staticImgs;
+
+    // Lien propre (strip # prefix de l'admin)
+    const rawLink = item.link || '';
+    const cleanLink = rawLink.startsWith('#') ? rawLink.slice(1) : rawLink;
+
+    // ── Desktop card ──────────────────────────────────────────
     const d = document.createElement('div');
     d.className = 'lab-item';
-    d.onclick = () => item.link && window.open(item.link, '_blank');
+
+    const slidesHtml = thumbs.map((src, i) =>
+      `<img src="${src}" alt="${item.title || ''}" loading="lazy" class="lab-slide${i === 0 ? ' active' : ''}"/>`
+    ).join('');
+
+    const videoHtml = videoId
+      ? `<div class="lab-video-layer">
+           <iframe data-src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&modestbranding=1" frameborder="0" allowfullscreen></iframe>
+         </div>`
+      : '';
+
     d.innerHTML = `
       <div class="lab-thumb">
-        ${thumb ? `<img src="${thumb}" alt="${item.title || ''}" loading="lazy"/>` : ''}
+        <div class="lab-slideshow">${slidesHtml}</div>
+        ${videoHtml}
         <div class="lab-overlay">
           ${item.meta ? `<div class="lab-overlay-meta">${item.meta}</div>` : ''}
           <div class="lab-overlay-title">${item.title || ''}</div>
           ${item.description ? `<div class="lab-overlay-desc" ${bilingualAttrs(item.description)}>${t(item.description)}</div>` : ''}
-          ${item.link ? `<div class="lab-overlay-link">Visit →</div>` : ''}
+          ${cleanLink ? `<div class="lab-overlay-link">Visit →</div>` : ''}
         </div>
       </div>
     `;
+
+    // Slideshow auto-cycle
+    const slides = d.querySelectorAll('.lab-slide');
+    let slideIdx = 0;
+    let slideTimer = null;
+
+    function startCycle() {
+      if (slides.length < 2) return;
+      slideTimer = setInterval(() => {
+        slides[slideIdx].classList.remove('active');
+        slideIdx = (slideIdx + 1) % slides.length;
+        slides[slideIdx].classList.add('active');
+      }, 3000);
+    }
+
+    function stopCycle() {
+      clearInterval(slideTimer);
+      slideTimer = null;
+    }
+
+    startCycle();
+
+    // Hover : jouer la vidéo YouTube
+    if (videoId) {
+      const vLayer = d.querySelector('.lab-video-layer');
+      const iframe = d.querySelector('.lab-video-layer iframe');
+
+      d.addEventListener('mouseenter', () => {
+        stopCycle();
+        iframe.src = iframe.dataset.src;
+        vLayer.classList.add('active');
+      });
+      d.addEventListener('mouseleave', () => {
+        vLayer.classList.remove('active');
+        setTimeout(() => { iframe.src = ''; }, 600);
+        startCycle();
+      });
+    }
+
+    // Clic → ouvre le lien
+    d.onclick = () => cleanLink && window.open(cleanLink, '_blank');
     desktop.appendChild(d);
 
-    // Mobile card
+    // ── Mobile card ───────────────────────────────────────────
+    const mobilethumb = thumbs[0] || '';
     const m = document.createElement('div');
     m.className = 'mob-card';
-    m.onclick = () => item.link && window.open(item.link, '_blank');
+    m.onclick = () => cleanLink && window.open(cleanLink, '_blank');
     m.innerHTML = `
-      ${thumb ? `<img class="mob-thumb" src="${thumb}" alt="${item.title || ''}" loading="lazy"/>` : `<div class="mob-thumb"></div>`}
+      ${mobilethumb ? `<img class="mob-thumb" src="${mobilethumb}" alt="${item.title || ''}" loading="lazy"/>` : `<div class="mob-thumb"></div>`}
       <div class="mob-meta">${item.meta || ''}</div>
       <div class="mob-title">${item.title || ''}</div>
       ${item.description ? `<div class="mob-desc" ${bilingualAttrs(item.description)}>${t(item.description)}</div>` : ''}
@@ -756,6 +860,11 @@ document.addEventListener('DOMContentLoaded', () => {
   </div>
 </footer>
 <!-- SEO_INJECT_LAB_START --><section class="seo-static" aria-label="Projects">
+  <article>
+    <h2>Diving Under the line</h2>
+    
+    <p>Following the publication of the Stratégies cover story seven months ago, I wanted to bring this unusual AI diver to life. What does he get up to during the day? I don’t have all the answers yet, but I’ve made a start…</p>
+  </article>
   <article>
     <h2>Kerosene</h2>
     
