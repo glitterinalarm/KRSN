@@ -407,7 +407,7 @@ function makeCard(proj) {
 
     el.addEventListener('mouseenter', () => {
       if (!iframe) {
-        // Premier hover : créer iframe + loader une seule fois
+        // Premier hover uniquement : créer iframe + loader
         const loader = document.createElement('div');
         loader.className = 'card-loader';
         loader.innerHTML = '<div class="card-loader-logo">PARAFFINE</div><div class="card-loader-bar"></div>';
@@ -425,20 +425,16 @@ function makeCard(proj) {
           }, 700);
         };
         el.appendChild(iframe);
-      } else {
-        // Hovers suivants : réafficher + reprendre la lecture
-        iframe.style.opacity = '1';
-        if (iframeLoaded) {
-          iframe.contentWindow?.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-        }
+      } else if (iframeLoaded) {
+        // Hovers suivants : reprendre (le CSS gère l'opacité)
+        iframe.contentWindow?.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
       }
     });
     el.addEventListener('mouseleave', () => {
-      if (iframe) {
-        iframe.style.opacity = '0';
-        if (iframeLoaded) {
-          iframe.contentWindow?.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-        }
+      // Nettoyer le loader si le hover était trop court
+      el.querySelectorAll('.card-loader').forEach(l => l.remove());
+      if (iframeLoaded) {
+        iframe?.contentWindow?.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
       }
     });
   }
