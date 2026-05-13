@@ -174,6 +174,21 @@ body {
 }
 
 
+/* DIM OVERLAY — darkens everything when a video plays */
+#dim-overlay {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.55s ease;
+  z-index: 10;
+}
+#dim-overlay.active { opacity: 0.78; }
+
+/* Hovered card rises above dim layer */
+.work-card.playing { z-index: 11 !important; }
+
 /* CURSOR (desktop only) */
 .cursor {
   position: fixed;
@@ -234,6 +249,7 @@ body {
   </div>
 </div>
 
+<div id="dim-overlay"></div>
 <div id="works-scene"></div>
 
 
@@ -382,6 +398,7 @@ function makeCard(proj) {
 
   if (ytIds.length > 0) {
     const embedUrl = `https://www.youtube.com/embed/${ytIds[0]}?playlist=${ytIds.join(',')}&autoplay=1&mute=1&loop=1&controls=0&modestbranding=1&playsinline=1`;
+    const dimOverlay = document.getElementById('dim-overlay');
     let iframe = null;
     el.addEventListener('mouseenter', () => {
       if (iframe) return;
@@ -390,9 +407,13 @@ function makeCard(proj) {
       iframe.src = embedUrl;
       iframe.allow = 'autoplay; encrypted-media';
       el.appendChild(iframe);
+      el.classList.add('playing');
+      dimOverlay.classList.add('active');
     });
     el.addEventListener('mouseleave', () => {
       if (iframe) { iframe.remove(); iframe = null; }
+      el.classList.remove('playing');
+      dimOverlay.classList.remove('active');
     });
   }
 
