@@ -444,7 +444,7 @@ function makeCard(proj) {
       e.stopPropagation();
       muted = !muted;
       const fn = muted ? 'mute' : 'unMute';
-      iframe?.contentWindow?.postMessage(`{"event":"command","func":"${fn}","args":""}`, '*');
+      iframe?.contentWindow?.postMessage(`{"event":"command","func":"${fn}","args":[]}`, '*');
       soundBtn.innerHTML = muted ? svgMuted : svgSound;
       soundBtn.title = muted ? 'Activer le son' : 'Couper le son';
     });
@@ -472,13 +472,13 @@ function makeCard(proj) {
         };
         el.appendChild(iframe);
       } else if (iframeLoaded) {
-        iframe.contentWindow?.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+        iframe.contentWindow?.postMessage('{"event":"command","func":"playVideo","args":[]}', '*');
       }
     });
     el.addEventListener('mouseleave', () => {
       el.querySelectorAll('.card-loader').forEach(l => l.remove());
       if (iframeLoaded) {
-        iframe?.contentWindow?.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+        iframe?.contentWindow?.postMessage('{"event":"command","func":"pauseVideo","args":[]}', '*');
       }
     });
   }
