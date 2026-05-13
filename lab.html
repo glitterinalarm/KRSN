@@ -792,7 +792,12 @@ function renderLab(items) {
       soundBtn.className = 'card-sound-btn';
       soundBtn.innerHTML = svgMuted;
       soundBtn.title = 'Activer le son';
+      soundBtn.addEventListener('mousedown', e => {
+        e.preventDefault();
+        e.stopPropagation();
+      });
       soundBtn.addEventListener('click', e => {
+        e.preventDefault();
         e.stopPropagation();
         muted = !muted;
         const fn = muted ? 'mute' : 'unMute';
@@ -826,8 +831,11 @@ function renderLab(items) {
       });
     }
 
-    // Clic → ouvre le lien
-    d.onclick = () => cleanLink && window.open(cleanLink, '_blank');
+    // Clic → ouvre le lien (ignore les clics sur le bouton son)
+    d.onclick = (e) => {
+      if (e.target.closest('.card-sound-btn')) return;
+      cleanLink && window.open(cleanLink, '_blank');
+    };
     desktop.appendChild(d);
 
     // ── Mobile card ───────────────────────────────────────────
