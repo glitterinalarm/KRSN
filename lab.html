@@ -716,7 +716,7 @@ function renderLab(items) {
 
     const videoHtml = videoId
       ? `<div class="lab-video-layer">
-           <iframe data-src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&modestbranding=1" frameborder="0" allowfullscreen></iframe>
+           <iframe data-src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&modestbranding=1&playsinline=1&enablejsapi=1" frameborder="0" allowfullscreen></iframe>
          </div>`
       : '';
 
@@ -758,21 +758,27 @@ function renderLab(items) {
     if (videoId) {
       const vLayer = d.querySelector('.lab-video-layer');
       const iframe = d.querySelector('.lab-video-layer iframe');
-      let leaveTimer = null;
+      let iframeLoaded = false;
+
+      iframe.addEventListener('load', () => { iframeLoaded = true; });
 
       d.addEventListener('mouseenter', () => {
-        // Annule un éventuel clearSrc en cours (race condition)
-        if (leaveTimer) { clearTimeout(leaveTimer); leaveTimer = null; }
         stopCycle();
-        if (!iframe.src) iframe.src = iframe.dataset.src;
+        if (!iframe.src) {
+          // Premier hover : charger l'iframe une seule fois
+          iframe.src = iframe.dataset.src;
+        } else if (iframeLoaded) {
+          // Hovers suivants : reprendre la lecture
+          iframe.contentWindow?.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+        }
         vLayer.classList.add('active');
       });
+
       d.addEventListener('mouseleave', () => {
         vLayer.classList.remove('active');
-        leaveTimer = setTimeout(() => {
-          iframe.src = '';
-          leaveTimer = null;
-        }, 700);
+        if (iframeLoaded) {
+          iframe.contentWindow?.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+        }
         startCycle();
       });
     }

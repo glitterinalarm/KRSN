@@ -401,33 +401,45 @@ function makeCard(proj) {
   });
 
   if (ytIds.length > 0) {
-    const embedUrl = `https://www.youtube.com/embed/${ytIds[0]}?playlist=${ytIds.join(',')}&autoplay=1&mute=1&loop=1&controls=0&modestbranding=1&playsinline=1`;
+    const embedUrl = `https://www.youtube.com/embed/${ytIds[0]}?playlist=${ytIds.join(',')}&autoplay=1&mute=1&loop=1&controls=0&modestbranding=1&playsinline=1&enablejsapi=1`;
     let iframe = null;
+    let iframeLoaded = false;
+
     el.addEventListener('mouseenter', () => {
-      if (iframe) return;
+      if (!iframe) {
+        // Premier hover : créer iframe + loader une seule fois
+        const loader = document.createElement('div');
+        loader.className = 'card-loader';
+        loader.innerHTML = '<div class="card-loader-logo">PARAFFINE</div><div class="card-loader-bar"></div>';
+        el.appendChild(loader);
 
-      // Loader
-      const loader = document.createElement('div');
-      loader.className = 'card-loader';
-      loader.innerHTML = '<div class="card-loader-logo">PARAFFINE</div><div class="card-loader-bar"></div>';
-      el.appendChild(loader);
-
-      // Iframe
-      iframe = document.createElement('iframe');
-      iframe.className = 'card-video';
-      iframe.src = embedUrl;
-      iframe.allow = 'autoplay; encrypted-media';
-      iframe.onload = () => {
-        setTimeout(() => {
-          loader.classList.add('done');
-          setTimeout(() => loader.remove(), 500);
-        }, 700);
-      };
-      el.appendChild(iframe);
+        iframe = document.createElement('iframe');
+        iframe.className = 'card-video';
+        iframe.src = embedUrl;
+        iframe.allow = 'autoplay; encrypted-media';
+        iframe.onload = () => {
+          iframeLoaded = true;
+          setTimeout(() => {
+            loader.classList.add('done');
+            setTimeout(() => loader.remove(), 500);
+          }, 700);
+        };
+        el.appendChild(iframe);
+      } else {
+        // Hovers suivants : réafficher + reprendre la lecture
+        iframe.style.opacity = '1';
+        if (iframeLoaded) {
+          iframe.contentWindow?.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+        }
+      }
     });
     el.addEventListener('mouseleave', () => {
-      if (iframe) { iframe.remove(); iframe = null; }
-      el.querySelectorAll('.card-loader').forEach(l => l.remove());
+      if (iframe) {
+        iframe.style.opacity = '0';
+        if (iframeLoaded) {
+          iframe.contentWindow?.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+        }
+      }
     });
   }
 
