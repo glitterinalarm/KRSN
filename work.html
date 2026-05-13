@@ -147,6 +147,50 @@ body {
 }
 .work-card:hover .card-video { opacity: 1; }
 
+/* LOADER — affiché pendant le chargement de la vidéo */
+.card-loader {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  background: #0a0a0a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  opacity: 1;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+.card-loader.done { opacity: 0; }
+.card-loader-logo {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900;
+  font-size: clamp(12px, 1.4vw, 18px);
+  letter-spacing: 0.35em;
+  color: rgba(255,255,255,0.85);
+  text-transform: uppercase;
+}
+.card-loader-bar {
+  width: 36px;
+  height: 1px;
+  background: rgba(255,255,255,0.15);
+  position: relative;
+  overflow: hidden;
+}
+.card-loader-bar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.75);
+  transform: translateX(-100%);
+  animation: loader-scan 1.1s infinite cubic-bezier(0.4, 0, 0.2, 1);
+}
+@keyframes loader-scan {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
 /* BOTTOM BAR */
 .works-bar {
   position: fixed;
@@ -361,14 +405,29 @@ function makeCard(proj) {
     let iframe = null;
     el.addEventListener('mouseenter', () => {
       if (iframe) return;
+
+      // Loader
+      const loader = document.createElement('div');
+      loader.className = 'card-loader';
+      loader.innerHTML = '<div class="card-loader-logo">PARAFFINE</div><div class="card-loader-bar"></div>';
+      el.appendChild(loader);
+
+      // Iframe
       iframe = document.createElement('iframe');
       iframe.className = 'card-video';
       iframe.src = embedUrl;
       iframe.allow = 'autoplay; encrypted-media';
+      iframe.onload = () => {
+        setTimeout(() => {
+          loader.classList.add('done');
+          setTimeout(() => loader.remove(), 500);
+        }, 700);
+      };
       el.appendChild(iframe);
     });
     el.addEventListener('mouseleave', () => {
       if (iframe) { iframe.remove(); iframe = null; }
+      el.querySelectorAll('.card-loader').forEach(l => l.remove());
     });
   }
 
