@@ -147,6 +147,33 @@ body {
 }
 .work-card:hover .card-video { opacity: 1; }
 
+/* SOUND TOGGLE */
+.card-sound-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 5;
+  width: 30px;
+  height: 30px;
+  background: rgba(0,0,0,0.55);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s ease, background 0.2s ease;
+  pointer-events: none;
+  padding: 0;
+}
+.card-sound-btn.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+.card-sound-btn:hover { background: rgba(255,255,255,0.18); }
+.card-sound-btn svg { width: 13px; height: 13px; display: block; }
+
 /* LOADER — affiché pendant le chargement de la vidéo */
 .card-loader {
   position: absolute;
@@ -404,6 +431,24 @@ function makeCard(proj) {
     const embedUrl = `https://www.youtube.com/embed/${ytIds[0]}?playlist=${ytIds.join(',')}&autoplay=1&mute=1&loop=1&controls=0&modestbranding=1&playsinline=1&enablejsapi=1`;
     let iframe = null;
     let iframeLoaded = false;
+    let muted = true;
+
+    const svgMuted = `<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>`;
+    const svgSound = `<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>`;
+
+    const soundBtn = document.createElement('button');
+    soundBtn.className = 'card-sound-btn';
+    soundBtn.innerHTML = svgMuted;
+    soundBtn.title = 'Activer le son';
+    soundBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      muted = !muted;
+      const fn = muted ? 'mute' : 'unMute';
+      iframe?.contentWindow?.postMessage(`{"event":"command","func":"${fn}","args":""}`, '*');
+      soundBtn.innerHTML = muted ? svgMuted : svgSound;
+      soundBtn.title = muted ? 'Activer le son' : 'Couper le son';
+    });
+    el.appendChild(soundBtn);
 
     el.addEventListener('mouseenter', () => {
       if (!iframe) {
@@ -419,6 +464,7 @@ function makeCard(proj) {
         iframe.allow = 'autoplay; encrypted-media';
         iframe.onload = () => {
           iframeLoaded = true;
+          soundBtn.classList.add('visible');
           setTimeout(() => {
             loader.classList.add('done');
             setTimeout(() => loader.remove(), 500);
@@ -426,12 +472,10 @@ function makeCard(proj) {
         };
         el.appendChild(iframe);
       } else if (iframeLoaded) {
-        // Hovers suivants : reprendre (le CSS gère l'opacité)
         iframe.contentWindow?.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
       }
     });
     el.addEventListener('mouseleave', () => {
-      // Nettoyer le loader si le hover était trop court
       el.querySelectorAll('.card-loader').forEach(l => l.remove());
       if (iframeLoaded) {
         iframe?.contentWindow?.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');

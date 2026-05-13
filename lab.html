@@ -173,6 +173,30 @@ body {
   filter: grayscale(0%);
 }
 
+/* Sound toggle button */
+.card-sound-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 5;
+  width: 28px;
+  height: 28px;
+  background: rgba(0,0,0,0.55);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s ease, background 0.2s ease;
+  pointer-events: none;
+  padding: 0;
+}
+.card-sound-btn.visible { opacity: 1; pointer-events: auto; }
+.card-sound-btn:hover { background: rgba(255,255,255,0.18); }
+.card-sound-btn svg { width: 12px; height: 12px; display: block; }
+
 /* Video layer on hover */
 .lab-video-layer {
   position: absolute;
@@ -759,16 +783,35 @@ function renderLab(items) {
       const vLayer = d.querySelector('.lab-video-layer');
       const iframe = d.querySelector('.lab-video-layer iframe');
       let iframeLoaded = false;
+      let muted = true;
 
-      iframe.addEventListener('load', () => { iframeLoaded = true; });
+      const svgMuted = `<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>`;
+      const svgSound = `<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>`;
+
+      const soundBtn = document.createElement('button');
+      soundBtn.className = 'card-sound-btn';
+      soundBtn.innerHTML = svgMuted;
+      soundBtn.title = 'Activer le son';
+      soundBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        muted = !muted;
+        const fn = muted ? 'mute' : 'unMute';
+        iframe?.contentWindow?.postMessage(`{"event":"command","func":"${fn}","args":""}`, '*');
+        soundBtn.innerHTML = muted ? svgMuted : svgSound;
+        soundBtn.title = muted ? 'Activer le son' : 'Couper le son';
+      });
+      vLayer.appendChild(soundBtn);
+
+      iframe.addEventListener('load', () => {
+        iframeLoaded = true;
+        soundBtn.classList.add('visible');
+      });
 
       d.addEventListener('mouseenter', () => {
         stopCycle();
         if (!iframe.src) {
-          // Premier hover : charger l'iframe une seule fois
           iframe.src = iframe.dataset.src;
         } else if (iframeLoaded) {
-          // Hovers suivants : reprendre la lecture
           iframe.contentWindow?.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
         }
         vLayer.classList.add('active');
@@ -877,7 +920,7 @@ document.addEventListener('DOMContentLoaded', () => {
   <article>
     <h2>Diving Under the line</h2>
     
-    <p>Following the publication of the Stratégies cover story seven months ago, I wanted to bring this unusual AI diver to life. What does he get up to during the day? I don’t have all the answers yet, but I’ve made a start…</p>
+    <p>Following the publication of the cover of *Stratégies* featuring an image I had created / generated using AI for the occasion, I wanted to bring this unusual diver to life: what on earth is this guy doing wearing that pink latex hat?</p>
   </article>
   <article>
     <h2>Kerosene</h2>
