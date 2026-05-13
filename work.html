@@ -347,9 +347,12 @@ function makeCard(proj) {
     const s = document.createElement('div');
     s.className = 'slide' + (i === 0 ? ' active' : '');
     const img = document.createElement('img');
-    img.src = data.type === 'yt'
-      ? `https://img.youtube.com/vi/${data.id}/hqdefault.jpg`
-      : data.src;
+    if (data.type === 'yt') {
+      img.src = `https://img.youtube.com/vi/${data.id}/maxresdefault.jpg`;
+      img.onerror = () => { img.onerror = null; img.src = `https://img.youtube.com/vi/${data.id}/hqdefault.jpg`; };
+    } else {
+      img.src = data.src;
+    }
     img.alt = proj.title || '';
     img.loading = 'eager';
     s.appendChild(img);
