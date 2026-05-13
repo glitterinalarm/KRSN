@@ -181,6 +181,7 @@ body {
   opacity: 0;
   transition: opacity 0.6s ease;
   pointer-events: none;
+  background: #000;
 }
 
 .lab-video-layer.active {
@@ -757,15 +758,21 @@ function renderLab(items) {
     if (videoId) {
       const vLayer = d.querySelector('.lab-video-layer');
       const iframe = d.querySelector('.lab-video-layer iframe');
+      let leaveTimer = null;
 
       d.addEventListener('mouseenter', () => {
+        // Annule un éventuel clearSrc en cours (race condition)
+        if (leaveTimer) { clearTimeout(leaveTimer); leaveTimer = null; }
         stopCycle();
-        iframe.src = iframe.dataset.src;
+        if (!iframe.src) iframe.src = iframe.dataset.src;
         vLayer.classList.add('active');
       });
       d.addEventListener('mouseleave', () => {
         vLayer.classList.remove('active');
-        setTimeout(() => { iframe.src = ''; }, 600);
+        leaveTimer = setTimeout(() => {
+          iframe.src = '';
+          leaveTimer = null;
+        }, 700);
         startCycle();
       });
     }
