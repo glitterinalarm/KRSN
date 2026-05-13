@@ -176,13 +176,13 @@ body {
 
 /* DIM OVERLAY — darkens everything when a video plays */
 #dim-overlay {
-  position: fixed;
+  position: absolute;
   inset: 0;
   background: #000;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.55s ease;
-  z-index: 10;
+  z-index: 5;
 }
 #dim-overlay.active { opacity: 0.78; }
 
@@ -249,8 +249,9 @@ body {
   </div>
 </div>
 
-<div id="dim-overlay"></div>
-<div id="works-scene"></div>
+<div id="works-scene">
+  <div id="dim-overlay"></div>
+</div>
 
 
 <div class="works-bar">
