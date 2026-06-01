@@ -3,29 +3,29 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Works — PARAFFINE</title>
-<meta name="description" content="Selected works by PARAFFINE — Creative Direction & Motion augmented by AI."/>
+<title>Works - PARAFFINE</title>
+<meta name="description" content="Selected works by PARAFFINE - Creative Direction & Motion augmented by AI."/>
 <link rel="canonical" href="https://paraffine.studio/work"/>
 <link rel="icon" href="/favicon.png"/>
 <!-- Open Graph -->
 <meta property="og:type" content="website"/>
 <meta property="og:url" content="https://paraffine.studio/work"/>
-<meta property="og:title" content="Works — PARAFFINE"/>
-<meta property="og:description" content="Selected works by PARAFFINE — Creative Direction & Motion augmented by AI."/>
+<meta property="og:title" content="Works - PARAFFINE"/>
+<meta property="og:description" content="Selected works by PARAFFINE - Creative Direction & Motion augmented by AI."/>
 <meta property="og:image" content="https://paraffine.studio/paraffine_hero_1777725302192.png"/>
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:url" content="https://paraffine.studio/work"/>
-<meta name="twitter:title" content="Works — PARAFFINE"/>
-<meta name="twitter:description" content="Selected works by PARAFFINE — Creative Direction & Motion augmented by AI."/>
+<meta name="twitter:title" content="Works - PARAFFINE"/>
+<meta name="twitter:description" content="Selected works by PARAFFINE - Creative Direction & Motion augmented by AI."/>
 <meta name="twitter:image" content="https://paraffine.studio/paraffine_hero_1777725302192.png"/>
 <!-- JSON-LD -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "CollectionPage",
-  "name": "Works — PARAFFINE",
-  "description": "Selected works by PARAFFINE — Creative Direction & Motion augmented by AI.",
+  "name": "Works - PARAFFINE",
+  "description": "Selected works by PARAFFINE - Creative Direction & Motion augmented by AI.",
   "url": "https://paraffine.studio/work",
   "isPartOf": {
     "@type": "WebSite",
@@ -34,7 +34,7 @@
   }
 }
 </script>
-<link href="monolith.css" rel="stylesheet"/>
+<link href="monolith.css?v=20260531" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@900&family=Inter:wght@400;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet"/>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -61,7 +61,7 @@ body {
   overflow: hidden;
 }
 
-/* CARD — base, positioning set by JS */
+/* CARD - base, positioning set by JS */
 .work-card {
   position: absolute;
   overflow: hidden;
@@ -84,7 +84,7 @@ body {
   display: block;
 }
 
-/* HOVER OVERLAY — default: gradient + title at bottom */
+/* HOVER OVERLAY - default: gradient + title at bottom */
 .card-overlay {
   position: absolute;
   inset: 0;
@@ -130,7 +130,7 @@ body {
   overflow: hidden;
 }
 
-/* HOVER VIDEO — extended to clip YouTube chrome via overflow:hidden on .work-card */
+/* HOVER VIDEO - extended to clip YouTube chrome via overflow:hidden on .work-card */
 .card-video {
   position: absolute;
   top: -80px;
@@ -174,7 +174,7 @@ body {
 .card-sound-btn:hover { background: rgba(255,255,255,0.18); }
 .card-sound-btn svg { width: 13px; height: 13px; display: block; }
 
-/* LOADER — affiché pendant le chargement de la vidéo */
+/* LOADER - affiché pendant le chargement de la vidéo */
 .card-loader {
   position: absolute;
   inset: 0;
@@ -243,7 +243,7 @@ body {
 }
 
 
-/* Description mobile — 2 lignes max */
+/* Description mobile - 2 lignes max */
 @media (max-width: 768px) {
   .card-desc { -webkit-line-clamp: 2; }
 }
@@ -256,35 +256,37 @@ body {
 
 <!-- NAV -->
 <nav class="nav-split">
-  <div class="nav-group-left">
-    <a href="lab.html">Lab</a>
-    <a href="lab.html#insights">Insights</a>
-  </div>
-  <a class="nav-logo-center" href="index.html">PARAFFINE<span style="font-weight:400; opacity:0.5;">.studio</span></a>
+  <a class="nav-logo-center" href="/">PARAFFINE<span style="font-weight:400; opacity:0.5;">.studio</span></a>
   <div class="nav-group-right">
-    <a href="work.html">Works</a>
-    <a href="studio.html">Studio</a>
-    <a href="studio.html">Contact</a>
+    <a href="/work">Works</a>
+        <a href="/lab">Lab</a>
+        <a href="/studio">Contact</a>
     <div class="lang-toggle">
       <button class="lang-btn" data-lang="fr" onclick="setLang('fr')">FR</button>
       <span class="lang-sep">/</span>
       <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
     </div>
   </div>
-  <div class="burger-icon" onclick="toggleMenu()">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+  <div class="burger-icon" id="burger-toggle" onclick="toggleMenu()">
+    <svg class="icon-bars" viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+    <svg class="icon-close" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
   </div>
 </nav>
+  </div>
+</div>
+
 
 <!-- MOBILE MENU -->
 <div id="mobile-menu" class="mobile-menu-overlay">
-  <div class="mobile-menu-close" onclick="toggleMenu()">✕</div>
   <div class="mobile-menu-content">
-    <a href="lab.html">Lab</a>
-    <a href="lab.html#insights">Insights</a>
-    <a href="work.html">Works</a>
-    <a href="studio.html">Studio</a>
-    <a href="studio.html#contact">Contact</a>
+    <a href="/work">Works</a>
+    <a href="/lab">Lab</a>
+    <a href="/studio">Contact</a>
+    <div class="mobile-lang-toggle">
+      <button class="lang-btn" data-lang="fr" onclick="setLang('fr')">FR</button>
+      <span> / </span>
+      <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
   </div>
 </div>
 
@@ -300,8 +302,10 @@ body {
 <script>
 // ─── Toggle menu ───────────────────────────────────────────
 function toggleMenu() {
-  const m = document.getElementById('mobile-menu');
-  if (m) m.classList.toggle('active');
+  const menu = document.getElementById('mobile-menu');
+  const burger = document.getElementById('burger-toggle');
+  if (menu) menu.classList.toggle('active');
+  if (burger) burger.classList.toggle('is-open');
 }
 
 // ─── Detect mode ───────────────────────────────────────────
@@ -321,7 +325,7 @@ function buildConfig() {
   const mobile = IS_MOBILE();
 
   if (!mobile) {
-    // HORIZONTAL — width varies by X, height = width * ASPECT, cards centered vertically
+    // HORIZONTAL - width varies by X, height = width * ASPECT, cards centered vertically
     CFG = {
       mode:      'H',
       W_MAX:     Math.round(W * 0.56),
@@ -330,7 +334,7 @@ function buildConfig() {
       BUFFER:    Math.round(W * 0.6),
     };
   } else {
-    // VERTICAL — width varies by Y (big at top, small at bottom), cards centered horizontally
+    // VERTICAL - width varies by Y (big at top, small at bottom), cards centered horizontally
     CFG = {
       mode:      'V',
       W_MAX:     Math.round(W * 0.88),  // widest card (top)
@@ -352,7 +356,7 @@ function sizeAt(pos) {
 
   const origin = CFG.mode === 'H' ? 0 : CFG.NAV_OFF;
   const t = Math.max(0, Math.min(1, (pos - origin) / range));
-  const eased = t * t; // quadratic — stronger staircase near top/left
+  const eased = t * t; // quadratic - stronger staircase near top/left
   return Math.round(CFG.W_MAX + (CFG.W_MIN - CFG.W_MAX) * eased);
 }
 
@@ -382,7 +386,7 @@ function makeCard(proj) {
   el.className = 'work-card';
   const timers = [];
 
-  // Build slides — YouTube URLs become thumbnails (autoplay off-screen is unreliable), Vimeo skipped
+  // Build slides - YouTube URLs become thumbnails (autoplay off-screen is unreliable), Vimeo skipped
   const slideData = (proj.images || []).map(s => {
     const id = ytId(s);
     if (id) return { type: 'yt', id };
@@ -418,7 +422,7 @@ function makeCard(proj) {
     timers.push(t);
   }
 
-  // Collect ALL YouTube IDs from the project — playlist hover plays them all in sequence
+  // Collect ALL YouTube IDs from the project - playlist hover plays them all in sequence
   const ytIds = [];
   const primaryId = ytId(proj.videoLink) || ytId(proj.link);
   if (primaryId) ytIds.push(primaryId);
@@ -483,7 +487,7 @@ function makeCard(proj) {
     });
   }
 
-  // Overlay — bottom gradient for all cards, description shown below title
+  // Overlay - bottom gradient for all cards, description shown below title
   const ov = document.createElement('div');
   ov.className = 'card-overlay';
   const descHtml = proj.description
@@ -610,7 +614,7 @@ function fillBackward() {
 function loop() {
   if (Math.abs(velocity) > 0.05) {
     anchor -= velocity;
-    velocity *= 0.92;
+    velocity *= 0.90;
     recompute();
     trimBackward();
     trimForward();
@@ -622,7 +626,7 @@ function loop() {
 
 // ─── Input ─────────────────────────────────────────────────
 function bindInput() {
-  // Wheel — both axes on desktop, deltaY on mobile
+  // Wheel - both axes on desktop, deltaY on mobile
   window.addEventListener('wheel', e => {
     e.preventDefault();
     const d = IS_MOBILE()
@@ -645,7 +649,7 @@ function bindInput() {
     isDragging = false;
   });
 
-  // Touch — axis depends on mode
+  // Touch - axis depends on mode
   let t0 = 0;
   window.addEventListener('touchstart', e => {
     t0 = IS_MOBILE() ? e.touches[0].clientY : e.touches[0].clientX;
@@ -653,7 +657,7 @@ function bindInput() {
 
   window.addEventListener('touchmove', e => {
     const tNow = IS_MOBILE() ? e.touches[0].clientY : e.touches[0].clientX;
-    velocity += (t0 - tNow) * 0.7;
+    velocity += (t0 - tNow) * 0.5;
     t0 = tNow;
   }, { passive: true });
 }
@@ -700,7 +704,7 @@ async function init() {
   bindInput();
 }
 
-// ─── Resize — full rebuild ──────────────────────────────────
+// ─── Resize - full rebuild ──────────────────────────────────
 function rebuild() {
   // Destroy all current cards
   strip.forEach(card => {
@@ -739,17 +743,25 @@ init();
 </script>
 <script src="lang.js"></script>
 <script>document.addEventListener('DOMContentLoaded', initLang);</script>
-<!-- SEO_INJECT_WORKS_START --><section class="seo-static" aria-label="Projects">
+<!-- SEO_INJECT_WORKS_START --><section class="seo-static" aria-label="seo inject works">
+  <article>
+    <h2>Croix Rouge</h2>
+    <p>CAMPAGNE 360</p>
+    <p>2026</p>
+    <p>La crise sanitaire a tout aggravé. La précarité existait avant, elle a grossi, débordé, touché des gens qui ne s'y attendaient pas. Étudiants, retraités, familles. Des profils que personne n'imagine quand on dit &quot;bénéficiaire de la Croix-Rouge&quot;. L'enjeu : remettre des visages humains sur une cause qui devient abstraite à force d'être médiatisée. Deux saisons de films, six portraits face cam à chaque fois avec trois aidés, trois bénévoles, des films bruts, sans reconstitution, sans voix off dramatique.</p>
+  </article>
   <article>
     <h2>AXEPTA</h2>
     <p>BRANDING, PHOTOSHOOT &amp; EVENT</p>
+    <p>2026</p>
     <p>L'encaissement, c'est pas sexy. On a changé ça.
-Nouveau positionnement, nouvelle signature, nouveau branding : Ready Set Pay, et un univers visuel construit autour d'un triptyque : le client, l'accroche, le produit. Shooting photo avec un casting de choc, déclinaisons digitales, et une scénographie event à la Paris Retail Week tirée de l'identité qu'on avait créée.
+Nouveau positionnement, nouvelle signature : Ready Set Pay, et un univers visuel construit autour d'un triptyque : le client, l'accroche, le produit. Shooting photo avec un casting moderne, déclinaisons complètes, et une scénographie event à la Paris Retail Week tirée de l'identité qu'on avait créée.
 Résultat : une marque B2B qui ressemble enfin à ses clients.</p>
   </article>
   <article>
     <h2>WESTFIELD</h2>
     <p>BROADCAST</p>
+    <p>2026</p>
     <p>Un centre commercial, une génération blasée, un glitch sur un écran. Et tout bascule.
 Pour les Westfield Days 2025, on a conçu un film héro surréaliste &quot; Where Future Meets Style &quot; où la mode transcende le réel à travers des séquences impossibles et poétiques. Pensé social first, déclinable en capsules, posts et contenus immersifs pour capter les 18-25 ans là où ils sont.
 Parce qu'un centre commercial peut devenir un portail vers autre chose.
@@ -758,18 +770,15 @@ Parce qu'un centre commercial peut devenir un portail vers autre chose.
   <article>
     <h2>POLICE NATIONALE</h2>
     <p>CAMPAGNE 360</p>
+    <p>2026</p>
     <p>7 000 postes à pourvoir. Et une génération à convaincre.
 On est partis de leurs valeurs : curiosité, engagement, solidarité, endurance, pour projeter les 18-25 ans dans le quotidien concret des métiers de la police. 3 films, 2 spots radio, 6 créations digitales. Un message taillé pour chaque communauté d'intérêt, multicanal, ultra-ciblé.
 Résultat : la police, enfin vue comme un choix. Pas un défaut d'orientation.</p>
   </article>
   <article>
-    <h2>CROIX ROUGE FRANÇAISE</h2>
-    <p>CAMPAGNE 360</p>
-    <p>Les dons hivernaux baissent, la précarité augmente, et les gens donnent moins quand ils ne voient pas à qui ça va. L'enjeu : remettre des visages humains sur une cause qui devient abstraite à force d'être médiatisée. Deux saisons, 6 portraits face cam, aidés et aidants, bruts, sans reconstitution. </p>
-  </article>
-  <article>
     <h2>TOURISME</h2>
     <p>CAMPAGNE 360</p>
+    <p>2026</p>
     <p>Hôtelier, perchman, agent événementiel, vous connaissiez ?
 Derrière le mot &quot;tourisme&quot;, il y a des centaines de métiers que personne ne voit. On a changé ça avec un dispositif full digital étalé sur un an : un film héro et des capsules tournées aux quatre coins de la France, chacune dédiée à un métier, une histoire, un visage. Conçu pour les 16-25 ans, avec en toile de fond un objectif concret : recruter avant la Coupe du Monde de Rugby 2023.
 Donner envie, c'est déjà recruter.</p>
@@ -777,8 +786,9 @@ Donner envie, c'est déjà recruter.</p>
   <article>
     <h2>LEBONCOIN</h2>
     <p>MOTION</p>
+    <p>2025</p>
     <p>Expliquer sans ennuyer. C'est tout l'enjeu.
-Pour LeBonCoin, on a conçu une série de motions pour présenter les fonctionnalités de l'app : immobilier, pro, tutos grand public. Le principe : mêler 3D, vidéo et typographie dans des formats courts, ludiques, et toujours didactiques. Accessible pour tout le monde, utile pour les professionnel.
+Pour LeBonCoin, on a conçu une série de motions pour présenter les fonctionnalités de l'app - immobilier, pro, tutos grand public. Le principe : mêler 3D, vidéo et typographie dans des formats courts, ludiques, et toujours didactiques. Accessible pour tout le monde, utile pour les professionnel.
 Parce qu'un bon produit mérite un bon tuto.</p>
   </article>
 </section><!-- SEO_INJECT_WORKS_END -->

@@ -1,7 +1,7 @@
 const { put, head } = require('@vercel/blob');
+const crypto = require('crypto');
 
 const BLOB_KEY = 'paraffine/site-data.json';
-const ADMIN_HASH = 'cecd08cd2d64e39f8266e707b2e3d32cb687cb0b5b6b4bde2b1086b31e1f716e';
 
 async function getBlobUrl() {
   const base = 'https://2vfzwmqqws8h2xfv.public.blob.vercel-storage.com/' + BLOB_KEY;
@@ -32,7 +32,9 @@ module.exports = async function handler(req, res) {
 
   if (req.method === 'POST') {
     const key = req.headers['x-admin-key'];
-    if (key !== ADMIN_HASH) {
+    const expected = process.env.ADMIN_HASH;
+    const validToken = crypto.createHmac('sha256', expected).update('session').digest('hex');
+    if (!expected || key !== validToken) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 

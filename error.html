@@ -290,19 +290,20 @@ alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
 </nav>
 
 <div id="mobile-menu" class="mobile-menu-overlay">
-  <div class="mobile-menu-close" onclick="toggleMenu()">✕</div>
   <div class="mobile-menu-content">
-    <a href="lab.html">Lab</a>
-    <a href="insights.html">Insights</a>
-    <a href="work.html">Works</a>
-    <a href="studio.html">Studio</a>
-    <a href="contact.html">Contact</a>
+    <a href="/lab">Lab</a>
+    <a href="/insights">Insights</a>
+    <a href="/work">Works</a>
+    <a href="/studio">Studio</a>
+    <a href="/contact">Contact</a>
   </div>
 </div>
 <script id="burger-logic">
 function toggleMenu() {
   const menu = document.getElementById('mobile-menu');
+  const burger = document.getElementById('burger-toggle');
   if (menu) menu.classList.toggle('active');
+  if (burger) burger.classList.toggle('is-open');
 }
 </script>
 <!-- BURGER_END -->

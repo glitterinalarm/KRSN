@@ -2,18 +2,18 @@
 
 <html class="dark" lang="en">
 <head>
-<title>Privacy Policy — PRFFN</title>
+<title>Privacy Policy - PRFFN</title>
 <meta content="Privacy and data protection policies for the PRFFN platform." name="description"/>
 <!-- Open Graph / Facebook -->
 <meta content="website" property="og:type"/>
 <meta content="https://krsn.vercel.app/privacy.html" property="og:url"/>
-<meta content="Privacy Policy — PRFFN" property="og:title"/>
+<meta content="Privacy Policy - PRFFN" property="og:title"/>
 <meta content="Privacy and data protection policies for the PRFFN platform." property="og:description"/>
 <meta content="https://lh3.googleusercontent.com/aida-public/AB6AXuDKZoscx-d3NfMH2HMTJY_UTKS-SohAG2LaVlC5LR9uaewqgo32t-HkeYbm5mgZHTecMPjIpPKTUjOfc15wv4Tf8ZeTpqN0_U8zAPndCZ3s9Fq9Kr-zs3Ml8znkx0NIeczdkgQCu22pvZfIlyD5PkBcwmv9Llk6c6rDtyx8H_Pp2fT22u0d3pSO_QWpD_8SjwXvc3q3aLgnbdxPYcZaYotB3LmKw480VkfLSbc8VLJD-J-IMDGvVegUEMhuiOX8sw4cgV9QrdStvGQX" property="og:image"/>
 <!-- Twitter -->
 <meta content="summary_large_image" property="twitter:card"/>
 <meta content="https://krsn.vercel.app/privacy.html" property="twitter:url"/>
-<meta content="Privacy Policy — PRFFN" property="twitter:title"/>
+<meta content="Privacy Policy - PRFFN" property="twitter:title"/>
 <meta content="Privacy and data protection policies for the PRFFN platform." property="twitter:description"/>
 <meta content="https://lh3.googleusercontent.com/aida-public/AB6AXuDKZoscx-d3NfMH2HMTJY_UTKS-SohAG2LaVlC5LR9uaewqgo32t-HkeYbm5mgZHTecMPjIpPKTUjOfc15wv4Tf8ZeTpqN0_U8zAPndCZ3s9Fq9Kr-zs3Ml8znkx0NIeczdkgQCu22pvZfIlyD5PkBcwmv9Llk6c6rDtyx8H_Pp2fT22u0d3pSO_QWpD_8SjwXvc3q3aLgnbdxPYcZaYotB3LmKw480VkfLSbc8VLJD-J-IMDGvVegUEMhuiOX8sw4cgV9QrdStvGQX" property="twitter:image"/>
 <link rel="icon" href="/favicon.png"/>
@@ -62,14 +62,14 @@
 <div class="grain"></div>
 <nav class="nav-split">
 <div class="nav-group-left">
-<a href="lab.html#lab">Lab</a>
-<a href="lab.html#insights">Insights</a>
+<a href="/lab#lab">Lab</a>
+<a href="/lab#insights">Insights</a>
 </div>
-<a class="nav-logo-center" href="index.html">PARAFFINE</a>
+<a class="nav-logo-center" href="/">PARAFFINE</a>
 <div class="nav-group-right">
-<a href="work.html">Works</a>
-<a href="studio.html">Studio</a>
-<a href="studio.html">Contact</a>
+<a href="/work">Works</a>
+<a href="/studio">Studio</a>
+<a href="/studio">Contact</a>
 </div>
 
 <!-- BURGER_START -->
@@ -79,19 +79,20 @@
 </nav>
 
 <div id="mobile-menu" class="mobile-menu-overlay">
-  <div class="mobile-menu-close" onclick="toggleMenu()">✕</div>
   <div class="mobile-menu-content">
-    <a href="lab.html#lab">Lab</a>
-    <a href="lab.html#insights">Insights</a>
-    <a href="work.html">Works</a>
-    <a href="studio.html">Studio</a>
-    <a href="studio.html">Contact</a>
+    <a href="/lab#lab">Lab</a>
+    <a href="/lab#insights">Insights</a>
+    <a href="/work">Works</a>
+    <a href="/studio">Studio</a>
+    <a href="/studio">Contact</a>
   </div>
 </div>
 <script id="burger-logic">
 function toggleMenu() {
   const menu = document.getElementById('mobile-menu');
+  const burger = document.getElementById('burger-toggle');
   if (menu) menu.classList.toggle('active');
+  if (burger) burger.classList.toggle('is-open');
 }
 </script>
 <!-- BURGER_END -->
@@ -117,7 +118,7 @@ function toggleMenu() {
 </div>
 <div class="mt-40 pt-10 border-t border-white/10 flex justify-between items-center text-[10px] uppercase tracking-widest opacity-40">
 <span>v.2026.01</span>
-<a class="hover:text-white transition-colors" href="index.html">Back to Monolith</a>
+<a class="hover:text-white transition-colors" href="/">Back to Monolith</a>
 </div>
 </main>
 </body>

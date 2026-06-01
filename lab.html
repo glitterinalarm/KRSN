@@ -3,29 +3,29 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Lab & Insights — PARAFFINE</title>
-<meta name="description" content="PARAFFINE Lab — R&D experiments and creative insights from the Kérosene feed."/>
+<title>Lab - PARAFFINE</title>
+<meta name="description" content="PARAFFINE Lab - Expérimentations R&D, outils et projets créatifs par Germain Trillat."/>
 <link rel="canonical" href="https://paraffine.studio/lab"/>
 <link rel="icon" href="/favicon.png"/>
 <!-- Open Graph -->
 <meta property="og:type" content="website"/>
 <meta property="og:url" content="https://paraffine.studio/lab"/>
-<meta property="og:title" content="Lab & Insights — PARAFFINE"/>
-<meta property="og:description" content="PARAFFINE Lab — R&D experiments and creative insights from the Kérosene feed."/>
+<meta property="og:title" content="Lab - PARAFFINE"/>
+<meta property="og:description" content="PARAFFINE Lab - Expérimentations R&D, outils et projets créatifs par Germain Trillat."/>
 <meta property="og:image" content="https://paraffine.studio/paraffine_hero_1777725302192.png"/>
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:url" content="https://paraffine.studio/lab"/>
-<meta name="twitter:title" content="Lab & Insights — PARAFFINE"/>
-<meta name="twitter:description" content="PARAFFINE Lab — R&D experiments and creative insights from the Kérosene feed."/>
+<meta name="twitter:title" content="Lab - PARAFFINE"/>
+<meta name="twitter:description" content="PARAFFINE Lab - Expérimentations R&D, outils et projets créatifs par Germain Trillat."/>
 <meta name="twitter:image" content="https://paraffine.studio/paraffine_hero_1777725302192.png"/>
 <!-- JSON-LD -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "WebPage",
-  "name": "Lab & Insights — PARAFFINE",
-  "description": "PARAFFINE Lab — R&D experiments and creative insights from the Kérosene feed.",
+  "name": "Lab - PARAFFINE",
+  "description": "PARAFFINE Lab - Expérimentations R&D, outils et projets créatifs par Germain Trillat.",
   "url": "https://paraffine.studio/lab",
   "isPartOf": {
     "@type": "WebSite",
@@ -34,7 +34,7 @@
   }
 }
 </script>
-<link href="monolith.css" rel="stylesheet"/>
+<link href="monolith.css?v=20260531" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@900&family=Inter:wght@400;500;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet"/>
 <script src="lang.js"></script>
 <style>
@@ -44,8 +44,8 @@ body {
   background: #fff;
   color: #000;
   font-family: 'Inter', sans-serif;
-  overflow: hidden;
-  height: 100vh;
+  overflow-y: auto;
+  min-height: 100vh;
   width: 100vw;
 }
 
@@ -57,15 +57,15 @@ body {
 
 /* ─── LAYOUT ──────────────────────────────────────────────── */
 .lab-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  height: 100vh;
+  display: block;
   width: 100vw;
   padding-top: 100px; /* nav clearance */
+  min-height: 100vh;
 }
 
-/* Vertical divider */
+/* Vertical divider - removed */
 .lab-layout::before {
+  display: none;
   content: '';
   position: fixed;
   top: 0;
@@ -79,11 +79,7 @@ body {
 
 /* ─── COLUMN ──────────────────────────────────────────────── */
 .col {
-  height: calc(100vh - 100px);
-  overflow-y: auto;
-  overflow-x: hidden;
   padding: 48px 56px 80px;
-  scrollbar-width: none;
   scroll-behavior: smooth;
 }
 .col::-webkit-scrollbar { display: none; }
@@ -99,7 +95,7 @@ body {
 }
 
 .col-header::before {
-  content: '—';
+  content: '-';
   font-family: 'JetBrains Mono', monospace;
   font-size: 9px;
   opacity: 0.4;
@@ -123,11 +119,12 @@ body {
 }
 
 .col-description {
-  font-size: 12px;
-  line-height: 1.8;
-  color: #555;
-  max-width: 420px;
-  margin-bottom: 48px;
+  font-size: 15px;
+  line-height: 1.75;
+  color: #444;
+  max-width: 480px;
+  margin-bottom: 56px;
+  margin-top: 16px;
   padding-bottom: 40px;
   border-bottom: 1px solid rgba(0,0,0,0.08);
 }
@@ -267,7 +264,7 @@ body {
 
 .lab-item:hover .lab-link { opacity: 1; }
 
-/* ─── INSIGHTS ITEMS (RIGHT) — uniform cards ─────────────── */
+/* ─── INSIGHTS ITEMS (RIGHT) - uniform cards ─────────────── */
 .insight-card {
   margin-bottom: 48px;
   cursor: pointer;
@@ -407,61 +404,37 @@ body {
 
 /* ─── MOBILE ──────────────────────────────────────────────── */
 @media (max-width: 768px) {
-  .lab-layout {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    height: 100svh; /* stable: doesn't shift when Safari URL bar appears/hides */
-    padding-top: 62px;
-    overflow: hidden;
+  html, body {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    height: auto !important;
+    min-height: 100svh !important;
+    touch-action: pan-y !important;
   }
 
-  /* Remove both pseudo-elements — divider is now a real flex child */
+  .lab-layout {
+    display: block;
+    height: auto;
+    min-height: 100svh;
+    padding-top: 70px;
+    overflow: visible;
+  }
+
   .lab-layout::before,
   .lab-layout::after { display: none; }
 
-  /* Real divider element — always exactly between the two cols */
-  .mob-divider {
-    flex-shrink: 0;
-    width: 100%;
-    height: 1px;
-    background: rgba(0,0,0,0.1);
+  .col {
+    overflow: visible;
+    display: block;
+    padding: 24px 24px 60px;
+    height: auto;
   }
 
-  /* Column base */
-  .col {
-    overflow: hidden;
+  .col-inner {
     display: flex;
     flex-direction: column;
-    padding: 0;
+    gap: 40px;
   }
-
-  /* Espace égal pour LAB et INSIGHTS — 50/50 */
-  .col-left,
-  .col-right {
-    flex: 1;
-    min-height: 0;
-  }
-
-  /* Breathing room sous le logo PARAFFINE */
-  .col-left .mob-section-label {
-    padding-top: 8px;
-  }
-
-  /* Horizontal scroll inner strip */
-  .col-inner {
-    flex: 0 0 auto;
-    display: flex;
-    flex-direction: row;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-snap-type: x mandatory;
-    scroll-padding-left: 24px; /* tells snap engine where cards should start */
-    scrollbar-width: none;
-    padding: 14px 0;
-    gap: 16px;
-  }
-  .col-inner::-webkit-scrollbar { display: none; }
 
   /* Mobile cards in strip */
   .mob-card {
@@ -536,9 +509,10 @@ body {
 
   /* col-right card width matches global .mob-card */
 
-/* Hide desktop-only elements on mobile */
-  .desktop-only { display: none !important; }
-  .mobile-only { display: flex !important; }
+/* Single feed on all screen sizes */
+  .desktop-only { display: block !important; }
+  .mobile-only { display: none !important; }
+  .lab-feed { display: block !important; }
 }
 
 /* Mobile-only elements hidden on desktop */
@@ -547,39 +521,41 @@ body {
 </head>
 <body>
 
-<div class="site-frame"></div>
+<div class="site-frame" style="display:none"></div>
 
 <!-- NAV -->
 <nav class="nav-split">
-  <div class="nav-group-left">
-    <a href="lab.html">Lab</a>
-    <a href="lab.html">Insights</a>
-  </div>
-  <a class="nav-logo-center" href="index.html">PARAFFINE<span style="font-weight:400; opacity:0.5;">.studio</span></a>
+  <a class="nav-logo-center" href="/">PARAFFINE<span style="font-weight:400; opacity:0.5;">.studio</span></a>
   <div class="nav-group-right">
-    <a href="work.html">Works</a>
-    <a href="studio.html">Studio</a>
-    <a href="studio.html">Contact</a>
+    <a href="/work">Works</a>
+        <a href="/lab">Lab</a>
+        <a href="/studio">Contact</a>
     <div class="lang-toggle">
       <button class="lang-btn" data-lang="fr" onclick="setLang('fr')">FR</button>
       <span class="lang-sep">/</span>
       <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
     </div>
   </div>
-  <div class="burger-icon" onclick="toggleMenu()">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+  <div class="burger-icon" id="burger-toggle" onclick="toggleMenu()">
+    <svg class="icon-bars" viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+    <svg class="icon-close" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
   </div>
 </nav>
+  </div>
+</div>
+
 
 <!-- MOBILE MENU -->
 <div id="mobile-menu" class="mobile-menu-overlay">
-  <div class="mobile-menu-close" onclick="toggleMenu()">✕</div>
   <div class="mobile-menu-content">
-    <a href="lab.html">Lab</a>
-    <a href="lab.html">Insights</a>
-    <a href="work.html">Works</a>
-    <a href="studio.html">Studio</a>
-    <a href="studio.html#contact">Contact</a>
+    <a href="/work">Works</a>
+    <a href="/lab">Lab</a>
+    <a href="/studio">Contact</a>
+    <div class="mobile-lang-toggle">
+      <button class="lang-btn" data-lang="fr" onclick="setLang('fr')">FR</button>
+      <span> / </span>
+      <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
   </div>
 </div>
 
@@ -593,38 +569,20 @@ body {
       <span class="col-sublabel">Experiments</span>
     </div>
     <!-- Mobile section label -->
-    <div class="mob-section-label mobile-only">Lab / R&amp;D</div>
     <!-- Intro description -->
-    <p class="col-description desktop-only" id="lab-description"></p>
-    <!-- Desktop content injected by JS -->
-    <div class="lab-feed desktop-only" id="lab-feed-desktop"></div>
-    <!-- Mobile horizontal strip -->
-    <div class="col-inner mobile-only" id="lab-feed-mobile"></div>
-  </div>
-
-  <!-- Mobile divider — real element so position is always exact -->
-  <div class="mob-divider mobile-only"></div>
-
-  <!-- RIGHT: INSIGHTS FEED -->
-  <div class="col col-right" id="insights">
-    <div class="col-header">
-      <span class="col-label">Insights / Kérosene</span>
-      <span class="col-sublabel">Bidirectionnal Feed</span>
-    </div>
-    <!-- Mobile section label -->
-    <div class="mob-section-label mobile-only">Insights / Kérosene</div>
-    <!-- Desktop content injected by JS -->
-    <div class="insights-feed desktop-only" id="insights-feed-desktop"></div>
-    <!-- Mobile horizontal strip -->
-    <div class="col-inner mobile-only" id="insights-feed-mobile"></div>
+    <p class="col-description" id="lab-description"></p>
+    <!-- Feed injected by JS -->
+    <div class="lab-feed" id="lab-feed-desktop"></div>
   </div>
 
 </main>
 
 <script>
 function toggleMenu() {
-  const m = document.getElementById('mobile-menu');
-  if (m) m.classList.toggle('active');
+  const menu = document.getElementById('mobile-menu');
+  const burger = document.getElementById('burger-toggle');
+  if (menu) menu.classList.toggle('active');
+  if (burger) burger.classList.toggle('is-open');
 }
 
 const IS_MOBILE = () => window.innerWidth <= 768;
@@ -688,8 +646,6 @@ async function init() {
   } catch (e) {
     console.warn('Kérosène archive unavailable', e);
   }
-
-  renderInsights(heroItems);
 }
 
 // Échappe les attributs HTML pour éviter les injections dans data-fr/data-en
@@ -849,17 +805,17 @@ function renderLab(items) {
       <div class="mob-title">${item.title || ''}</div>
       ${item.description ? `<div class="mob-desc" ${bilingualAttrs(item.description)}>${t(item.description)}</div>` : ''}
     `;
-    mobile.appendChild(m);
+    if (mobile) mobile.appendChild(m);
   });
 }
 
-// ─── INSIGHTS — all uniform cards ───────────────────────────
+// ─── INSIGHTS - all uniform cards ───────────────────────────
 function renderInsights(items) {
   const desktop = document.getElementById('insights-feed-desktop');
   const mobile  = document.getElementById('insights-feed-mobile');
 
   if (!items.length) {
-    desktop.innerHTML = '<p style="font-size:10px; opacity:0.35; letter-spacing:0.15em; text-transform:uppercase; padding:24px 0; font-family:\'JetBrains Mono\',monospace;">Première génération en cours —</p>';
+    desktop.innerHTML = '<p style="font-size:10px; opacity:0.35; letter-spacing:0.15em; text-transform:uppercase; padding:24px 0; font-family:\'JetBrains Mono\',monospace;">Première génération en cours -</p>';
     return;
   }
 
@@ -895,7 +851,7 @@ function renderInsights(items) {
       <div class="mob-title">${title}</div>
       ${item.description ? `<div class="mob-desc">${item.description}</div>` : ''}
     `;
-    mobile.appendChild(m);
+    if (mobile) mobile.appendChild(m);
   });
 }
 
@@ -920,26 +876,76 @@ document.addEventListener('DOMContentLoaded', () => {
 <footer style="border-top: 1px solid rgba(0,0,0,0.08); padding: 1.5rem 3rem; display: flex; justify-content: space-between; align-items: center; font-size: 0.6rem; letter-spacing: 0.15em; color: rgba(0,0,0,0.35); flex-wrap: wrap; gap: 1rem;">
   <span>©paraffine.studio &nbsp;·&nbsp; Paris</span>
   <div style="display:flex; gap:2rem;">
-    <a href="mentions-legales.html" style="color:rgba(0,0,0,0.35); text-decoration:none;">Mentions légales</a>
-    <a href="politique-confidentialite.html" style="color:rgba(0,0,0,0.35); text-decoration:none;">Confidentialité</a>
+    <a href="/mentions-legales" style="color:rgba(0,0,0,0.35); text-decoration:none;">Mentions légales</a>
+    <a href="/politique-confidentialite" style="color:rgba(0,0,0,0.35); text-decoration:none;">Confidentialité</a>
   </div>
 </footer>
-<!-- SEO_INJECT_LAB_START --><section class="seo-static" aria-label="Projects">
+<!-- SEO_INJECT_LAB_START --><section class="seo-static" aria-label="seo inject lab">
   <article>
-    <h2>Diving Under the line</h2>
+    <h2>VAMPIRE - MOTION</h2>
+    <p>MOTION // EXPERIMENTAL</p>
     
-    <p>Following the publication of the cover of *Stratégies* featuring an image I had created / generated using AI for the occasion, I wanted to bring this unusual diver to life: what on earth is this guy doing wearing that pink latex hat?</p>
+    <a href="https://youtu.be/mk0BoGmX_B8">VAMPIRE - MOTION</a>
+  </article>
+  <article>
+    <h2>WILDCARDS</h2>
+    <p>TOOL // PROMPT GENERATOR</p>
+    <p>Un générateur de prompts aléatoires pour images IA, construit autour d'un système de wildcards organisés en 5 paramètres : sujet, détails, contexte, style et technique.</p>
+    <a href="https://wild.paraffine.studio/">WILDCARDS</a>
   </article>
   <article>
     <h2>Kerosene</h2>
-    
-    <p>Kérosène is the problem every creative has but nobody's actually solved. The daily watch. That indispensable, time-eating ritual, LinkedIn here, Insta there, Creapills, Highsnobiety, La Réclame, Dazed — an hour lost every morning rebuilding the same thing from scratch. So I vibe coded the site I wished existed. No dev background. Just tools and instinct. Graphic design, Advertising, Architecture, Trends, AI, Photography — all in one place, every day, fresh. For me. For my clients. To never walk into a room not knowing what just dropped.</p>
+    <p>AI CURATED // WEBZINE</p>
+    <p>Agrégateur de veille pour créatifs - curation IA de références motion, branding et culture visuelle.</p>
+    <a href="https://veille-creative.vercel.app/">Kerosene</a>
+  </article>
+  <article>
+    <h2>STRATÉGIE - COUVERTURE</h2>
+    <p>MOTION // BROADCAST</p>
+    <p>Motion design pour la couverture du magazine Stratégie.</p>
+    <a href="https://youtu.be/cfhvrfDQuNE">STRATÉGIE - COUVERTURE</a>
   </article>
   <article>
     <h2>TLDR CREATIVE</h2>
+    <p>INSTAGRAM // ARCHIVE</p>
     
-    <p>Le resumé de livre en film commence avec TLDR</p>
+    <a href="https://www.youtube.com/@TL3BDR">TLDR CREATIVE</a>
   </article>
 </section><!-- SEO_INJECT_LAB_END -->
+<!-- SEO_INJECT_INSIGHTS_START --><section class="seo-static" aria-label="seo inject insights">
+  <h2>Kérosène — Veille créative</h2>
+  <p>Sélection d'articles et de références sur le motion design, le branding, la culture visuelle et l'IA créative. Curatée par Germain Trillat via PARAFFINE studio.</p>
+  
+  <article>
+    <h3>GRAPHISME // It's Nice That</h3>
+    <p>Intra on the rewarding process of recognising the art in obscure everyday life</p>
+    <a href="https://www.itsnicethat.com/articles/nicer-tuesdays-london-april-intra-010526" rel="noopener">GRAPHISME // It's Nice That</a>
+  </article>
+  <article>
+    <h3>INNOVATION // Motionographer</h3>
+    <p>Studio Stories: The Rise of Panic</p>
+    <a href="https://motionographer.com/2026/04/28/studio-stories-the-rise-of-panic/" rel="noopener">INNOVATION // Motionographer</a>
+  </article>
+  <article>
+    <h3>DROP // Highsnobiety</h3>
+    <p>This Is What Happens When ASICS' Most Trusted Dad Shoe Gets Weird</p>
+    <a href="https://www.highsnobiety.com/p/asics-tk/" rel="noopener">DROP // Highsnobiety</a>
+  </article>
+  <article>
+    <h3>TREND // Dazed</h3>
+    <p>Rio Fashion Week came in hot for its 2026 relaunch</p>
+    <a href="https://www.dazeddigital.com/fashion/article/70188/1/rio-de-janeiro-fashion-week-2026-best-shows-brazil?utm_source=Link&amp;utm_medium=Link&amp;utm_campaign=RSSFeed&amp;utm_term=rio-fashion-week-came-in-hot-for-its-2026-relaunch" rel="noopener">TREND // Dazed</a>
+  </article>
+  <article>
+    <h3>SOCIAL MEDIA // We Are Social Global</h3>
+    <p>We Are Social’s Monday Mashup #767</p>
+    <a href="https://wearesocial.com/blog/2026/03/we-are-socials-monday-mashup-767/" rel="noopener">SOCIAL MEDIA // We Are Social Global</a>
+  </article>
+  <article>
+    <h3>IA CRÉATIVE // Maginative</h3>
+    <p>With Gemini 3, Google Begins Rebuilding How Work Gets Done</p>
+    <a href="https://www.maginative.com/article/googles-gemini-3-is-here-heres-why-it-actually-matters/" rel="noopener">IA CRÉATIVE // Maginative</a>
+  </article>
+</section><!-- SEO_INJECT_INSIGHTS_END -->
 </body>
 </html>

@@ -1,5 +1,5 @@
 /**
- * PARAFFINE — Language Utility
+ * PARAFFINE - Language Utility
  * Simple FR/EN toggle stored in localStorage.
  * No auto-translation. Manual content in site_data.json.
  */

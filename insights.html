@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 
 <html class="dark" lang="en"><head>
-<title>Insights &amp; Transmissions — PARAFFINE</title>
+<title>Insights &amp; Transmissions - PARAFFINE</title>
 <meta content="Critical reflections on the intersection of human intentionality, autonomous systems, and the architectural future of the web." name="description"/>
 <link rel="canonical" href="https://paraffine.studio/insights"/>
 <link rel="icon" href="/favicon.png"/>
 <!-- Open Graph / Facebook -->
 <meta content="website" property="og:type"/>
 <meta content="https://paraffine.studio/insights" property="og:url"/>
-<meta content="Insights &amp; Transmissions — PARAFFINE" property="og:title"/>
+<meta content="Insights &amp; Transmissions - PARAFFINE" property="og:title"/>
 <meta content="Critical reflections on the intersection of human intentionality, autonomous systems, and the architectural future of the web." property="og:description"/>
 <meta content="https://paraffine.studio/paraffine_hero_1777725302192.png" property="og:image"/>
 <!-- Twitter -->
 <meta content="summary_large_image" property="twitter:card"/>
 <meta content="https://paraffine.studio/insights" property="twitter:url"/>
-<meta content="Insights &amp; Transmissions — PARAFFINE" property="twitter:title"/>
+<meta content="Insights &amp; Transmissions - PARAFFINE" property="twitter:title"/>
 <meta content="Critical reflections on the intersection of human intentionality, autonomous systems, and the architectural future of the web." property="twitter:description"/>
 <meta content="https://paraffine.studio/paraffine_hero_1777725302192.png" property="twitter:image"/>
 <!-- JSON-LD -->
@@ -22,7 +22,7 @@
 {
   "@context": "https://schema.org",
   "@type": "Blog",
-  "name": "Insights & Transmissions — PARAFFINE",
+  "name": "Insights & Transmissions - PARAFFINE",
   "description": "Critical reflections on the intersection of human intentionality, autonomous systems, and the architectural future of the web.",
   "url": "https://paraffine.studio/insights",
   "publisher": {
@@ -152,40 +152,35 @@
 <body class="bg-background text-on-surface">
 <div class="grain-overlay"></div>
 <nav class="nav-split">
-<div class="nav-group-left">
-<a href="lab.html#lab">Lab</a>
-<a href="lab.html#insights">Insights</a>
-</div>
-<a class="nav-logo-center" href="index.html">PARAFFINE<span style="font-weight:400; opacity:0.5;">.studio</span></a>
-<div class="nav-group-right">
-<a href="work.html">Works</a>
-<a href="studio.html">Studio</a>
-<a href="studio.html">Contact</a>
-</div>
-
-<!-- BURGER_START -->
-<div class="burger-icon" onclick="toggleMenu()">
-  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
-</div>
+  <a class="nav-logo-center" href="/">PARAFFINE<span style="font-weight:400; opacity:0.5;">.studio</span></a>
+  <div class="nav-group-right">
+    <a href="/work">Works</a>
+    <a href="/lab">Lab</a>
+    <a href="/studio">Contact</a>
+    <div class="lang-toggle">
+      <button class="lang-btn" data-lang="fr" onclick="setLang('fr')">FR</button>
+      <span class="lang-sep">/</span>
+      <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
+  </div>
+  <div class="burger-icon" id="burger-toggle" onclick="toggleMenu()">
+    <svg class="icon-bars" viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+    <svg class="icon-close" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+  </div>
 </nav>
 
 <div id="mobile-menu" class="mobile-menu-overlay">
-  <div class="mobile-menu-close" onclick="toggleMenu()">✕</div>
   <div class="mobile-menu-content">
-    <a href="lab.html#lab">Lab</a>
-    <a href="lab.html#insights">Insights</a>
-    <a href="work.html">Works</a>
-    <a href="studio.html">Studio</a>
-    <a href="studio.html">Contact</a>
+    <a href="/work">Works</a>
+    <a href="/lab">Lab</a>
+    <a href="/studio">Contact</a>
+    <div class="mobile-lang-toggle">
+      <button class="lang-btn" data-lang="fr" onclick="setLang('fr')">FR</button>
+      <span> / </span>
+      <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
   </div>
 </div>
-<script id="burger-logic">
-function toggleMenu() {
-  const menu = document.getElementById('mobile-menu');
-  if (menu) menu.classList.toggle('active');
-}
-</script>
-<!-- BURGER_END -->
 
 
 
@@ -347,8 +342,8 @@ function toggleMenu() {
 <footer style="border-top: 1px solid rgba(255,255,255,0.08); padding: 1.5rem 3rem; display: flex; justify-content: space-between; align-items: center; font-size: 0.6rem; letter-spacing: 0.15em; color: rgba(255,255,255,0.35); flex-wrap: wrap; gap: 1rem;">
   <span>©paraffine.studio &nbsp;·&nbsp; Paris</span>
   <div style="display:flex; gap:2rem;">
-    <a href="mentions-legales.html" style="color:rgba(255,255,255,0.35); text-decoration:none;">Mentions légales</a>
-    <a href="politique-confidentialite.html" style="color:rgba(255,255,255,0.35); text-decoration:none;">Confidentialité</a>
+    <a href="/mentions-legales" style="color:rgba(255,255,255,0.35); text-decoration:none;">Mentions légales</a>
+    <a href="/politique-confidentialite" style="color:rgba(255,255,255,0.35); text-decoration:none;">Confidentialité</a>
   </div>
 </footer>
 </body></html>

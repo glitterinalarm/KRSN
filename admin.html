@@ -146,14 +146,14 @@
 <div class="opacity-0 pointer-events-none transition-opacity duration-1000" id="admin-container">
 <nav class="nav-split">
 <div class="nav-group-left">
-<a href="lab.html">Lab</a>
-<a href="insights.html">Insights</a>
+<a href="/lab">Lab</a>
+<a href="/insights">Insights</a>
 </div>
-<a class="nav-logo-center" href="index.html">PARAFFINE</a>
+<a class="nav-logo-center" href="/">PARAFFINE</a>
 <div class="nav-group-right">
-<a href="work.html">Works</a>
-<a href="studio.html">Studio</a>
-<a href="contact.html">Contact</a>
+<a href="/work">Works</a>
+<a href="/studio">Studio</a>
+<a href="/contact">Contact</a>
 </div>
 
 
@@ -167,11 +167,11 @@
 <div id="mobile-menu" class="mobile-menu-overlay">
   <div class="mobile-menu-close" onclick="toggleMenu()">✕</div>
   <div class="mobile-menu-content">
-    <a href="lab.html">Lab</a>
-    <a href="insights.html">Insights</a>
-    <a href="work.html">Works</a>
-    <a href="studio.html">Studio</a>
-    <a href="contact.html">Contact</a>
+    <a href="/lab">Lab</a>
+    <a href="/insights">Insights</a>
+    <a href="/work">Works</a>
+    <a href="/studio">Studio</a>
+    <a href="/contact">Contact</a>
   </div>
 </div>
 <script id="burger-logic">
@@ -204,7 +204,7 @@ function toggleMenu() {
 </section>
 
 <section class="mb-20">
-  <h2 class="text-xs font-bold uppercase tracking-[0.3em] mb-10 border-b border-black pb-4">00 — Studio Profile (Page Contact)</h2>
+  <h2 class="text-xs font-bold uppercase tracking-[0.3em] mb-10 border-b border-black pb-4">00 - Studio Profile (Page Contact)</h2>
   <div class="admin-card">
     <p class="text-[9px] opacity-40 italic mb-6">Ces informations alimentent la partie gauche de la page Studio / Contact.</p>
     <div class="grid grid-cols-2 gap-6">
@@ -216,27 +216,27 @@ function toggleMenu() {
       </div>
 
       <div>
-        <label class="text-[9px] uppercase font-bold tracking-widest">Stat 1 — Valeur</label>
+        <label class="text-[9px] uppercase font-bold tracking-widest">Stat 1 - Valeur</label>
         <input type="text" id="studio-stat1-val" placeholder="20+" onchange="siteData.studio.stats[0].value = this.value">
       </div>
       <div>
-        <label class="text-[9px] uppercase font-bold tracking-widest">Stat 1 — Label</label>
+        <label class="text-[9px] uppercase font-bold tracking-widest">Stat 1 - Label</label>
         <input type="text" id="studio-stat1-label" placeholder="Ans d'exp." onchange="siteData.studio.stats[0].label = this.value">
       </div>
       <div>
-        <label class="text-[9px] uppercase font-bold tracking-widest">Stat 2 — Valeur</label>
+        <label class="text-[9px] uppercase font-bold tracking-widest">Stat 2 - Valeur</label>
         <input type="text" id="studio-stat2-val" placeholder="50+" onchange="siteData.studio.stats[1].value = this.value">
       </div>
       <div>
-        <label class="text-[9px] uppercase font-bold tracking-widest">Stat 2 — Label</label>
+        <label class="text-[9px] uppercase font-bold tracking-widest">Stat 2 - Label</label>
         <input type="text" id="studio-stat2-label" placeholder="Clients" onchange="siteData.studio.stats[1].label = this.value">
       </div>
       <div>
-        <label class="text-[9px] uppercase font-bold tracking-widest">Stat 3 — Valeur</label>
+        <label class="text-[9px] uppercase font-bold tracking-widest">Stat 3 - Valeur</label>
         <input type="text" id="studio-stat3-val" placeholder="Paris" onchange="siteData.studio.stats[2].value = this.value">
       </div>
       <div>
-        <label class="text-[9px] uppercase font-bold tracking-widest">Stat 3 — Label</label>
+        <label class="text-[9px] uppercase font-bold tracking-widest">Stat 3 - Label</label>
         <input type="text" id="studio-stat3-label" placeholder="Base" onchange="siteData.studio.stats[2].label = this.value">
       </div>
 
@@ -253,7 +253,7 @@ function toggleMenu() {
 
       <div class="col-span-2">
         <label class="text-[9px] uppercase font-bold tracking-widest">Disponibilité (badge)</label>
-        <input type="text" id="studio-availability" placeholder="Disponible — Projets 2026" onchange="siteData.studio.availability = this.value">
+        <input type="text" id="studio-availability" placeholder="Disponible - Projets 2026" onchange="siteData.studio.availability = this.value">
       </div>
     </div>
 
@@ -276,7 +276,7 @@ function toggleMenu() {
 </section>
 
 <section class="mb-20">
-  <h2 class="text-xs font-bold uppercase tracking-[0.3em] mb-10 border-b border-black pb-4">01 — Home Video</h2>
+  <h2 class="text-xs font-bold uppercase tracking-[0.3em] mb-10 border-b border-black pb-4">01 - Home Video</h2>
   <div class="admin-card">
     <div class="grid grid-cols-2 gap-6">
       <div class="col-span-2">
@@ -289,9 +289,9 @@ function toggleMenu() {
       <div>
         <label class="text-[9px] uppercase font-bold tracking-widest">Format</label>
         <select id="home-video-format" onchange="updateHomeVideoFormat(this.value)" style="margin-top:0.5rem">
-          <option value="16/9">16/9 — Landscape (Desktop)</option>
-          <option value="9/16">9/16 — Portrait (Mobile)</option>
-          <option value="auto">Auto — Both</option>
+          <option value="16/9">16/9 - Landscape (Desktop)</option>
+          <option value="9/16">9/16 - Portrait (Mobile)</option>
+          <option value="auto">Auto - Both</option>
         </select>
       </div>
       <div id="home-video-preview" style="display:none">
@@ -301,19 +301,36 @@ function toggleMenu() {
     </div>
   </div>
 </section>
-<div class="flex justify-between items-baseline mb-10">
-<h2 class="text-xs font-bold uppercase tracking-[0.3em] border-b border-black pb-4 flex-grow">02 — Works Portfolio</h2>
-<button class="text-[10px] font-bold uppercase tracking-widest ml-10" onclick="addWork()">+ Add Project</button>
+
+<!-- TAB BAR -->
+<div style="display:flex;border-bottom:2px solid black;margin-bottom:2.5rem;">
+  <button id="tab-btn-works" onclick="switchTab('works')"
+    style="padding:0.75rem 2rem;font-size:0.65rem;font-weight:900;letter-spacing:0.2em;text-transform:uppercase;border:none;cursor:pointer;background:black;color:white;transition:all 0.2s;">
+    WORKS
+  </button>
+  <button id="tab-btn-lab" onclick="switchTab('lab')"
+    style="padding:0.75rem 2rem;font-size:0.65rem;font-weight:900;letter-spacing:0.2em;text-transform:uppercase;border:none;cursor:pointer;background:white;color:black;transition:all 0.2s;">
+    LAB
+  </button>
 </div>
-<div id="works-list"></div>
-</section>
-<section class="mb-20">
+
+<!-- TAB WORKS -->
+<div id="tab-panel-works">
   <div class="flex justify-between items-baseline mb-10">
-    <h2 class="text-xs font-bold uppercase tracking-[0.3em] border-b border-black pb-4 flex-grow">03 — Lab Experiments</h2>
+    <h2 class="text-xs font-bold uppercase tracking-[0.3em] border-b border-black pb-4 flex-grow">02 - Works Portfolio</h2>
+    <button class="text-[10px] font-bold uppercase tracking-widest ml-10" onclick="addWork()">+ Add Project</button>
+  </div>
+  <div id="works-list"></div>
+</div>
+
+<!-- TAB LAB -->
+<div id="tab-panel-lab" style="display:none">
+  <div class="flex justify-between items-baseline mb-10">
+    <h2 class="text-xs font-bold uppercase tracking-[0.3em] border-b border-black pb-4 flex-grow">03 - Lab Experiments</h2>
     <button class="text-[10px] font-bold uppercase tracking-widest ml-10" onclick="addLab()">+ Add Item</button>
   </div>
   <div class="admin-card mb-8">
-    <label class="text-[9px] uppercase font-bold tracking-widest block mb-4">Texte intro — Lab (colonne gauche)</label>
+    <label class="text-[9px] uppercase font-bold tracking-widest block mb-4">Texte intro - Lab (colonne gauche)</label>
     <div class="grid grid-cols-2 gap-6">
       <div>
         <label class="text-[9px] uppercase tracking-widest opacity-50 block mb-1">FR</label>
@@ -330,7 +347,7 @@ function toggleMenu() {
     </div>
   </div>
   <div id="lab-list"></div>
-</section>
+</div>
     </div> <!-- End max-w-4xl -->
     
     <footer class="fixed bottom-10 right-10 z-[999]">
@@ -349,15 +366,15 @@ function toggleMenu() {
                 ],
                 clients: ['Police Nationale','Ministère Économie','BNP Paribas','CASDEN','Croix Rouge','E. Leclerc','LeBonCoin','Westfield','RAJA'],
                 awards: [
-                    { name: 'Grand Prix Stratégies', client: 'Police Nationale — Brand Film', year: '2024' },
-                    { name: 'Sélection Officielle', client: 'Ministère de l\'Economie — Motion', year: '2023' }
+                    { name: 'Grand Prix Stratégies', client: 'Police Nationale - Brand Film', year: '2024' },
+                    { name: 'Sélection Officielle', client: 'Ministère de l\'Economie - Motion', year: '2023' }
                 ],
                 socials: [
                     { icon: 'LinkedIn', name: 'Germain Trillat', handle: 'linkedin.com/in/germaintrillat', url: 'https://www.linkedin.com/in/germaintrillat' },
                     { icon: 'Behance', name: 'glitterinalarm', handle: 'behance.net/glitterinalarm', url: 'https://www.behance.net/glitterinalarm' },
                     { icon: 'Instagram', name: '@glitterin77alarm', handle: 'instagram.com/glitterin77alarm', url: 'http://instagram.com/glitterin77alarm/' }
                 ],
-                availability: 'Disponible — Projets 2026',
+                availability: 'Disponible - Projets 2026',
                 email: 'germain@paraffine.studio'
             },
             works: [], lab: [], insights: []
@@ -446,12 +463,12 @@ function toggleMenu() {
                             <input type="text" value="${w.link || '#'}" onchange="updateWork(${i}, 'link', this.value)">
                         </div>
                         <div class="col-span-2">
-                            <label class="text-[9px] uppercase font-bold tracking-widest">🎬 YouTube / Vimeo — Hover Video (optional)</label>
-                            <input type="text" value="${w.videoLink || ''}" placeholder="https://youtu.be/... — plays on hover instead of images" onchange="updateWork(${i}, 'videoLink', this.value)">
+                            <label class="text-[9px] uppercase font-bold tracking-widest">🎬 YouTube / Vimeo - Hover Video (optional)</label>
+                            <input type="text" value="${w.videoLink || ''}" placeholder="https://youtu.be/... - plays on hover instead of images" onchange="updateWork(${i}, 'videoLink', this.value)">
                             <p class="text-[9px] opacity-30 mt-2 italic">Leave empty to show image slideshow on hover. Add a link to override with video.</p>
                         </div>
                         <div class="col-span-2">
-                            <label class="text-[9px] uppercase font-bold tracking-widest">✏️ Description éditoriale — Texte au hover</label>
+                            <label class="text-[9px] uppercase font-bold tracking-widest">✏️ Description éditoriale - Texte au hover</label>
                             <textarea rows="4" style="width:100%;padding:0.8rem;border:1px solid #eee;margin-top:0.5rem;font-family:'JetBrains Mono',monospace;font-size:12px;resize:vertical"
                                 oninput="siteData.works[${i}].description = this.value"
                                 placeholder="Texte éditorial affiché en overlay sombre au survol de la carte (optionnel)..."
@@ -467,7 +484,7 @@ function toggleMenu() {
                             <div class="text-[10px] font-mono bg-gray-50 p-4 border border-gray-100 mt-2 break-all max-h-20 overflow-y-auto">
                                 ${(w.images || []).map((img, idx) => `
                                     <div class="mb-2 flex justify-between items-center">
-                                        <span class="opacity-40">${img.startsWith('data:') ? '[LEGACY BASE64 — resave to migrate]' : img.substring(0, 50) + '...'}</span>
+                                        <span class="opacity-40">${img.startsWith('data:') ? '[LEGACY BASE64 - resave to migrate]' : img.substring(0, 50) + '...'}</span>
                                         <button onclick="removeImage(${i}, ${idx})" class="text-red-500 hover:underline ml-4">REMOVE</button>
                                     </div>
                                 `).join('') || '<span class="opacity-20">No media yet</span>'}
@@ -543,7 +560,7 @@ function toggleMenu() {
                             <div class="text-[10px] font-mono bg-gray-50 p-4 border border-gray-100 mt-2 break-all max-h-20 overflow-y-auto">
                                 ${(l.images || []).map((img, idx) => `
                                     <div class="mb-2 flex justify-between items-center">
-                                        <span class="opacity-40">${img.startsWith('data:') ? '[LEGACY BASE64 — resave to migrate]' : img.substring(0, 50) + '...'}</span>
+                                        <span class="opacity-40">${img.startsWith('data:') ? '[LEGACY BASE64 - resave to migrate]' : img.substring(0, 50) + '...'}</span>
                                         <button onclick="removeLabImage(${i}, ${idx})" class="text-red-500 hover:underline ml-4">REMOVE</button>
                                     </div>
                                 `).join('') || '<span class="opacity-20">No media yet</span>'}
@@ -786,21 +803,38 @@ function toggleMenu() {
             }
         }
 
+        function switchTab(tab) {
+            const panels = ['works', 'lab'];
+            panels.forEach(t => {
+                document.getElementById('tab-panel-' + t).style.display = t === tab ? 'block' : 'none';
+                const btn = document.getElementById('tab-btn-' + t);
+                btn.style.background = t === tab ? 'black' : 'white';
+                btn.style.color = t === tab ? 'white' : 'black';
+            });
+        }
+
         async function checkPass() {
             const pass = document.getElementById('admin-pass').value;
-            const msgUint8 = new TextEncoder().encode(pass);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-
-            if (hashHex === 'cecd08cd2d64e39f8266e707b2e3d32cb687cb0b5b6b4bde2b1086b31e1f716e') {
-                    window._adminKey = hashHex;
-                document.getElementById('login-overlay').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('login-overlay').style.display = 'none';
-                    document.getElementById('admin-container').classList.remove('opacity-0', 'pointer-events-none');
-                }, 700);
-            } else {
+            try {
+                const res = await fetch('/api/auth', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: pass })
+                });
+                if (res.ok) {
+                    const { token } = await res.json();
+                    window._adminKey = token;
+                    document.getElementById('login-overlay').style.opacity = '0';
+                    setTimeout(() => {
+                        document.getElementById('login-overlay').style.display = 'none';
+                        document.getElementById('admin-container').classList.remove('opacity-0', 'pointer-events-none');
+                    }, 700);
+                } else {
+                    const error = document.getElementById('login-error');
+                    error.classList.remove('opacity-0');
+                    setTimeout(() => error.classList.add('opacity-0'), 2000);
+                }
+            } catch (e) {
                 const error = document.getElementById('login-error');
                 error.classList.remove('opacity-0');
                 setTimeout(() => error.classList.add('opacity-0'), 2000);

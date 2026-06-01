@@ -4,52 +4,71 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>PARAFFINE Creative Direction</title>
-<meta name="description" content="PARAFFINE — Direction créative et production visuelle hybride par Germain Trillat. Creative direction and hybrid visual production."/>
+<title>Germain Trillat - Creative Director | PARAFFINE</title>
+<meta name="description" content="Germain Trillat, directeur créatif basé à Paris. 20 ans d'expertise en direction artistique, motion design et branding. Fondateur de PARAFFINE studio."/>
+<meta name="author" content="Germain Trillat"/>
+<meta name="keywords" content="Germain Trillat, directeur créatif, creative director, Paris, motion design, branding, PARAFFINE, direction artistique"/>
 <link rel="canonical" href="https://paraffine.studio/"/>
 <link rel="icon" href="/favicon.png"/>
 <link rel="apple-touch-icon" href="/favicon.png"/>
 <!-- Open Graph -->
 <meta property="og:type" content="website"/>
 <meta property="og:url" content="https://paraffine.studio/"/>
-<meta property="og:title" content="PARAFFINE Creative Direction"/>
-<meta property="og:description" content="Direction créative et production visuelle hybride par Germain Trillat. Creative direction and hybrid visual production."/>
+<meta property="og:title" content="Germain Trillat - Creative Director | PARAFFINE"/>
+<meta property="og:description" content="Germain Trillat, directeur créatif basé à Paris. 20 ans d'expertise en direction artistique, motion design et branding. Fondateur de PARAFFINE studio."/>
 <meta property="og:image" content="https://paraffine.studio/hero_07.png"/>
 <meta property="og:image:width" content="1024"/>
 <meta property="og:image:height" content="1024"/>
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:url" content="https://paraffine.studio/"/>
-<meta name="twitter:title" content="PARAFFINE Creative Direction"/>
-<meta name="twitter:description" content="Direction créative et production visuelle hybride par Germain Trillat. Creative direction and hybrid visual production."/>
+<meta name="twitter:title" content="Germain Trillat - Creative Director | PARAFFINE"/>
+<meta name="twitter:description" content="Germain Trillat, directeur créatif basé à Paris. 20 ans d'expertise en direction artistique, motion design et branding. Fondateur de PARAFFINE studio."/>
 <meta name="twitter:image" content="https://paraffine.studio/hero_07.png"/>
 <!-- JSON-LD -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "PARAFFINE",
-  "url": "https://paraffine.studio",
-  "logo": "https://paraffine.studio/favicon.png",
-  "description": "Creative direction studio. Branding, motion design, and AI-augmented creation.",
-  "founder": {
-    "@type": "Person",
-    "name": "Germain Trillat",
-    "jobTitle": "Creative Director",
-    "url": "https://paraffine.studio/studio.html"
-  },
-  "sameAs": []
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://paraffine.studio/#germain-trillat",
+      "name": "Germain Trillat",
+      "jobTitle": "Creative Director",
+      "url": "https://paraffine.studio/studio",
+      "email": "germain@paraffine.studio",
+      "worksFor": { "@id": "https://paraffine.studio/#organization" },
+      "sameAs": [
+        "https://www.linkedin.com/in/germaintrillat",
+        "https://www.behance.net/glitterinalarm",
+        "https://www.instagram.com/glitterin77alarm"
+      ]
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://paraffine.studio/#organization",
+      "name": "PARAFFINE",
+      "url": "https://paraffine.studio",
+      "logo": "https://paraffine.studio/favicon.png",
+      "description": "Studio de direction créative - branding, motion design et création augmentée par l'IA.",
+      "founder": { "@id": "https://paraffine.studio/#germain-trillat" },
+      "sameAs": [
+        "https://www.linkedin.com/in/germaintrillat",
+        "https://www.behance.net/glitterinalarm"
+      ]
+    }
+  ]
 }
 </script>
-<link href="monolith.css" rel="stylesheet"/>
+<link href="monolith.css?v=20260531" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&amp;display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com"></script>
 
 
     <style id="mobile-readability-fix">
         @media (max-width: 768px) {
-            /* Better reading for descriptions */
-            p.text-sm, p.font-light {
+            /* Better reading for descriptions (exclude hero baseline) */
+            p.text-sm:not(.subtitle-hero), p.font-light:not(.subtitle-hero) {
                 font-size: 15px !important;
                 line-height: 1.7 !important;
                 opacity: 0.8 !important;
@@ -79,44 +98,46 @@
 <div class="site-frame"></div>
 
 <nav class="nav-split">
-    <div class="nav-group-left">
-        <a href="lab.html">Lab</a>
-        <a href="lab.html#insights">Insights</a>
-    </div>
-    <a href="index.html" class="nav-logo-center">PARAFFINE<span style="font-weight:400; opacity:0.5;">.studio</span></a>
+    <a href="/" class="nav-logo-center">PARAFFINE<span style="font-weight:400; opacity:0.5;">.studio</span></a>
     <div class="nav-group-right">
-        <a href="work.html">Works</a>
-        <a href="studio.html">Studio</a>
-        <a href="studio.html">Contact</a>
+        <a href="/work">Works</a>
+        <a href="/lab">Lab</a>
+        <a href="/studio">Contact</a>
         <div class="lang-toggle">
           <button class="lang-btn" data-lang="fr" onclick="setLang('fr')">FR</button>
           <span class="lang-sep">/</span>
           <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
         </div>
     </div>
-    <div class="burger-icon" onclick="toggleMenu()">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+    <div class="burger-icon" id="burger-toggle" onclick="toggleMenu()">
+        <svg class="icon-bars" viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+        <svg class="icon-close" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
     </div>
 </nav>
+  </div>
+</div>
+
 
 <div id="mobile-menu" class="mobile-menu-overlay">
-  <div class="mobile-menu-close" onclick="toggleMenu()">✕</div>
   <div class="mobile-menu-content">
-    <a href="lab.html">Lab</a>
-    <a href="lab.html#insights">Insights</a>
-    <a href="work.html">Works</a>
-    <a href="studio.html">Studio</a>
-    <a href="studio.html#contact">Contact</a>
+    <a href="/work">Works</a>
+    <a href="/lab">Lab</a>
+    <a href="/studio">Contact</a>
+    <div class="mobile-lang-toggle">
+      <button class="lang-btn" data-lang="fr" onclick="setLang('fr')">FR</button>
+      <span> / </span>
+      <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
   </div>
 </div>
 
 <main class="relative h-screen w-full overflow-hidden flex items-center justify-center">
     <!-- Hero Image Background with Parallax/Zoom effect -->
     <div class="absolute inset-0 z-0">
-        <img id="hero-img" src="hero_01.png" alt="PARAFFINE Creative Direction and Motion Design augmented by AI" class="w-full h-full object-cover opacity-60 scale-110 animate-slow-zoom">
+        <img id="hero-img" src="hero_04.png" alt="PARAFFINE Creative Direction and Motion Design augmented by AI" class="w-full h-full object-cover opacity-60 scale-110 animate-slow-zoom">
         <script>
           (function(){
-            var imgs = ['hero_01.png','hero_02.png','hero_03.png','hero_04.png','hero_05.png','hero_06.png','hero_07.png'];
+            var imgs = ['hero_04.png','hero_07.png'];
             document.getElementById('hero-img').src = imgs[Math.floor(Math.random() * imgs.length)];
           })();
         </script>
@@ -124,31 +145,39 @@
     </div>
 
     <div class="relative z-10 text-center">
-        <div class="overflow-hidden">
-            <h1 class="text-[12vw] md:text-[15vw] font-black leading-[0.8] tracking-[-0.05em] uppercase reveal-text">
+        <!-- Desktop: single-line title -->
+        <div class="overflow-hidden hidden md:block">
+            <h1 class="text-[15vw] font-black leading-[0.8] tracking-[-0.05em] uppercase reveal-text">
                 PARAFFINE
             </h1>
         </div>
-        <div class="mt-6 overflow-hidden">
+        <!-- Mobile: PARAFFINE.STUDIO centered -->
+        <div class="overflow-hidden block md:hidden">
+            <div class="mobile-hero-title reveal-text" role="heading" aria-level="1" aria-label="PARAFFINE studio">
+                PARAFFINE<span class="mobile-hero-dot">.STUDIO</span>
+            </div>
+        </div>
+        <!-- Baseline -->
+        <div class="mt-6 overflow-hidden baseline-wrapper">
             <p class="subtitle-hero text-sm md:text-base uppercase tracking-[0.5em] opacity-0 animate-fade-in-up"
-               data-fr="Direction créative et production visuelle hybride"
-               data-en="Creative direction and hybrid visual production">
-                Creative direction and hybrid visual production
+               data-fr-html="Direction créative<br class='mobile-br'> et production visuelle hybride"
+               data-en-html="Creative direction<br class='mobile-br'> and hybrid visual production">
+                Direction créative<br class="mobile-br">et production visuelle hybride
             </p>
         </div>
     </div>
 
     <!-- Bottom info bar inside hero -->
     <div class="absolute bottom-10 left-0 right-0 px-10 flex justify-between items-end">
-        <div style="font-size:0.6rem; letter-spacing:0.15em; color:rgba(255,255,255,0.4); display:flex; gap:1.5rem; align-items:center;">
+        <div class="legal-mentions" style="font-size:0.6rem; letter-spacing:0.15em; color:rgba(255,255,255,0.4); display:flex; gap:1.5rem; align-items:center;">
             <span>©paraffine.studio &nbsp;·&nbsp; Paris</span>
-            <a href="mentions-legales.html" style="color:rgba(255,255,255,0.35); text-decoration:none;">Mentions légales</a>
-            <a href="politique-confidentialite.html" style="color:rgba(255,255,255,0.35); text-decoration:none;">Confidentialité</a>
+            <a href="/mentions-legales" style="color:rgba(255,255,255,0.35); text-decoration:none;">Mentions légales</a>
+            <a href="/politique-confidentialite" style="color:rgba(255,255,255,0.35); text-decoration:none;">Confidentialité</a>
         </div>
         <!-- Scroll Indicator -->
-        <div class="flex flex-col items-center gap-4 opacity-50">
+        <div class="scroll-indicator flex flex-col items-center gap-4 opacity-50">
             <span class="uppercase text-[8px] tracking-[0.3em]">Explore</span>
-            <div class="w-[1px] h-12 bg-white/30 relative overflow-hidden">
+            <div class="scroll-line-wrap w-[1px] h-12 bg-white/30 relative overflow-hidden">
                 <div class="absolute top-0 left-0 w-full h-full bg-white -translate-y-full animate-scroll-line"></div>
             </div>
         </div>
@@ -189,6 +218,93 @@
         animation: scroll-line 2s infinite cubic-bezier(0.19, 1, 0.22, 1);
     }
     
+    /* Burger / close icon toggle */
+    .icon-close { display: none; }
+    .burger-icon.is-open .icon-bars { display: none; }
+    .burger-icon.is-open .icon-close { display: block; }
+
+    /* Baseline line-break: visible on mobile only */
+    br.mobile-br { display: none; }
+
+    /* Mentions légales : colonne sur mobile */
+    @media (max-width: 768px) {
+        .legal-mentions {
+            flex-direction: column !important;
+            gap: 0.5rem !important;
+            align-items: center !important;
+            text-align: center !important;
+            width: 100% !important;
+        }
+    }
+
+    /* EXPLORE: à gauche du burger, centré sur sa hauteur */
+    @media (max-width: 768px) {
+        .scroll-indicator {
+            position: fixed !important;
+            top: 30px;
+            right: 55px;
+            bottom: auto;
+            left: auto;
+            flex-direction: row !important;
+            align-items: center;
+            gap: 6px;
+            height: 24px; /* même bounding-box que le burger */
+        }
+        .scroll-line-wrap {
+            width: 24px !important;
+            height: 1px !important;
+        }
+        .scroll-line-wrap > div {
+            animation: scroll-line-h 2s infinite cubic-bezier(0.19, 1, 0.22, 1) !important;
+        }
+    }
+
+    @keyframes scroll-line-h {
+        0%   { transform: translateX(-100%); }
+        50%  { transform: translateX(0); }
+        100% { transform: translateX(100%); }
+    }
+
+
+    /* Mobile: PARAFFINE.STUDIO hero title */
+    .mobile-hero-title {
+        display: none;
+    }
+    @media (max-width: 768px) {
+        .mobile-hero-title {
+            display: block;
+            font-size: 8.5vw;
+            font-weight: 900;
+            letter-spacing: -0.02em;
+            text-transform: uppercase;
+            line-height: 1;
+            white-space: nowrap;
+        }
+        .mobile-hero-dot {
+            font-weight: 400;
+            opacity: 0.5;
+        }
+        /* Remove nav logo, push burger to right edge - same position as all other pages */
+        .nav-logo-center {
+            display: none;
+        }
+        .burger-icon {
+            margin-left: auto;
+        }
+        /* Show controlled line-break on mobile */
+        br.mobile-br { display: inline; }
+        /* Baseline: closer to title, slightly bigger */
+        .baseline-wrapper {
+            margin-top: 10px !important;
+        }
+        .subtitle-hero {
+            font-size: 10px !important;
+            letter-spacing: 0.4em !important;
+            line-height: 1.8 !important;
+            margin-top: 0 !important;
+        }
+    }
+
     .mobile-menu-overlay {
         position: fixed;
         inset: 0;
@@ -231,11 +347,20 @@
 <script src="lang.js"></script>
 <script>
 function toggleMenu() {
-  const menu = document.getElementById('mobile-menu');
-  if (menu) menu.classList.toggle('active');
+    const menu = document.getElementById('mobile-menu');
+    const burger = document.getElementById('burger-toggle');
+    if (menu) menu.classList.toggle('active');
+    if (burger) burger.classList.toggle('is-open');
 }
 document.addEventListener('DOMContentLoaded', initLang);
 </script>
 
+<!-- SEO_INJECT_HOME_START --><section class="seo-static" aria-label="seo inject home">
+  <h2>Germain Trillat — Directeur créatif, Paris</h2>
+  <p>Directeur de création - Paris.   20 ans d'expertise en direction artistique, motion design, broadcast, event et branding. Pionnier des workflows IA générative appliqués à la création de contenu.  Fondateur de  PARAFFINE  - studio indépendant à l'intersection de la direction de création et de la production visuelle.</p>
+  <p>Fondateur de PARAFFINE studio — direction artistique, motion design, branding et IA générative.</p>
+  <p>Projets Lab : VAMPIRE - MOTION, WILDCARDS, Kerosene, STRATÉGIE - COUVERTURE, TLDR CREATIVE</p>
+  <p>Kérosène — veille créative curatée par IA à destination des créatifs et directeurs artistiques.</p>
+</section><!-- SEO_INJECT_HOME_END -->
 </body>
 </html>
