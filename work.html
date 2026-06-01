@@ -545,17 +545,27 @@ function makeCard(proj) {
   ov.innerHTML = `<div class="card-cat">${catLabel}</div><div class="card-title">${proj.title || ''}</div>${descHtml}`;
   el.appendChild(ov);
 
-  // Badge flottant hors carte
+  // Badge flottant hors carte — suit la carte en temps réel
   const badge = document.getElementById('cat-badge');
   if (badge && catLabel) {
-    el.addEventListener('mouseenter', () => {
+    let rafId = null;
+
+    function trackBadge() {
       const r = el.getBoundingClientRect();
-      badge.innerHTML = `${catIcon(catLabel)}<span>${catLabel}</span>`;
       badge.style.left = r.left + 'px';
       badge.style.top  = (r.top - 32) + 'px';
+      rafId = requestAnimationFrame(trackBadge);
+    }
+
+    el.addEventListener('mouseenter', () => {
+      badge.innerHTML = `${catIcon(catLabel)}<span>${catLabel}</span>`;
       badge.classList.add('visible');
+      trackBadge();
     });
-    el.addEventListener('mouseleave', () => badge.classList.remove('visible'));
+    el.addEventListener('mouseleave', () => {
+      badge.classList.remove('visible');
+      if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+    });
   }
 
   return { el, timers };
