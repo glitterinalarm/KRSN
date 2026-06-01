@@ -208,40 +208,6 @@ body {
   transition: all 0.2s;
 }
 .client-tag:hover { background: #000; color: #fff; border-color: #000; }
-/* Skills marquee */
-.skills-marquee-wrap {
-  overflow: hidden;
-  margin-left: -56px;
-  margin-right: -56px;
-  padding: 12px 0;
-  border-top: 1px solid rgba(0,0,0,0.08);
-}
-.skills-marquee {
-  overflow: hidden;
-  white-space: nowrap;
-}
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-.skills-track {
-  display: inline-flex;
-  align-items: center;
-  gap: 20px;
-  animation: marquee 18s linear infinite;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: #000;
-}
-.skills-track:hover { animation-play-state: paused; }
-.skills-track .sep {
-  opacity: 0.2;
-  font-size: 7px;
-}
-
-
 /* Social links */
 .social-links {
   display: flex;
