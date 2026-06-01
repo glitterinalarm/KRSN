@@ -32,7 +32,19 @@ module.exports = async function handler(req, res) {
 
   if (req.method === 'POST') {
     const key = req.headers['x-admin-key'];
-    const expected = process.env.ADMIN_HASH;
+
+    // Même logique que auth.js : Blob en priorité, sinon env var
+    let expected = process.env.ADMIN_HASH;
+    try {
+      const { list } = require('@vercel/blob');
+      const { blobs } = await list({ prefix: 'admin_hash' });
+      if (blobs.length > 0) {
+        const r = await fetch(blobs[0].url);
+        const stored = (await r.text()).trim();
+        if (stored) expected = stored;
+      }
+    } catch (_) {}
+
     const validToken = crypto.createHmac('sha256', expected).update('session').digest('hex');
     if (!expected || key !== validToken) {
       return res.status(401).json({ error: 'Unauthorized' });
