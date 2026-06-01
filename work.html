@@ -106,7 +106,7 @@ body {
   gap: 7px;
   padding: 4px 0;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 7px;
+  font-size: 9px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: #000;
@@ -539,7 +539,7 @@ function makeCard(proj) {
     ? `<div class="card-desc">${proj.description}</div>`
     : '';
   const catLabel = proj.category || '';
-  ov.innerHTML = `<div class="card-cat">${catLabel}</div><div class="card-title">${proj.title || ''}</div>${descHtml}`;
+  ov.innerHTML = `<div class="card-title">${proj.title || ''}</div>${descHtml}`;
   el.appendChild(ov);
 
   // Badge flottant hors carte — suit la carte en temps réel
