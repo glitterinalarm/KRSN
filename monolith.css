@@ -560,13 +560,13 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 20px;
-  animation: marquee 20s linear infinite;
+
   font-family: var(--font-mono);
   font-size: 8px;
   letter-spacing: 0.25em;
   text-transform: uppercase;
 }
-.skills-track:hover { animation-play-state: paused; cursor: default; }
+.skills-track { cursor: default; }
 .skills-track .sep { opacity: 0.2; }
 
 @media (max-width: 768px) {

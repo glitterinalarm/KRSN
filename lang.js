@@ -67,3 +67,29 @@ function applyLang() {
 function initLang() {
   applyLang();
 }
+
+// ── Skills marquee piloté par le scroll vertical ──────────────
+(function() {
+  const SPEED = 0.4;
+
+  function initMarquee() {
+    const track = document.querySelector('.skills-track');
+    if (!track) return;
+
+    function update() {
+      const half = track.scrollWidth / 2;
+      if (!half) return;
+      const offset = (window.scrollY * SPEED) % half;
+      track.style.transform = 'translateX(-' + offset + 'px)';
+    }
+
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMarquee);
+  } else {
+    initMarquee();
+  }
+})();
