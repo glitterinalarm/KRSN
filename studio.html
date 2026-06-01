@@ -85,15 +85,23 @@ body {
 }
 
 /* ─── STUDIO CONTENT ──────────────────────────────────────── */
-.studio-portrait {
+.portrait-arena {
+  position: relative;
+  overflow: hidden;
   width: 100%;
-  max-width: 280px;
+  height: 340px;
+  margin-bottom: 40px;
+}
+
+.studio-portrait {
+  position: absolute;
+  width: 110px;
   aspect-ratio: 3 / 4;
   object-fit: cover;
   object-position: center top;
   display: block;
-  margin-bottom: 40px;
   filter: grayscale(10%);
+  will-change: transform;
 }
 
 .studio-name {
@@ -529,7 +537,9 @@ body {
 
     <h1 class="studio-name">Germain<br/>Trillat.</h1>
     <p style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.3em; text-transform:uppercase; opacity:0.4; margin-bottom:24px;">Creative Director · Paris</p>
-    <img src="https://i.ibb.co/Qv4PNVqc/selfy.jpg" alt="Germain Trillat" class="studio-portrait" id="studio-portrait" style="cursor:pointer"/>
+    <div class="portrait-arena" id="portrait-arena">
+      <img src="https://i.ibb.co/Qv4PNVqc/selfy.jpg" alt="Germain Trillat" class="studio-portrait" id="studio-portrait"/>
+    </div>
 
     <p class="studio-bio" id="studio-bio">-</p>
 
@@ -786,6 +796,7 @@ loadStudio().then(() => {
 </footer>
 <script>
 (function() {
+  // ── Slideshow ──────────────────────────────────────────────
   const portraits = [
     'https://i.ibb.co/Qv4PNVqc/selfy.jpg',
     'https://i.ibb.co/4ZzDNkTg/image-png-202606011323.jpg',
@@ -835,6 +846,35 @@ loadStudio().then(() => {
     idx = (idx + 1) % portraits.length;
     img.src = portraits[idx];
   }, 1000);
+
+  // ── DVD bounce ─────────────────────────────────────────────
+  const arena = document.getElementById('portrait-arena');
+  if (!arena) return;
+
+  let x = 0, y = 0;
+  let vx = 1.2, vy = 0.9;
+
+  function bounce() {
+    const aw = arena.offsetWidth;
+    const ah = arena.offsetHeight;
+    const iw = img.offsetWidth;
+    const ih = img.offsetHeight;
+
+    x += vx;
+    y += vy;
+
+    if (x <= 0)        { x = 0;       vx = Math.abs(vx); }
+    if (x >= aw - iw)  { x = aw - iw; vx = -Math.abs(vx); }
+    if (y <= 0)        { y = 0;       vy = Math.abs(vy); }
+    if (y >= ah - ih)  { y = ah - ih; vy = -Math.abs(vy); }
+
+    img.style.left = x + 'px';
+    img.style.top  = y + 'px';
+
+    requestAnimationFrame(bounce);
+  }
+
+  bounce();
 })();
 </script>
 
