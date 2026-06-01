@@ -78,6 +78,7 @@ body {
 .col-studio {
   padding: 56px 60px 100px 80px;
   overflow-y: auto;
+  position: relative;
 }
 
 .col-contact {
@@ -85,14 +86,6 @@ body {
 }
 
 /* ─── STUDIO CONTENT ──────────────────────────────────────── */
-.portrait-arena {
-  position: relative;
-  overflow: hidden;
-  width: 100%;
-  height: 340px;
-  margin-bottom: 40px;
-}
-
 .studio-portrait {
   position: absolute;
   width: 110px;
@@ -101,7 +94,8 @@ body {
   object-position: center top;
   display: block;
   filter: grayscale(10%);
-  will-change: transform;
+  pointer-events: none;
+  will-change: left, top;
 }
 
 .studio-name {
@@ -537,9 +531,7 @@ body {
 
     <h1 class="studio-name">Germain<br/>Trillat.</h1>
     <p style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.3em; text-transform:uppercase; opacity:0.4; margin-bottom:24px;">Creative Director · Paris</p>
-    <div class="portrait-arena" id="portrait-arena">
-      <img src="https://i.ibb.co/Qv4PNVqc/selfy.jpg" alt="Germain Trillat" class="studio-portrait" id="studio-portrait"/>
-    </div>
+    <img src="https://i.ibb.co/Qv4PNVqc/selfy.jpg" alt="Germain Trillat" class="studio-portrait" id="studio-portrait"/>
 
     <p class="studio-bio" id="studio-bio">-</p>
 
@@ -848,7 +840,7 @@ loadStudio().then(() => {
   }, 1000);
 
   // ── DVD bounce ─────────────────────────────────────────────
-  const arena = document.getElementById('portrait-arena');
+  const arena = img.closest('.col-studio');
   if (!arena) return;
 
   let x = 0, y = 0;
