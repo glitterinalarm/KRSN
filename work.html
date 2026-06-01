@@ -117,7 +117,6 @@ body {
   transition: opacity 0.2s ease;
   z-index: 100;
   white-space: nowrap;
-  transform: translateX(-50%);
 }
 #cat-badge.visible { opacity: 1; }
 #cat-badge svg {
@@ -552,8 +551,8 @@ function makeCard(proj) {
     el.addEventListener('mouseenter', () => {
       const r = el.getBoundingClientRect();
       badge.innerHTML = `${catIcon(catLabel)}<span>${catLabel}</span>`;
-      badge.style.left = (r.left + r.width / 2) + 'px';
-      badge.style.top  = (r.top - 36) + 'px';
+      badge.style.left = r.left + 'px';
+      badge.style.top  = (r.top - 32) + 'px';
       badge.classList.add('visible');
     });
     el.addEventListener('mouseleave', () => badge.classList.remove('visible'));
