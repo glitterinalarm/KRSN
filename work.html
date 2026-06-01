@@ -99,28 +99,32 @@ body {
   pointer-events: none;
 }
 
-.card-cat-badge {
+#cat-badge {
+  position: fixed;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  align-self: flex-start;
-  background: rgba(0,0,0,0.38);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  border: 1px solid rgba(255,255,255,0.14);
-  padding: 5px 10px 5px 8px;
+  gap: 7px;
+  background: #000;
+  border: 1px solid rgba(255,255,255,0.15);
+  padding: 6px 12px 6px 9px;
   font-family: 'JetBrains Mono', monospace;
   font-size: 7px;
-  letter-spacing: 0.28em;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.88);
-  transition: background 0.2s;
+  color: #fff;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 100;
+  white-space: nowrap;
+  transform: translateX(-50%);
 }
-.card-cat-badge svg {
+#cat-badge.visible { opacity: 1; }
+#cat-badge svg {
   width: 11px;
   height: 11px;
   flex-shrink: 0;
-  opacity: 0.75;
+  opacity: 0.7;
 }
 .work-card:hover .card-overlay,
 .work-card.touched .card-overlay { opacity: 1; }
@@ -314,6 +318,7 @@ body {
   </div>
 </div>
 
+<div id="cat-badge"></div>
 <div id="works-scene"></div>
 
 
@@ -538,14 +543,21 @@ function makeCard(proj) {
     ? `<div class="card-desc">${proj.description}</div>`
     : '';
   const catLabel = proj.category || '';
-  ov.innerHTML = `
-    <div class="card-cat-badge">${catIcon(catLabel)}<span>${catLabel}</span></div>
-    <div>
-      <div class="card-cat">${catLabel}</div>
-      <div class="card-title">${proj.title || ''}</div>
-      ${descHtml}
-    </div>`;
+  ov.innerHTML = `<div class="card-cat">${catLabel}</div><div class="card-title">${proj.title || ''}</div>${descHtml}`;
   el.appendChild(ov);
+
+  // Badge flottant hors carte
+  const badge = document.getElementById('cat-badge');
+  if (badge && catLabel) {
+    el.addEventListener('mouseenter', () => {
+      const r = el.getBoundingClientRect();
+      badge.innerHTML = `${catIcon(catLabel)}<span>${catLabel}</span>`;
+      badge.style.left = (r.left + r.width / 2) + 'px';
+      badge.style.top  = (r.top - 36) + 'px';
+      badge.classList.add('visible');
+    });
+    el.addEventListener('mouseleave', () => badge.classList.remove('visible'));
+  }
 
   return { el, timers };
 }
