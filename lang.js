@@ -74,28 +74,39 @@ function initLang() {
     const track = document.querySelector('.skills-track');
     if (!track) return;
 
+    // Duplique le contenu jusqu'à couvrir 3× la largeur écran
+    function fillTrack() {
+      const original = Array.from(track.children);
+      if (!original.length) return;
+      const target = window.innerWidth * 3;
+      while (track.scrollWidth < target) {
+        original.forEach(function(el) {
+          track.appendChild(el.cloneNode(true));
+        });
+      }
+    }
+
     let half = 0;
 
-    // Calcule la demi-largeur une fois le layout stabilisé
-    function getHalf() {
+    function setup() {
+      fillTrack();
       half = track.scrollWidth / 2;
+      update();
     }
 
     function update() {
-      if (!half) getHalf();
       if (!half) return;
       const offset = window.scrollY % half;
       track.style.transform = 'translateX(-' + offset + 'px)';
     }
 
     window.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', getHalf);
+    window.addEventListener('resize', setup);
 
-    // Calcul initial après que les fonts soient chargées
     if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(function() { getHalf(); update(); });
+      document.fonts.ready.then(setup);
     } else {
-      setTimeout(function() { getHalf(); update(); }, 200);
+      setTimeout(setup, 200);
     }
   }
 
