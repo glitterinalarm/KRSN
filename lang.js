@@ -70,21 +70,33 @@ function initLang() {
 
 // ── Skills marquee piloté par le scroll vertical ──────────────
 (function() {
-  const SPEED = 0.4;
-
   function initMarquee() {
     const track = document.querySelector('.skills-track');
     if (!track) return;
 
+    let half = 0;
+
+    // Calcule la demi-largeur une fois le layout stabilisé
+    function getHalf() {
+      half = track.scrollWidth / 2;
+    }
+
     function update() {
-      const half = track.scrollWidth / 2;
+      if (!half) getHalf();
       if (!half) return;
-      const offset = (window.scrollY * SPEED) % half;
+      const offset = window.scrollY % half;
       track.style.transform = 'translateX(-' + offset + 'px)';
     }
 
     window.addEventListener('scroll', update, { passive: true });
-    update();
+    window.addEventListener('resize', getHalf);
+
+    // Calcul initial après que les fonts soient chargées
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function() { getHalf(); update(); });
+    } else {
+      setTimeout(function() { getHalf(); update(); }, 200);
+    }
   }
 
   if (document.readyState === 'loading') {
