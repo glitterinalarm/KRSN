@@ -85,14 +85,27 @@ body {
 }
 
 /* ─── STUDIO CONTENT ──────────────────────────────────────── */
+.studio-header-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.studio-header-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: 4px;
+}
+
 .studio-portrait {
-  width: 100%;
-  max-width: 280px;
+  width: 120px;
+  flex-shrink: 0;
   aspect-ratio: 3 / 4;
   object-fit: cover;
   object-position: center top;
   display: block;
-  margin-bottom: 40px;
   filter: grayscale(10%);
 }
 
@@ -453,6 +466,9 @@ body {
     border-bottom: 1px solid rgba(0,0,0,0.08);
   }
 
+  .studio-header-row { flex-direction: column; gap: 16px; }
+  .studio-portrait { width: 100px; }
+
   .form-row { grid-template-columns: 1fr; }
 
   .stats-row { gap: 24px; }
@@ -527,10 +543,13 @@ body {
   <!-- ════ LEFT : STUDIO / BIO ════ -->
   <div class="col-studio">
 
-    <img src="https://i.ibb.co/Qv4PNVqc/selfy.jpg" alt="Germain Trillat" class="studio-portrait" id="studio-portrait" style="cursor:pointer"/>
-
-    <h1 class="studio-name">Germain<br/>Trillat.</h1>
-    <p style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.3em; text-transform:uppercase; opacity:0.4; margin-bottom:40px;">Creative Director · Paris</p>
+    <div class="studio-header-row">
+      <img src="https://i.ibb.co/Qv4PNVqc/selfy.jpg" alt="Germain Trillat" class="studio-portrait" id="studio-portrait" style="cursor:pointer"/>
+      <div class="studio-header-text">
+        <h1 class="studio-name">Germain<br/>Trillat.</h1>
+        <p style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.3em; text-transform:uppercase; opacity:0.4;">Creative Director · Paris</p>
+      </div>
+    </div>
 
     <p class="studio-bio" id="studio-bio">-</p>
 
