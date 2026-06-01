@@ -527,7 +527,7 @@ body {
   <!-- ════ LEFT : STUDIO / BIO ════ -->
   <div class="col-studio">
 
-    <img src="https://i.ibb.co/Qv4PNVqc/selfy.jpg" alt="Germain Trillat" class="studio-portrait"/>
+    <img src="https://i.ibb.co/Qv4PNVqc/selfy.jpg" alt="Germain Trillat" class="studio-portrait" id="studio-portrait" style="cursor:pointer"/>
 
     <h1 class="studio-name">Germain<br/>Trillat.</h1>
     <p style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.3em; text-transform:uppercase; opacity:0.4; margin-bottom:40px;">Creative Director · Paris</p>
@@ -785,6 +785,53 @@ loadStudio().then(() => {
     <a href="/politique-confidentialite" style="color:rgba(0,0,0,0.35); text-decoration:none;">Confidentialité</a>
   </div>
 </footer>
+<script>
+(function() {
+  const portraits = [
+    'https://i.ibb.co/Qv4PNVqc/selfy.jpg',
+    'https://i.ibb.co/4ZzDNkTg/image-png-202606011323.jpg',
+    'https://i.ibb.co/5D6nYP4/image-png-202606011324-1.jpg',
+    'https://i.ibb.co/svPRH1vM/image-png-202606011324-2.jpg',
+    'https://i.ibb.co/vCGpnTXf/image-png-202606011324-3.jpg',
+    'https://i.ibb.co/fG2VSKbR/image-png-202606011324-4.jpg',
+    'https://i.ibb.co/ksZXNFwq/image-png-202606011324-5.jpg',
+    'https://i.ibb.co/7dB7F74q/image-png-202606011324-6.jpg',
+    'https://i.ibb.co/39H5F42r/image-png-202606011324.jpg',
+    'https://i.ibb.co/TDhnZT3r/image-png-202606011325-1.jpg',
+    'https://i.ibb.co/9HLqZ357/image-png-202606011325-2.jpg',
+    'https://i.ibb.co/1GRbLf0F/image-png-202606011325-3.jpg',
+    'https://i.ibb.co/sp8JLbHL/image-png-202606011325-4.jpg',
+    'https://i.ibb.co/rfxkSsYj/image-png-202606011325-5.jpg',
+    'https://i.ibb.co/p6yr7jsh/image-png-202606011325-6.jpg',
+    'https://i.ibb.co/Q7mVnbxY/image-png-202606011325.jpg',
+    'https://i.ibb.co/Q715Hyrq/image-png-202606011326.jpg',
+    'https://i.ibb.co/BVcSqmfG/image-png-202606011329-1.jpg',
+    'https://i.ibb.co/LDVtsnNv/image-png-202606011329-2.jpg',
+    'https://i.ibb.co/xKGF68sN/image-png-202606011329.jpg',
+    'https://i.ibb.co/jkr9x9b9/image-png-202606011330-1.jpg',
+    'https://i.ibb.co/5WrDTXcF/image-png-202606011330-2.jpg',
+    'https://i.ibb.co/kgYf29ML/image-png-202606011330.jpg',
+    'https://i.ibb.co/60sqxtWf/image-png-202606011333.jpg'
+  ];
+
+  let idx = 0;
+
+  // Précharge toutes les images en arrière-plan
+  portraits.forEach(src => { const i = new Image(); i.src = src; });
+
+  const img = document.getElementById('studio-portrait');
+  if (!img) return;
+
+  function next() {
+    idx = (idx + 1) % portraits.length;
+    img.src = portraits[idx];
+  }
+
+  img.addEventListener('mouseenter', next);
+  img.addEventListener('click', next);
+})();
+</script>
+
 <!-- SEO_INJECT_STUDIO_START --><section class="seo-static" aria-label="seo inject studio">
   <h2>Germain Trillat — Creative Director</h2>
   <p>Directeur de création - Paris.   20 ans d'expertise en direction artistique, motion design, broadcast, event et branding. Pionnier des workflows IA générative appliqués à la création de contenu.  Fondateur de  PARAFFINE  - studio indépendant à l'intersection de la direction de création et de la production visuelle.</p>
