@@ -831,13 +831,10 @@ loadStudio().then(() => {
   const img = document.getElementById('studio-portrait');
   if (!img) return;
 
-  function next() {
+  setInterval(function() {
     idx = (idx + 1) % portraits.length;
     img.src = portraits[idx];
-  }
-
-  img.addEventListener('mouseenter', next);
-  img.addEventListener('click', next);
+  }, 1000);
 })();
 </script>
 
