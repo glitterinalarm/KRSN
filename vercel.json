@@ -2,5 +2,13 @@
   "buildCommand": "npm run build",
   "outputDirectory": ".",
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.paraffine.studio" }],
+      "destination": "https://paraffine.studio/:path*",
+      "permanent": true
+    }
+  ]
 }
