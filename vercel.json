@@ -9,18 +9,12 @@
       "has": [{ "type": "host", "value": "www.paraffine.studio" }],
       "destination": "https://paraffine.studio/:path*",
       "permanent": true
-    }
-  ],
-  "rewrites": [
+    },
     {
       "source": "/",
       "has": [{ "type": "host", "value": "tools.paraffine.studio" }],
-      "destination": "/tools.html"
-    },
-    {
-      "source": "/((?!tools).*)",
-      "has": [{ "type": "host", "value": "tools.paraffine.studio" }],
-      "destination": "/tools.html"
+      "destination": "https://tools.paraffine.studio/tools",
+      "permanent": false
     }
   ]
 }
