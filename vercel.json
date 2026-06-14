@@ -15,7 +15,12 @@
     {
       "source": "/",
       "has": [{ "type": "host", "value": "tools.paraffine.studio" }],
-      "destination": "/tools"
+      "destination": "/tools.html"
+    },
+    {
+      "source": "/((?!tools).*)",
+      "has": [{ "type": "host", "value": "tools.paraffine.studio" }],
+      "destination": "/tools.html"
     }
   ]
 }
