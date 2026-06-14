@@ -10,5 +10,12 @@
       "destination": "https://paraffine.studio/:path*",
       "permanent": true
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/",
+      "has": [{ "type": "host", "value": "tools.paraffine.studio" }],
+      "destination": "/tools"
+    }
   ]
 }
