@@ -8,7 +8,6 @@
 <meta name="robots" content="noindex, nofollow"/>
 <link rel="canonical" href="https://tools.paraffine.studio/"/>
 <link rel="icon" href="https://paraffine.studio/favicon.png"/>
-<link href="https://paraffine.studio/monolith.css" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,900;1,700;1,900&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -20,7 +19,6 @@
     min-height: 100vh;
   }
 
-  /* NAV */
   .nav {
     display: flex;
     align-items: center;
@@ -46,7 +44,6 @@
     opacity: 0.4;
   }
 
-  /* HERO */
   .hero {
     padding: 5rem 3rem 3rem;
     max-width: 1200px;
@@ -78,7 +75,6 @@
     line-height: 1.6;
   }
 
-  /* GRID */
   .tools-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -100,13 +96,36 @@
     transition: background 0.2s;
     position: relative;
     overflow: hidden;
+    cursor: grab;
+    user-select: none;
   }
   .tool-card:hover { background: #111; }
   .tool-card.disabled {
     opacity: 0.3;
-    pointer-events: none;
-    cursor: default;
+    cursor: grab;
   }
+  .tool-card.dragging {
+    opacity: 0.4;
+    background: #1a1a1a;
+    cursor: grabbing;
+  }
+  .tool-card.drag-over {
+    background: #161616;
+    outline: 1px solid rgba(255,255,255,0.15);
+  }
+
+  .drag-handle {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    opacity: 0;
+    transition: opacity 0.2s;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.3);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .tool-card:hover .drag-handle { opacity: 1; }
 
   .tool-number {
     font-family: 'JetBrains Mono', monospace;
@@ -150,19 +169,17 @@
     opacity: 0.2;
     transition: opacity 0.2s, transform 0.2s;
   }
-  .tool-card:hover .tool-arrow {
+  .tool-card:not(.disabled):hover .tool-arrow {
     opacity: 0.8;
     transform: translate(4px, -4px);
   }
 
-  /* FOOTER */
   .footer {
     padding: 2rem 3rem;
     border-top: 1px solid rgba(255,255,255,0.06);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 0;
   }
   .footer-copy {
     font-family: 'JetBrains Mono', monospace;
@@ -204,9 +221,10 @@
   <h1 class="hero-title">Tools<br/><span>&amp; Resources</span></h1>
   <p class="hero-sub">Outils internes du studio — accès restreint.</p>
 
-  <div class="tools-grid">
+  <div class="tools-grid" id="grid">
 
-    <a class="tool-card" href="https://calcul.paraffine.studio" target="_blank">
+    <a class="tool-card" href="https://calcul.paraffine.studio" target="_blank" data-id="calcul" draggable="true">
+      <span class="drag-handle">⠿⠿</span>
       <span class="tool-number">01</span>
       <span class="tool-name">Calcul<br/>des charges</span>
       <span class="tool-desc">Simulateur de rémunération et calcul de charges pour freelances et structures portage / SASU.</span>
@@ -214,7 +232,8 @@
       <span class="tool-arrow">↗</span>
     </a>
 
-    <a class="tool-card" href="https://paraffine-crm.vercel.app" target="_blank">
+    <a class="tool-card" href="https://paraffine-crm.vercel.app" target="_blank" data-id="crm" draggable="true">
+      <span class="drag-handle">⠿⠿</span>
       <span class="tool-number">02</span>
       <span class="tool-name">CRM</span>
       <span class="tool-desc">Gestion des contacts, prospects et suivi des projets clients du studio.</span>
@@ -222,7 +241,8 @@
       <span class="tool-arrow">↗</span>
     </a>
 
-    <a class="tool-card" href="https://krsn.paraffine.studio" target="_blank">
+    <a class="tool-card" href="https://krsn.paraffine.studio" target="_blank" data-id="kerosene" draggable="true">
+      <span class="drag-handle">⠿⠿</span>
       <span class="tool-number">03</span>
       <span class="tool-name">Kerosene</span>
       <span class="tool-desc">Veille créative — agrégateur de flux RSS et curation éditoriale.</span>
@@ -230,14 +250,16 @@
       <span class="tool-arrow">↗</span>
     </a>
 
-    <div class="tool-card disabled">
+    <div class="tool-card disabled" data-id="soon1" draggable="true">
+      <span class="drag-handle">⠿⠿</span>
       <span class="tool-number">04</span>
       <span class="tool-name">À venir</span>
       <span class="tool-desc">Prochain outil en cours de développement.</span>
       <span class="tool-tag soon">Bientôt</span>
     </div>
 
-    <div class="tool-card disabled">
+    <div class="tool-card disabled" data-id="soon2" draggable="true">
+      <span class="drag-handle">⠿⠿</span>
       <span class="tool-number">05</span>
       <span class="tool-name">À venir</span>
       <span class="tool-desc">Prochain outil en cours de développement.</span>
@@ -251,6 +273,85 @@
   <span class="footer-copy">© 2026 Paraffine Studio — Usage interne</span>
   <a class="footer-back" href="https://paraffine.studio">← Retour au site</a>
 </footer>
+
+<script>
+  const grid = document.getElementById('grid');
+  let dragged = null;
+
+  function getCards() {
+    return [...grid.querySelectorAll('.tool-card')];
+  }
+
+  function saveOrder() {
+    const order = getCards().map(c => c.dataset.id);
+    localStorage.setItem('tools-order', JSON.stringify(order));
+  }
+
+  function loadOrder() {
+    const saved = localStorage.getItem('tools-order');
+    if (!saved) return;
+    const order = JSON.parse(saved);
+    order.forEach(id => {
+      const card = grid.querySelector(`[data-id="${id}"]`);
+      if (card) grid.appendChild(card);
+    });
+    updateNumbers();
+  }
+
+  function updateNumbers() {
+    getCards().forEach((card, i) => {
+      const num = card.querySelector('.tool-number');
+      if (num) num.textContent = String(i + 1).padStart(2, '0');
+    });
+  }
+
+  grid.addEventListener('dragstart', e => {
+    dragged = e.target.closest('.tool-card');
+    if (!dragged) return;
+    setTimeout(() => dragged.classList.add('dragging'), 0);
+  });
+
+  grid.addEventListener('dragend', e => {
+    const card = e.target.closest('.tool-card');
+    if (card) card.classList.remove('dragging');
+    grid.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+    dragged = null;
+    saveOrder();
+    updateNumbers();
+  });
+
+  grid.addEventListener('dragover', e => {
+    e.preventDefault();
+    const target = e.target.closest('.tool-card');
+    if (!target || target === dragged) return;
+    grid.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+    target.classList.add('drag-over');
+  });
+
+  grid.addEventListener('drop', e => {
+    e.preventDefault();
+    const target = e.target.closest('.tool-card');
+    if (!target || target === dragged || !dragged) return;
+    target.classList.remove('drag-over');
+    const cards = getCards();
+    const draggedIdx = cards.indexOf(dragged);
+    const targetIdx = cards.indexOf(target);
+    if (draggedIdx < targetIdx) {
+      target.after(dragged);
+    } else {
+      target.before(dragged);
+    }
+  });
+
+  // Prevent link navigation during drag
+  grid.addEventListener('click', e => {
+    if (e.target.closest('.tool-card')?.classList.contains('dragging')) {
+      e.preventDefault();
+    }
+  }, true);
+
+  loadOrder();
+</script>
 
 </body>
 </html>
