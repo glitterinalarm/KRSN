@@ -5,6 +5,11 @@
   "trailingSlash": false,
   "redirects": [
     {
+      "source": "/insights",
+      "destination": "/lab#insights",
+      "permanent": true
+    },
+    {
       "source": "/:path*",
       "has": [{ "type": "host", "value": "www.paraffine.studio" }],
       "destination": "https://paraffine.studio/:path*",
