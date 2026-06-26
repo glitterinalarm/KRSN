@@ -131,6 +131,12 @@
       <span> / </span>
       <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
     </div>
+    <div class="mobile-social-links">
+      <a href="https://www.instagram.com/prfn.studio/" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://www.linkedin.com/company/paraffine-studio/about/?viewAsMember=true" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://www.youtube.com/@PARAFFINE.STUDIO" target="_blank" rel="noopener">YouTube</a>
+      <a href="https://www.facebook.com/profile.php?id=61591603582476" target="_blank" rel="noopener">Facebook</a>
+    </div>
   </div>
 </div>
 
@@ -345,6 +351,23 @@
         font-size: 2rem;
         cursor: pointer;
     }
+    .mobile-social-links {
+        display: flex;
+        gap: 1.5rem;
+        justify-content: center;
+        margin-top: 0.5rem;
+    }
+    .mobile-social-links a {
+        font-size: 0.65rem !important;
+        font-weight: 400 !important;
+        letter-spacing: 0.2em;
+        opacity: 0.4;
+        text-transform: uppercase;
+        text-decoration: none;
+        color: white;
+        transition: opacity 0.3s;
+    }
+    .mobile-social-links a:hover { opacity: 1; }
 </style>
 
 <script src="lang.js"></script>
