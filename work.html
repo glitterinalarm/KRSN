@@ -124,6 +124,7 @@ body {
 }
 .work-card:hover .card-overlay,
 .work-card.touched .card-overlay { opacity: 1; }
+.work-card.text-faded .card-overlay { opacity: 0 !important; }
 
 .card-cat {
   font-family: 'JetBrains Mono', monospace;
@@ -512,6 +513,20 @@ function makeCard(proj) {
     });
   }
 
+  // Desktop : le texte apparaît au hover puis s'estompe après 30s pour
+  // laisser voir le visuel/la vidéo sans être gêné.
+  if (!IS_MOBILE()) {
+    let fadeTimer = null;
+    el.addEventListener('mouseenter', () => {
+      el.classList.remove('text-faded');
+      fadeTimer = setTimeout(() => el.classList.add('text-faded'), 30000);
+    });
+    el.addEventListener('mouseleave', () => {
+      clearTimeout(fadeTimer);
+      el.classList.remove('text-faded');
+    });
+  }
+
   // Icône SVG selon catégorie
   function catIcon(cat) {
     const c = (cat || '').toLowerCase();
@@ -535,12 +550,18 @@ function makeCard(proj) {
   // Overlay - badge catégorie en haut + titre en bas
   const ov = document.createElement('div');
   ov.className = 'card-overlay';
+  // Mobile : pas de hover pour révéler le texte, donc version courte affichée en permanence.
+  const shortDesc = proj.description && proj.description.length > 100
+    ? proj.description.slice(0, 100).trim() + '…'
+    : proj.description;
   const descHtml = proj.description
-    ? `<div class="card-desc">${proj.description}</div>`
+    ? `<div class="card-desc">${IS_MOBILE() ? shortDesc : proj.description}</div>`
     : '';
   const catLabel = proj.category || '';
   ov.innerHTML = `<div class="card-title">${proj.title || ''}</div>${descHtml}`;
   el.appendChild(ov);
+
+  if (IS_MOBILE()) el.classList.add('touched');
 
   // Badge flottant hors carte — suit la carte en temps réel
   const badge = document.getElementById('cat-badge');
