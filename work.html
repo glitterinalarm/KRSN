@@ -456,7 +456,7 @@ function makeCard(proj) {
     if (id && !ytIds.includes(id)) ytIds.push(id);
   });
 
-  if (ytIds.length > 0) {
+  if (ytIds.length > 0 && !IS_MOBILE()) {
     const embedUrl = `https://www.youtube.com/embed/${ytIds[0]}?playlist=${ytIds.join(',')}&autoplay=1&mute=1&loop=1&controls=0&modestbranding=1&playsinline=1&enablejsapi=1`;
     let iframe = null;
     let iframeLoaded = false;
@@ -565,10 +565,19 @@ function makeCard(proj) {
     });
   }
 
-  // Clic sur la carte → ouvrir proj.link si défini et non YouTube
+  // Clic sur la carte → sur mobile, ouvre YouTube pour les cartes vidéo
+  // (playlist ad hoc si plusieurs vidéos, lien direct si une seule) ; sinon
+  // ouvre proj.link si c'est un vrai lien externe (pas vide, pas "#" placeholder).
   // On utilise pointerdown/pointerup car la galerie translate pendant le drag,
   // ce qui supprime le click event natif du navigateur.
-  if (proj.link && !ytId(proj.link)) {
+  const realLink = (proj.link && proj.link !== '#' && !ytId(proj.link)) ? proj.link : null;
+  const tapTarget = IS_MOBILE() && ytIds.length > 1
+    ? `https://www.youtube.com/watch_videos?video_ids=${ytIds.join(',')}`
+    : IS_MOBILE() && ytIds.length === 1
+    ? `https://www.youtube.com/watch?v=${ytIds[0]}`
+    : realLink;
+
+  if (tapTarget) {
     el.style.cursor = 'pointer';
     let ptrDownX = 0, ptrDownY = 0;
     el.addEventListener('pointerdown', e => {
@@ -579,7 +588,7 @@ function makeCard(proj) {
       const dx = Math.abs(e.clientX - ptrDownX);
       const dy = Math.abs(e.clientY - ptrDownY);
       if (dx < 6 && dy < 6) {
-        window.open(proj.link, '_blank', 'noopener,noreferrer');
+        window.open(tapTarget, '_blank', 'noopener,noreferrer');
       }
     });
   }
