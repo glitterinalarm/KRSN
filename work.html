@@ -565,6 +565,25 @@ function makeCard(proj) {
     });
   }
 
+  // Clic sur la carte → ouvrir proj.link si défini et non YouTube
+  // On utilise pointerdown/pointerup car la galerie translate pendant le drag,
+  // ce qui supprime le click event natif du navigateur.
+  if (proj.link && !ytId(proj.link)) {
+    el.style.cursor = 'pointer';
+    let ptrDownX = 0, ptrDownY = 0;
+    el.addEventListener('pointerdown', e => {
+      ptrDownX = e.clientX;
+      ptrDownY = e.clientY;
+    });
+    el.addEventListener('pointerup', e => {
+      const dx = Math.abs(e.clientX - ptrDownX);
+      const dy = Math.abs(e.clientY - ptrDownY);
+      if (dx < 6 && dy < 6) {
+        window.open(proj.link, '_blank', 'noopener,noreferrer');
+      }
+    });
+  }
+
   return { el, timers };
 }
 
@@ -725,10 +744,11 @@ function bindInput() {
   }, { passive: true });
 
   window.addEventListener('touchmove', e => {
+    e.preventDefault();
     const tNow = IS_MOBILE() ? e.touches[0].clientY : e.touches[0].clientX;
     velocity += (t0 - tNow) * 0.5;
     t0 = tNow;
-  }, { passive: true });
+  }, { passive: false });
 }
 
 // ─── Init ──────────────────────────────────────────────────
