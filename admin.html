@@ -518,6 +518,64 @@ function toggleMenu() {
                             </div>
                         `).join('')}
                     </div>
+
+                    <div class="mt-6 pt-4 border-t border-gray-100">
+                        <label class="flex items-center gap-2 text-[10px] uppercase font-bold tracking-widest cursor-pointer">
+                            <input type="checkbox" ${w.caseStudy?.enabled ? 'checked' : ''} onchange="toggleCaseStudy(${i}, this.checked)">
+                            💊 Capsule "En savoir plus" (fiche détaillée sur la vignette)
+                        </label>
+                        <p class="text-[9px] opacity-30 mt-1 italic">Affiche un bouton sur la vignette qui ouvre une fiche détaillant les étapes/intervenants du projet (qui a fait quoi).</p>
+
+                        ${w.caseStudy?.enabled ? `
+                            <div class="mt-4 space-y-4">
+                                ${(w.caseStudy.steps || []).map((s, j) => `
+                                    <div class="border border-gray-200 p-4">
+                                        <div class="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <label class="text-[9px] uppercase font-bold tracking-widest">Rôle / Étape</label>
+                                                <input type="text" value="${s.role || ''}" placeholder="Ex: Brand content &amp; direction artistique" onchange="updateCaseStep(${i}, ${j}, 'role', this.value)">
+                                            </div>
+                                            <div>
+                                                <label class="text-[9px] uppercase font-bold tracking-widest">Intervenant</label>
+                                                <input type="text" value="${s.collaborator || ''}" placeholder="Ex: Concepteur-rédacteur" onchange="updateCaseStep(${i}, ${j}, 'collaborator', this.value)">
+                                            </div>
+                                            <div class="col-span-2">
+                                                <label class="text-[9px] uppercase font-bold tracking-widest">Détail</label>
+                                                <textarea rows="2" style="width:100%;padding:0.6rem;border:1px solid #eee;margin-top:0.3rem;font-family:'JetBrains Mono',monospace;font-size:11px;resize:vertical" onchange="updateCaseStep(${i}, ${j}, 'detail', this.value)">${s.detail || ''}</textarea>
+                                            </div>
+                                            <div class="col-span-2">
+                                                <label class="block text-[9px] uppercase font-bold tracking-widest">Visuel de l'étape (optionnel)</label>
+                                                ${s.image ? `
+                                                    <div class="relative group inline-block mt-2">
+                                                        <img src="${getThumb(s.image)}" class="h-20 w-20 object-cover border border-black shadow-sm">
+                                                        <button onclick="removeCaseStepImage(${i}, ${j})" class="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] w-5 h-5 flex items-center justify-center">X</button>
+                                                    </div>
+                                                ` : `
+                                                    <div class="flex gap-2 mt-2">
+                                                        <input type="text" id="case-step-url-${i}-${j}" placeholder="Paste Image URL here..." class="flex-grow !mt-0">
+                                                        <button onclick="setCaseStepImageUrl(${i}, ${j})" class="bg-black text-white px-4 text-[10px] font-bold uppercase tracking-widest">Add URL</button>
+                                                    </div>
+                                                    <div class="mt-2 p-4 border-2 border-dashed border-gray-200 text-center text-[9px] uppercase tracking-widest text-gray-400 hover:border-black hover:text-black cursor-pointer"
+                                                         ondragover="event.preventDefault()" ondrop="handleCaseStepImageDrop(event, ${i}, ${j})">
+                                                        Drag &amp; Drop Image Here
+                                                    </div>
+                                                `}
+                                            </div>
+                                        </div>
+                                        <div class="flex justify-between items-center mt-3 pt-3 border-t border-gray-100">
+                                            <div class="flex gap-2">
+                                                <button onclick="moveCaseStep(${i}, ${j}, -1)" class="px-2 py-1 bg-gray-100 text-[9px] uppercase font-bold hover:bg-black hover:text-white transition-colors" ${j === 0 ? 'disabled style="opacity:0.3"' : ''}>↑</button>
+                                                <button onclick="moveCaseStep(${i}, ${j}, 1)" class="px-2 py-1 bg-gray-100 text-[9px] uppercase font-bold hover:bg-black hover:text-white transition-colors" ${j === w.caseStudy.steps.length - 1 ? 'disabled style="opacity:0.3"' : ''}>↓</button>
+                                            </div>
+                                            <span class="text-red-500 text-[9px] uppercase font-bold cursor-pointer hover:underline" onclick="removeCaseStep(${i}, ${j})">Remove Step</span>
+                                        </div>
+                                    </div>
+                                `).join('') || '<p class="text-[10px] opacity-30 italic">Aucune étape. Ajoutez-en une ci-dessous.</p>'}
+                                <button onclick="addCaseStep(${i})" class="px-3 py-2 bg-gray-100 text-[10px] uppercase font-bold hover:bg-black hover:text-white transition-colors">+ Add Step</button>
+                            </div>
+                        ` : ''}
+                    </div>
+
                     <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-100">
                         <div class="flex gap-2">
                             <button onclick="moveWork(${i}, -1)" class="px-3 py-1 bg-gray-100 text-[10px] uppercase font-bold hover:bg-black hover:text-white transition-colors" ${i === 0 ? 'disabled style="opacity:0.3"' : ''}>↑ Move Up</button>
@@ -684,6 +742,67 @@ function toggleMenu() {
             renderAll();
         }
 
+        // ─── CASE STUDY CAPSULE ("En savoir plus" sur la vignette)
+        function toggleCaseStudy(i, enabled) {
+            if (!siteData.works[i].caseStudy) siteData.works[i].caseStudy = { enabled: false, steps: [] };
+            siteData.works[i].caseStudy.enabled = enabled;
+            renderAll();
+        }
+
+        function addCaseStep(i) {
+            if (!siteData.works[i].caseStudy) siteData.works[i].caseStudy = { enabled: true, steps: [] };
+            siteData.works[i].caseStudy.steps.push({ role: '', collaborator: '', detail: '', image: '' });
+            renderAll();
+        }
+
+        function removeCaseStep(i, j) {
+            siteData.works[i].caseStudy.steps.splice(j, 1);
+            renderAll();
+        }
+
+        function moveCaseStep(i, j, direction) {
+            const steps = siteData.works[i].caseStudy.steps;
+            if (j + direction < 0 || j + direction >= steps.length) return;
+            const temp = steps[j];
+            steps[j] = steps[j + direction];
+            steps[j + direction] = temp;
+            renderAll();
+        }
+
+        function updateCaseStep(i, j, key, val) {
+            siteData.works[i].caseStudy.steps[j][key] = val;
+        }
+
+        function setCaseStepImageUrl(i, j) {
+            const input = document.getElementById(`case-step-url-${i}-${j}`);
+            const url = input.value.trim();
+            if (!url) return;
+            siteData.works[i].caseStudy.steps[j].image = url;
+            renderAll();
+        }
+
+        function removeCaseStepImage(i, j) {
+            siteData.works[i].caseStudy.steps[j].image = '';
+            renderAll();
+        }
+
+        async function handleCaseStepImageDrop(e, i, j) {
+            e.preventDefault();
+            const files = Array.from(e.dataTransfer.files);
+            if (!files.length) return;
+            const dropZone = e.currentTarget;
+            const originalHTML = dropZone.innerHTML;
+            dropZone.innerHTML = `<p style="opacity:.5;font-size:10px;text-align:center;padding:0.8rem;">⏳ Upload Cloudinary…</p>`;
+            try {
+                siteData.works[i].caseStudy.steps[j].image = await uploadToCloudinary(files[0]);
+            } catch (err) {
+                alert(`Échec upload ${files[0].name}: ${err.message}`);
+                dropZone.innerHTML = originalHTML;
+                return;
+            }
+            renderAll();
+        }
+
         // ─── AWARDS
         function renderAwards() {
             const awards = siteData.studio?.awards || [];
@@ -742,7 +861,7 @@ function toggleMenu() {
             renderAll();
         }
         function addWork() { 
-            siteData.works.unshift({ title: "New Project", category: "BRANDING", year: "2026", images: [], link: "#", videoLink: "" }); 
+            siteData.works.unshift({ title: "New Project", category: "BRANDING", year: "2026", images: [], link: "#", videoLink: "", caseStudy: { enabled: false, steps: [] } });
             renderAll(); 
         }
 

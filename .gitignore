@@ -13,3 +13,4 @@ __pycache__/
 .env*.local
 site_data.json
 node_modules/
+.env*

@@ -273,6 +273,115 @@ body {
   .card-desc { -webkit-line-clamp: 2; }
 }
 
+/* CASE STUDY CAPSULE + MODAL */
+.case-capsule {
+  align-self: flex-start;
+  margin-top: 14px;
+  padding: 7px 14px;
+  border: 1px solid rgba(255,255,255,0.55);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+.case-capsule:hover { background: rgba(255,255,255,0.22); border-color: #fff; }
+
+.case-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: rgba(0,0,0,0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s cubic-bezier(0.4,0,0.2,1), visibility 0.4s;
+}
+.case-modal-backdrop.open { opacity: 1; visibility: visible; }
+
+.case-modal-panel {
+  position: relative;
+  background: #fff;
+  color: #000;
+  width: min(920px, 100%);
+  max-height: 84vh;
+  overflow: hidden;
+  transform: scale(0.96);
+  opacity: 0;
+  transition: transform 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+.case-modal-backdrop.open .case-modal-panel { transform: scale(1); opacity: 1; }
+
+.case-modal-scroll { max-height: 84vh; overflow-y: auto; padding: 48px 56px 56px; }
+
+.case-modal-close {
+  position: absolute;
+  top: 18px; right: 18px;
+  width: 34px; height: 34px;
+  display: flex; align-items: center; justify-content: center;
+  background: transparent; border: 1px solid rgba(0,0,0,0.15); border-radius: 50%;
+  cursor: pointer; z-index: 2;
+  transition: background 0.2s ease;
+}
+.case-modal-close:hover { background: rgba(0,0,0,0.06); }
+.case-modal-close svg { width: 13px; height: 13px; }
+
+.case-modal-cat {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  opacity: 0.45;
+  margin-bottom: 10px;
+}
+.case-modal-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900;
+  font-size: clamp(28px, 4vw, 48px);
+  text-transform: uppercase;
+  line-height: 0.95;
+  margin-bottom: 28px;
+}
+
+.case-modal-steps { display: flex; flex-direction: column; gap: 32px; }
+.case-modal-step { display: flex; gap: 24px; align-items: flex-start; }
+.case-modal-step-media {
+  flex: 0 0 220px;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #efefef;
+}
+.case-modal-step-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.case-modal-step-body { flex: 1; padding-top: 2px; }
+.case-modal-step-num { opacity: 0.4; margin-right: 2px; }
+.case-modal-step-role {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  opacity: 0.55;
+}
+.case-modal-step-detail { font-size: 14px; line-height: 1.6; }
+
+@media (max-width: 768px) {
+  .case-modal-backdrop { padding: 0; align-items: flex-end; }
+  .case-modal-panel { width: 100%; max-height: 92vh; transform: translateY(100%); }
+  .case-modal-backdrop.open .case-modal-panel { transform: translateY(0); }
+  .case-modal-scroll { max-height: 92vh; padding: 36px 22px; }
+  .case-modal-title { margin-bottom: 22px; }
+  .case-modal-step { flex-direction: column; gap: 14px; }
+  .case-modal-step-media { flex-basis: auto; width: 100%; aspect-ratio: 16 / 9; }
+}
+
 </style>
 </head>
 <body>
@@ -317,6 +426,19 @@ body {
 
 <div id="cat-badge"></div>
 <div id="works-scene"></div>
+
+<div id="case-modal" class="case-modal-backdrop">
+  <div class="case-modal-panel">
+    <button class="case-modal-close" aria-label="Fermer" onclick="closeCaseModal()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+    </button>
+    <div class="case-modal-scroll">
+      <div class="case-modal-cat" id="case-modal-cat"></div>
+      <div class="case-modal-title" id="case-modal-title"></div>
+      <div class="case-modal-steps" id="case-modal-steps"></div>
+    </div>
+  </div>
+</div>
 
 
 <div class="works-bar">
@@ -406,6 +528,41 @@ function ytId(url) {
   const m = url.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
   return m ? m[1] : null;
 }
+
+// ─── Case studies - "en savoir plus" capsule + modal ────────
+// Sourced from proj.caseStudy (managed in /admin, stored in site-data.json)
+let modalOpen = false;
+
+function openCaseModal(proj) {
+  const cs = proj.caseStudy;
+  if (!cs || !cs.enabled || !(cs.steps || []).length) return;
+
+  document.getElementById('case-modal-cat').textContent = proj.category || '';
+  document.getElementById('case-modal-title').textContent = proj.title || '';
+
+  const steps = document.getElementById('case-modal-steps');
+  steps.innerHTML = cs.steps.map((s, i) => `
+    <div class="case-modal-step">
+      ${s.image ? `<div class="case-modal-step-media"><img src="${s.image}" alt="${s.role}" loading="lazy"></div>` : ''}
+      <div class="case-modal-step-body">
+        <div class="case-modal-step-role"><span class="case-modal-step-num">${String(i + 1).padStart(2, '0')}</span> ${s.role} — ${s.collaborator}</div>
+        <div class="case-modal-step-detail">${s.detail}</div>
+      </div>
+    </div>
+  `).join('');
+
+  modalOpen = true;
+  document.getElementById('case-modal').classList.add('open');
+}
+
+function closeCaseModal() {
+  modalOpen = false;
+  document.getElementById('case-modal').classList.remove('open');
+}
+
+window.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && modalOpen) closeCaseModal();
+});
 
 function makeCard(proj) {
   const el = document.createElement('div');
@@ -559,6 +716,22 @@ function makeCard(proj) {
     : '';
   const catLabel = proj.category || '';
   ov.innerHTML = `<div class="card-title">${proj.title || ''}</div>${descHtml}`;
+
+  if (proj.caseStudy && proj.caseStudy.enabled && (proj.caseStudy.steps || []).length) {
+    const capsule = document.createElement('button');
+    capsule.className = 'case-capsule';
+    capsule.textContent = 'En savoir plus →';
+    // Card also binds pointerdown/pointerup to open proj.link - stop it there too,
+    // since pointerup fires (and can already trigger window.open) before click does.
+    capsule.addEventListener('pointerdown', e => e.stopPropagation());
+    capsule.addEventListener('pointerup', e => e.stopPropagation());
+    capsule.addEventListener('click', e => {
+      e.stopPropagation();
+      openCaseModal(proj);
+    });
+    ov.appendChild(capsule);
+  }
+
   el.appendChild(ov);
 
   if (IS_MOBILE()) el.classList.add('touched');
@@ -746,6 +919,7 @@ function loop() {
 function bindInput() {
   // Wheel - both axes on desktop, deltaY on mobile
   window.addEventListener('wheel', e => {
+    if (modalOpen) return;
     e.preventDefault();
     const d = IS_MOBILE()
       ? e.deltaY
@@ -755,11 +929,12 @@ function bindInput() {
 
   // Pointer drag (desktop)
   window.addEventListener('mousedown', e => {
+    if (modalOpen) return;
     isDragging = true;
     dragLast   = e.clientX;
   });
   window.addEventListener('mousemove', e => {
-    if (!isDragging) return;
+    if (!isDragging || modalOpen) return;
     velocity += (dragLast - e.clientX) * 0.6;
     dragLast  = e.clientX;
   });
@@ -770,16 +945,22 @@ function bindInput() {
   // Touch - axis depends on mode
   let t0 = 0;
   window.addEventListener('touchstart', e => {
+    if (modalOpen) return;
     t0 = IS_MOBILE() ? e.touches[0].clientY : e.touches[0].clientX;
   }, { passive: true });
 
   window.addEventListener('touchmove', e => {
+    if (modalOpen) return;
     e.preventDefault();
     const tNow = IS_MOBILE() ? e.touches[0].clientY : e.touches[0].clientX;
     velocity += (t0 - tNow) * 0.5;
     t0 = tNow;
   }, { passive: false });
 }
+
+document.getElementById('case-modal').addEventListener('click', e => {
+  if (e.target.id === 'case-modal') closeCaseModal();
+});
 
 // ─── Init ──────────────────────────────────────────────────
 async function init() {
