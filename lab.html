@@ -289,7 +289,7 @@ body {
 .insight-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(transparent 0%, rgba(0,0,0,0.92) 100%);
+  background: linear-gradient(transparent 50%, rgba(0,0,0,0.88) 100%);
   opacity: 0;
   transition: opacity 0.4s ease;
   display: flex;
@@ -673,8 +673,10 @@ function renderLab(items) {
   items.forEach(item => {
     const allImages = item.images || (item.image ? [item.image] : []);
 
-    // Séparer YouTube des images statiques
-    const videoId = allImages.map(ytId).find(Boolean) || null;
+    // Séparer YouTube des images statiques — TOUS les liens YouTube déposés
+    // forment la playlist du hover, pas seulement le premier.
+    const videoIds = allImages.map(ytId).filter(Boolean);
+    const videoId = videoIds[0] || null;
     const staticImgs = allImages.filter(u => !ytId(u));
 
     // Toutes les vignettes : thumbnail YT en premier si dispo, puis images statiques
@@ -694,9 +696,11 @@ function renderLab(items) {
       `<img src="${src}" alt="${item.title || ''}" loading="lazy" class="lab-slide${i === 0 ? ' active' : ''}"/>`
     ).join('');
 
+    // playlist = tous les IDs (le premier compris) : YouTube enchaîne les
+    // vidéos dans cet ordre puis boucle sur la première (loop=1).
     const videoHtml = videoId
       ? `<div class="lab-video-layer">
-           <iframe data-src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&modestbranding=1&playsinline=1&enablejsapi=1" frameborder="0" allow="autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+           <iframe data-src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoIds.join(',')}&controls=0&modestbranding=1&playsinline=1&enablejsapi=1" frameborder="0" allow="autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
          </div>`
       : '';
 
