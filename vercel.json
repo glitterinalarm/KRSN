@@ -10,6 +10,12 @@
       "permanent": true
     },
     {
+      "source": "/",
+      "has": [{ "type": "host", "value": "www.paraffine.studio" }],
+      "destination": "https://paraffine.studio/",
+      "permanent": true
+    },
+    {
       "source": "/:path*",
       "has": [{ "type": "host", "value": "www.paraffine.studio" }],
       "destination": "https://paraffine.studio/:path*",
