@@ -204,6 +204,36 @@ function toggleMenu() {
 </div>
 <div class="text-[9px] font-bold uppercase tracking-widest bg-black text-white px-3 py-1" id="status-badge">CONNECTED</div>
 </header>
+
+<!-- TAB BAR -->
+<div style="display:flex;flex-wrap:wrap;border-bottom:2px solid black;margin-bottom:2.5rem;">
+  <button id="tab-btn-studio" onclick="switchTab('studio')"
+    style="padding:0.75rem 2rem;font-size:0.65rem;font-weight:900;letter-spacing:0.2em;text-transform:uppercase;border:none;cursor:pointer;background:white;color:black;transition:all 0.2s;">
+    Studio
+  </button>
+  <button id="tab-btn-home" onclick="switchTab('home')"
+    style="padding:0.75rem 2rem;font-size:0.65rem;font-weight:900;letter-spacing:0.2em;text-transform:uppercase;border:none;cursor:pointer;background:white;color:black;transition:all 0.2s;">
+    Accueil
+  </button>
+  <button id="tab-btn-works" onclick="switchTab('works')"
+    style="padding:0.75rem 2rem;font-size:0.65rem;font-weight:900;letter-spacing:0.2em;text-transform:uppercase;border:none;cursor:pointer;background:black;color:white;transition:all 0.2s;">
+    Works
+  </button>
+  <button id="tab-btn-lab" onclick="switchTab('lab')"
+    style="padding:0.75rem 2rem;font-size:0.65rem;font-weight:900;letter-spacing:0.2em;text-transform:uppercase;border:none;cursor:pointer;background:white;color:black;transition:all 0.2s;">
+    Lab
+  </button>
+  <button id="tab-btn-config" onclick="switchTab('config')"
+    style="padding:0.75rem 2rem;font-size:0.65rem;font-weight:900;letter-spacing:0.2em;text-transform:uppercase;border:none;cursor:pointer;background:white;color:black;transition:all 0.2s;">
+    Config
+  </button>
+  <a href="/signature"
+    style="padding:0.75rem 2rem;font-size:0.65rem;font-weight:900;letter-spacing:0.2em;text-transform:uppercase;border:none;cursor:pointer;background:white;color:black;transition:all 0.2s;display:flex;align-items:center;">
+    Signature ↗
+  </a>
+</div>
+
+<div id="tab-panel-config" style="display:none">
 <section class="mb-20">
 <h2 class="text-xs font-bold uppercase tracking-[0.3em] mb-10 border-b border-black pb-4">Configuration</h2>
 <div class="admin-card">
@@ -212,7 +242,9 @@ function toggleMenu() {
 <p class="text-[9px] opacity-40 mt-4 italic">This token is stored locally in your browser. It allows the console to push updates to your GitHub repository.</p>
 </div>
 </section>
+</div>
 
+<div id="tab-panel-studio" style="display:none">
 <section class="mb-20">
   <h2 class="text-xs font-bold uppercase tracking-[0.3em] mb-10 border-b border-black pb-4">00 - Studio Profile (Page Contact)</h2>
   <div class="admin-card">
@@ -284,7 +316,9 @@ function toggleMenu() {
     </div>
   </div>
 </section>
+</div>
 
+<div id="tab-panel-home" style="display:none">
 <section class="mb-20">
   <h2 class="text-xs font-bold uppercase tracking-[0.3em] mb-10 border-b border-black pb-4">01 - Home Video</h2>
   <div class="admin-card">
@@ -311,21 +345,10 @@ function toggleMenu() {
     </div>
   </div>
 </section>
-
-<!-- TAB BAR -->
-<div style="display:flex;border-bottom:2px solid black;margin-bottom:2.5rem;">
-  <button id="tab-btn-works" onclick="switchTab('works')"
-    style="padding:0.75rem 2rem;font-size:0.65rem;font-weight:900;letter-spacing:0.2em;text-transform:uppercase;border:none;cursor:pointer;background:black;color:white;transition:all 0.2s;">
-    WORKS
-  </button>
-  <button id="tab-btn-lab" onclick="switchTab('lab')"
-    style="padding:0.75rem 2rem;font-size:0.65rem;font-weight:900;letter-spacing:0.2em;text-transform:uppercase;border:none;cursor:pointer;background:white;color:black;transition:all 0.2s;">
-    LAB
-  </button>
 </div>
 
 <!-- TAB WORKS -->
-<div id="tab-panel-works">
+<div id="tab-panel-works" style="display:none">
   <div class="flex justify-between items-baseline mb-10">
     <h2 class="text-xs font-bold uppercase tracking-[0.3em] border-b border-black pb-4 flex-grow">02 - Works Portfolio</h2>
     <button class="text-[10px] font-bold uppercase tracking-widest ml-10" onclick="addWork()">+ Add Project</button>
@@ -933,7 +956,7 @@ function toggleMenu() {
         }
 
         function switchTab(tab) {
-            const panels = ['works', 'lab'];
+            const panels = ['studio', 'home', 'works', 'lab', 'config'];
             panels.forEach(t => {
                 document.getElementById('tab-panel-' + t).style.display = t === tab ? 'block' : 'none';
                 const btn = document.getElementById('tab-btn-' + t);
@@ -957,6 +980,7 @@ function toggleMenu() {
                     setTimeout(() => {
                         document.getElementById('login-overlay').style.display = 'none';
                         document.getElementById('admin-container').classList.remove('opacity-0', 'pointer-events-none');
+                        switchTab('works');
                     }, 700);
                 } else {
                     const error = document.getElementById('login-error');

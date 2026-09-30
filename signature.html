@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Signature — Admin Paraffine</title>
+<meta name="robots" content="noindex, nofollow">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: 'JetBrains Mono', monospace; }
+  .btn-black { background:#0a0a0a; color:#fff; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; font-size:11px; padding:0.85rem 1.4rem; transition:opacity .15s; }
+  .btn-black:hover { opacity:.8; }
+  .btn-black:disabled { opacity:.3; cursor:not-allowed; }
+  .btn-ghost { background:transparent; border:1px solid #0a0a0a; color:#0a0a0a; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; font-size:11px; padding:0.85rem 1.4rem; transition:all .15s; }
+  .btn-ghost:hover { background:#0a0a0a; color:#fff; }
+  .crop-stage { position:relative; overflow:hidden; background:#111; user-select:none; }
+  .crop-stage img { display:block; width:100%; height:auto; pointer-events:none; }
+  .crop-rect { position:absolute; border:2px solid #fff; box-shadow:0 0 0 9999px rgba(0,0,0,0.55); cursor:grab; touch-action:none; }
+  .crop-rect.dragging { cursor:grabbing; }
+  .drop-zone { border:2px dashed #d8d4cc; transition:border-color .15s, background .15s; }
+  .drop-zone.drag-over { border-color:#0a0a0a; background:#f5f3ee; }
+</style>
+</head>
+<body class="p-6 md:p-10 bg-white text-[#0a0a0a]">
+
+<!-- Login Overlay -->
+<div class="fixed inset-0 bg-black z-[100] flex flex-col justify-center items-center text-white p-6" id="login-overlay">
+  <div class="max-w-md w-full text-center">
+    <h1 class="text-3xl font-black tracking-tighter mb-8 uppercase italic">Signature — Accès</h1>
+    <input class="bg-white/5 border border-white/10 text-white text-center text-xl p-6 focus:border-white mb-4 w-full" id="admin-pass" onkeyup="if(event.key === 'Enter') checkPass()" placeholder="ACCESS KEY" type="password"/>
+    <button class="w-full bg-white text-black p-6 font-bold uppercase tracking-widest text-xs hover:bg-gray-200 transition-colors" onclick="checkPass()">Déverrouiller</button>
+    <p class="text-[9px] text-red-500 uppercase tracking-widest mt-6 opacity-0 transition-opacity" id="login-error">Clé invalide</p>
+    <a href="/admin" class="block text-[9px] opacity-40 mt-8 uppercase tracking-widest hover:opacity-70">← Retour à l'admin</a>
+  </div>
+</div>
+
+<!-- Main -->
+<div class="opacity-0 pointer-events-none transition-opacity duration-700 max-w-5xl mx-auto" id="main-container">
+
+  <div class="flex items-center justify-between mb-10 pb-4 border-b border-gray-200">
+    <div>
+      <p class="text-[9px] uppercase tracking-[0.3em] opacity-40 mb-1">Paraffine · Admin</p>
+      <h1 class="text-2xl font-black uppercase tracking-tight">Signature email</h1>
+    </div>
+    <a href="/admin" class="text-[10px] uppercase tracking-widest opacity-50 hover:opacity-100">← Admin</a>
+  </div>
+
+  <!-- Étape 1 : upload -->
+  <section class="mb-10">
+    <h2 class="text-[10px] uppercase tracking-[0.2em] opacity-40 mb-3">1 — Nouveau visuel</h2>
+    <div class="drop-zone p-10 text-center cursor-pointer" id="dropZone">
+      <p class="text-[11px] uppercase tracking-widest opacity-50" id="dropLabel">Glisse une image ici, ou clique pour en choisir une</p>
+      <input type="file" id="fileInput" accept="image/*" class="hidden">
+    </div>
+  </section>
+
+  <!-- Étape 2 : recadrage -->
+  <section class="mb-10 hidden" id="cropSection">
+    <h2 class="text-[10px] uppercase tracking-[0.2em] opacity-40 mb-3">2 — Recadrage (bandeau, ratio fixe)</h2>
+    <div class="crop-stage" id="cropStage" style="max-width:640px;">
+      <img id="cropImg" alt="">
+      <div class="crop-rect" id="cropRect"></div>
+    </div>
+    <div class="flex items-center gap-3 mt-3 max-w-[640px]">
+      <span class="text-[10px] uppercase tracking-widest opacity-50 shrink-0">Zoom</span>
+      <input type="range" id="zoomSlider" min="30" max="100" value="70" class="w-full">
+    </div>
+    <p class="text-[10px] opacity-40 mt-2 max-w-[640px]">Fais glisser le cadre pour choisir la zone. Le curseur ajuste combien d'image tient dans le bandeau.</p>
+  </section>
+
+  <!-- Étape 3 : aperçu signature -->
+  <section class="mb-10 hidden" id="previewSection">
+    <h2 class="text-[10px] uppercase tracking-[0.2em] opacity-40 mb-3">3 — Aperçu signature</h2>
+
+    <div class="inline-flex p-[3px] bg-white border border-gray-200 rounded-full mb-4">
+      <button type="button" class="sig-mode-btn active px-4 py-2 text-[11px] font-bold uppercase tracking-widest rounded-full" data-mode="jour">Jour</button>
+      <button type="button" class="sig-mode-btn px-4 py-2 text-[11px] font-bold uppercase tracking-widest rounded-full" data-mode="nuit">Nuit</button>
+    </div>
+
+    <div class="border border-gray-200 p-8" id="sigStage" style="max-width:640px;">
+      <div id="sig-light"></div>
+      <div id="sig-dark" style="display:none;"></div>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-3 mt-4">
+      <button class="btn-black" id="copyBtn">Copier la signature</button>
+      <button class="btn-ghost" id="saveBtn">Enregistrer ce visuel</button>
+      <span class="text-[11px] opacity-60" id="status"></span>
+    </div>
+  </section>
+
+</div>
+
+<script>
+(function () {
+  // ── Auth (identique à /admin) ──────────────────────────────────
+  window._adminKey = null;
+
+  window.checkPass = async function () {
+    const pass = document.getElementById('admin-pass').value;
+    try {
+      const res = await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: pass }),
+      });
+      if (res.ok) {
+        const { token } = await res.json();
+        window._adminKey = token;
+        document.getElementById('login-overlay').style.opacity = '0';
+        setTimeout(() => {
+          document.getElementById('login-overlay').style.display = 'none';
+          document.getElementById('main-container').classList.remove('opacity-0', 'pointer-events-none');
+          init();
+        }, 500);
+      } else {
+        flashError();
+      }
+    } catch (e) {
+      flashError();
+    }
+  };
+
+  function flashError() {
+    const error = document.getElementById('login-error');
+    error.classList.remove('opacity-0');
+    setTimeout(() => error.classList.add('opacity-0'), 2000);
+  }
+
+  // ── Constantes bandeau ──────────────────────────────────────────
+  const BANNER_W = 1040, BANNER_H = 353; // ratio ~2.946:1
+  const RATIO = BANNER_W / BANNER_H;
+  const CLOUD = 'dxrvmrbst';
+  const UPLOAD_PRESET = 'paraffine_media';
+
+  let siteData = null;
+  let currentBannerUrl = null; // URL Cloudinary finale (avec transformations)
+  let uploadedPublicPath = null; // ex: v123456/abcxyz.jpg
+  let naturalW = 0, naturalH = 0;
+  let mode = 'jour';
+
+  async function init() {
+    try {
+      const res = await fetch('/api/site-data?t=' + Date.now());
+      if (res.ok) siteData = await res.json();
+    } catch (e) { /* pas grave si absent */ }
+    if (!siteData) siteData = {};
+    if (siteData.signatureBanner) {
+      currentBannerUrl = siteData.signatureBanner;
+      document.getElementById('previewSection').classList.remove('hidden');
+      renderSignatures();
+    }
+  }
+
+  // ── Upload Cloudinary (identique à /admin) ──────────────────────
+  async function uploadToCloudinary(file) {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', UPLOAD_PRESET);
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD}/upload`, {
+      method: 'POST',
+      body: formData,
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error?.message || `Cloudinary error ${res.status}`);
+    }
+    return (await res.json()).secure_url;
+  }
+
+  const dropZone = document.getElementById('dropZone');
+  const dropLabel = document.getElementById('dropLabel');
+  const fileInput = document.getElementById('fileInput');
+
+  dropZone.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', (e) => {
+    if (e.target.files[0]) handleFile(e.target.files[0]);
+  });
+  ['dragenter', 'dragover'].forEach(ev =>
+    dropZone.addEventListener(ev, (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); })
+  );
+  ['dragleave', 'drop'].forEach(ev =>
+    dropZone.addEventListener(ev, (e) => { e.preventDefault(); dropZone.classList.remove('drag-over'); })
+  );
+  dropZone.addEventListener('drop', (e) => {
+    const file = e.dataTransfer.files[0];
+    if (file) handleFile(file);
+  });
+
+  async function handleFile(file) {
+    dropLabel.textContent = '⏳ Upload en cours…';
+    try {
+      const url = await uploadToCloudinary(file);
+      uploadedPublicPath = url.split('/upload/')[1];
+      dropLabel.textContent = '✓ ' + file.name + ' — glisse un autre fichier pour remplacer';
+      loadIntoCropper(url);
+    } catch (err) {
+      dropLabel.textContent = 'Échec : ' + err.message;
+    }
+  }
+
+  // ── Cropper ───────────────────────────────────────────────────
+  const cropSection = document.getElementById('cropSection');
+  const cropImg = document.getElementById('cropImg');
+  const cropStage = document.getElementById('cropStage');
+  const cropRect = document.getElementById('cropRect');
+  const zoomSlider = document.getElementById('zoomSlider');
+
+  function loadIntoCropper(url) {
+    cropImg.onload = () => {
+      naturalW = cropImg.naturalWidth;
+      naturalH = cropImg.naturalHeight;
+      cropSection.classList.remove('hidden');
+      positionRect(true);
+    };
+    cropImg.src = url;
+  }
+
+  function positionRect(reset) {
+    const stageW = cropStage.clientWidth;
+    const stageH = cropStage.clientHeight;
+    const zoom = zoomSlider.value / 100;
+    let w = stageW * zoom;
+    let h = w / RATIO;
+    if (h > stageH) { h = stageH; w = h * RATIO; }
+    const prevLeft = parseFloat(cropRect.dataset.left || (stageW - w) / 2);
+    const prevTop = parseFloat(cropRect.dataset.top || (stageH - h) / 2);
+    const left = reset ? (stageW - w) / 2 : Math.min(Math.max(prevLeft, 0), stageW - w);
+    const top = reset ? (stageH - h) / 2 : Math.min(Math.max(prevTop, 0), stageH - h);
+    cropRect.style.width = w + 'px';
+    cropRect.style.height = h + 'px';
+    cropRect.style.left = left + 'px';
+    cropRect.style.top = top + 'px';
+    cropRect.dataset.left = left;
+    cropRect.dataset.top = top;
+    updateBannerUrl();
+  }
+
+  zoomSlider.addEventListener('input', () => positionRect(false));
+
+  let dragging = false, dragStartX = 0, dragStartY = 0, rectStartLeft = 0, rectStartTop = 0;
+
+  function dragStart(x, y) {
+    dragging = true;
+    cropRect.classList.add('dragging');
+    dragStartX = x; dragStartY = y;
+    rectStartLeft = parseFloat(cropRect.dataset.left);
+    rectStartTop = parseFloat(cropRect.dataset.top);
+  }
+  function dragMove(x, y) {
+    if (!dragging) return;
+    const stageW = cropStage.clientWidth, stageH = cropStage.clientHeight;
+    const w = cropRect.offsetWidth, h = cropRect.offsetHeight;
+    let left = rectStartLeft + (x - dragStartX);
+    let top = rectStartTop + (y - dragStartY);
+    left = Math.min(Math.max(left, 0), stageW - w);
+    top = Math.min(Math.max(top, 0), stageH - h);
+    cropRect.style.left = left + 'px';
+    cropRect.style.top = top + 'px';
+    cropRect.dataset.left = left;
+    cropRect.dataset.top = top;
+    updateBannerUrl();
+  }
+  function dragEnd() { dragging = false; cropRect.classList.remove('dragging'); }
+
+  cropRect.addEventListener('mousedown', (e) => dragStart(e.clientX, e.clientY));
+  window.addEventListener('mousemove', (e) => dragMove(e.clientX, e.clientY));
+  window.addEventListener('mouseup', dragEnd);
+  cropRect.addEventListener('touchstart', (e) => { const t = e.touches[0]; dragStart(t.clientX, t.clientY); }, { passive: true });
+  window.addEventListener('touchmove', (e) => { if (dragging) { const t = e.touches[0]; dragMove(t.clientX, t.clientY); } }, { passive: true });
+  window.addEventListener('touchend', dragEnd);
+  window.addEventListener('resize', () => positionRect(false));
+
+  function updateBannerUrl() {
+    if (!uploadedPublicPath || !naturalW) return;
+    const stageW = cropStage.clientWidth;
+    const scale = naturalW / stageW;
+    const x = Math.round(parseFloat(cropRect.dataset.left) * scale);
+    const y = Math.round(parseFloat(cropRect.dataset.top) * scale);
+    const w = Math.round(cropRect.offsetWidth * scale);
+    const h = Math.round(cropRect.offsetHeight * scale);
+    currentBannerUrl = `https://res.cloudinary.com/${CLOUD}/image/upload/c_crop,x_${x},y_${y},w_${w},h_${h}/c_fill,w_${BANNER_W},h_${BANNER_H},f_auto,q_auto:eco/${uploadedPublicPath}`;
+    document.getElementById('previewSection').classList.remove('hidden');
+    renderSignatures();
+  }
+
+  // ── Icônes réseaux (hébergées sur le site, fiables en email) ────
+  const ICONS = {
+    instagram: '/email-icons/instagram.png',
+    linkedin: '/email-icons/linkedin.png',
+    facebook: '/email-icons/facebook.png',
+    youtube: '/email-icons/youtube.png',
+  };
+
+  function socialRow(iconColor) {
+    const links = [
+      [ICONS.instagram, 'https://www.instagram.com/prfn.studio/'],
+      [ICONS.linkedin, 'https://www.linkedin.com/company/paraffine-studio/'],
+      [ICONS.facebook, 'https://www.facebook.com/profile.php?id=61591603582476'],
+      [ICONS.youtube, 'https://www.youtube.com/@PARAFFINE.STUDIO'],
+    ];
+    return `<table cellpadding="0" cellspacing="0" border="0"><tr>${links.map(([src, href]) => `
+      <td style="padding-right:8px;"><a href="${href}"><img src="${location.origin}${src}" width="26" height="26" alt="" style="display:block; border:0;"></a></td>
+    `).join('')}</tr></table>`;
+  }
+
+  function bannerBlock(bordered) {
+    if (!currentBannerUrl) return '';
+    const border = bordered ? 'border:1px solid #3a3733;' : 'border:0;';
+    const linkColor = bordered ? '#f5f3ee' : '#f5f3ee';
+    const bg = bordered ? '#1c1a16' : '#0a0a0a';
+    const sub = bordered ? '#a8a49c' : '#b8b5ae';
+    const sep = bordered ? '#6f6c66' : '#8a8680';
+    return `
+      <a href="https://krsn.paraffine.studio">
+        <img src="${currentBannerUrl}" alt="Kérosène" width="520" height="176" style="display:block; width:100%; max-width:520px; height:auto; ${border}">
+      </a>
+      <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse; width:100%; background-color:${bg}; ${bordered ? 'border:1px solid #3a3733; border-top:0;' : ''}">
+        <tr><td style="padding:12px 19px;">
+          <span style="font-family:Arial,Helvetica,sans-serif; font-weight:700; font-size:11px; letter-spacing:1px; color:#f5f3ee; text-transform:uppercase;">Kérosène</span>
+          <span style="font-family:Arial,Helvetica,sans-serif; font-size:12px; color:${sep};"> · </span>
+          <span style="font-family:Arial,Helvetica,sans-serif; font-size:12px; color:${sub};">un sujet par jour</span>
+          <span style="font-family:Arial,Helvetica,sans-serif; font-size:12px; color:${sep};"> — </span>
+          <a href="https://krsn.paraffine.studio" style="font-family:Arial,Helvetica,sans-serif; font-weight:700; font-size:11.5px; color:${linkColor}; text-decoration:none; border-bottom:1px solid ${sep};">lire aujourd'hui →</a>
+        </td></tr>
+      </table>`;
+  }
+
+  function signatureLight() {
+    return `
+    <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse; font-family:Arial,Helvetica,sans-serif; width:100%; max-width:520px;">
+      <tr><td style="padding-bottom:16px;">
+        <span style="font-family:'Arial Black',Arial,sans-serif; font-weight:900; font-size:10px; letter-spacing:3px; color:#a8a49c; text-transform:uppercase;">Studio</span><br>
+        <span style="font-family:'Arial Black',Arial,sans-serif; font-weight:900; font-size:28px; letter-spacing:-0.5px; color:#0a0a0a; text-transform:uppercase; line-height:1.05;">Paraffine</span>
+      </td></tr>
+      <tr><td style="padding-bottom:2px;"><span style="font-family:Arial,Helvetica,sans-serif; font-weight:700; font-size:15px; color:#0a0a0a;">Germain Trillat</span></td></tr>
+      <tr><td style="padding-bottom:10px;"><span style="font-family:Arial,Helvetica,sans-serif; font-size:13px; color:#6b6660;">Directeur créatif — Fondateur</span></td></tr>
+      <tr><td style="padding-bottom:18px;"><span style="font-family:Arial,Helvetica,sans-serif; font-size:12.5px; color:#a8a49c; line-height:1.5;">Direction artistique, motion, IA générative, branding.</span></td></tr>
+      <tr><td style="padding-bottom:20px; border-top:1px solid #ececec; padding-top:16px;">
+        <span style="font-family:Arial,Helvetica,sans-serif; font-size:13px; color:#3a3733;">
+          <a href="tel:+33695411451" style="color:#3a3733; text-decoration:none;">06 95 41 14 51</a>&nbsp;·&nbsp;
+          <a href="mailto:germain@paraffine.studio" style="color:#3a3733; text-decoration:none;">germain@paraffine.studio</a>&nbsp;·&nbsp;
+          <a href="https://paraffine.studio" style="color:#0a0a0a; font-weight:700; text-decoration:none; border-bottom:1px solid #0a0a0a;">paraffine.studio</a>
+        </span>
+      </td></tr>
+      <tr><td style="padding-bottom:26px;">${socialRow()}</td></tr>
+      <tr><td>${bannerBlock(false)}</td></tr>
+    </table>`;
+  }
+
+  function signatureDark() {
+    return `
+    <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse; font-family:Arial,Helvetica,sans-serif; width:100%; max-width:520px; background-color:#0a0a0a;">
+      <tr><td style="padding:26px 24px 16px;">
+        <span style="font-family:'Arial Black',Arial,sans-serif; font-weight:900; font-size:10px; letter-spacing:3px; color:#6f6c66; text-transform:uppercase;">Studio</span><br>
+        <span style="font-family:'Arial Black',Arial,sans-serif; font-weight:900; font-size:28px; letter-spacing:-0.5px; color:#f5f3ee; text-transform:uppercase; line-height:1.05;">Paraffine</span>
+      </td></tr>
+      <tr><td style="padding:0 24px 2px;"><span style="font-family:Arial,Helvetica,sans-serif; font-weight:700; font-size:15px; color:#f5f3ee;">Germain Trillat</span></td></tr>
+      <tr><td style="padding:0 24px 10px;"><span style="font-family:Arial,Helvetica,sans-serif; font-size:13px; color:#b8b5ae;">Directeur créatif — Fondateur</span></td></tr>
+      <tr><td style="padding:0 24px 18px;"><span style="font-family:Arial,Helvetica,sans-serif; font-size:12.5px; color:#7d7a72; line-height:1.5;">Direction artistique, motion, IA générative, branding.</span></td></tr>
+      <tr><td style="padding:16px 24px 20px; border-top:1px solid #302d28;">
+        <span style="font-family:Arial,Helvetica,sans-serif; font-size:13px; color:#d6d3cb;">
+          <a href="tel:+33695411451" style="color:#d6d3cb; text-decoration:none;">06 95 41 14 51</a>&nbsp;·&nbsp;
+          <a href="mailto:germain@paraffine.studio" style="color:#d6d3cb; text-decoration:none;">germain@paraffine.studio</a>&nbsp;·&nbsp;
+          <a href="https://paraffine.studio" style="color:#f5f3ee; font-weight:700; text-decoration:none; border-bottom:1px solid #f5f3ee;">paraffine.studio</a>
+        </span>
+      </td></tr>
+      <tr><td style="padding:0 24px 26px;">${socialRow()}</td></tr>
+      <tr><td style="padding:0 24px 24px;">${bannerBlock(true)}</td></tr>
+    </table>`;
+  }
+
+  function renderSignatures() {
+    document.getElementById('sig-light').innerHTML = signatureLight();
+    document.getElementById('sig-dark').innerHTML = signatureDark();
+  }
+
+  // ── Switch jour/nuit ──────────────────────────────────────────
+  document.querySelectorAll('.sig-mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      mode = btn.dataset.mode;
+      document.querySelectorAll('.sig-mode-btn').forEach(b => {
+        b.classList.toggle('active', b === btn);
+        b.classList.toggle('bg-black', b === btn);
+        b.classList.toggle('text-white', b === btn);
+      });
+      document.getElementById('sig-light').style.display = mode === 'jour' ? 'block' : 'none';
+      document.getElementById('sig-dark').style.display = mode === 'nuit' ? 'block' : 'none';
+      document.getElementById('sigStage').style.background = mode === 'nuit' ? '#0a0a0a' : '#ffffff';
+    });
+  });
+
+  // ── Copier ────────────────────────────────────────────────────
+  document.getElementById('copyBtn').addEventListener('click', async () => {
+    const source = mode === 'nuit' ? document.getElementById('sig-dark') : document.getElementById('sig-light');
+    const html = source.innerHTML;
+    const text = source.innerText;
+    const status = document.getElementById('status');
+    try {
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          'text/html': new Blob([html], { type: 'text/html' }),
+          'text/plain': new Blob([text], { type: 'text/plain' }),
+        }),
+      ]);
+      status.textContent = 'Copié — colle dans Gmail avec Cmd+V.';
+    } catch (e) {
+      const range = document.createRange();
+      range.selectNodeContents(source);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      status.textContent = 'Sélection faite — fais Cmd+C.';
+    }
+  });
+
+  // ── Enregistrer (site-data.json) ─────────────────────────────
+  document.getElementById('saveBtn').addEventListener('click', async () => {
+    const status = document.getElementById('status');
+    if (!currentBannerUrl) { status.textContent = 'Choisis d\'abord un visuel.'; return; }
+    status.textContent = 'Enregistrement…';
+    try {
+      const getRes = await fetch('/api/site-data?t=' + Date.now());
+      const data = getRes.ok ? await getRes.json() : {};
+      data.signatureBanner = currentBannerUrl;
+      const res = await fetch('/api/site-data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Admin-Key': window._adminKey },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      status.textContent = '✓ Enregistré — ce visuel sera repris par défaut la prochaine fois.';
+    } catch (e) {
+      status.textContent = 'Échec : ' + e.message;
+    }
+  });
+})();
+</script>
+</body>
+</html>
