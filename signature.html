@@ -84,6 +84,7 @@
 
     <div class="flex flex-wrap items-center gap-3 mt-4">
       <button class="btn-black" id="copyBtn">Copier la signature</button>
+      <button class="btn-ghost" id="recropBtn">Recadrer ce visuel</button>
       <button class="btn-ghost" id="saveBtn">Enregistrer ce visuel</button>
       <span class="text-[11px] opacity-60" id="status"></span>
     </div>
@@ -144,6 +145,10 @@
   // afficher une signature complète et copiable dès l'ouverture, pas un
   // module vide qui attend un upload.
   const DEFAULT_BANNER = 'https://res.cloudinary.com/dxrvmrbst/image/upload/c_crop,x_750,y_0,w_922,h_941/c_fill,w_1040,h_353,f_auto,q_auto:eco/v1780105887/c2680oeqnslfyvnoxk4w.png';
+  // Chemin brut (sans transformation) de l'image derrière DEFAULT_BANNER —
+  // nécessaire pour pouvoir la recharger dans le cropper et la recadrer à
+  // nouveau, plutôt que de repartir d'un résultat déjà recadré.
+  const DEFAULT_SOURCE = 'v1780105887/c2680oeqnslfyvnoxk4w.png';
 
   async function init() {
     try {
@@ -152,9 +157,16 @@
     } catch (e) { /* pas grave si absent */ }
     if (!siteData) siteData = {};
     currentBannerUrl = siteData.signatureBanner || DEFAULT_BANNER;
+    uploadedPublicPath = siteData.signatureBannerSource || DEFAULT_SOURCE;
     document.getElementById('previewSection').classList.remove('hidden');
     renderSignatures();
   }
+
+  document.getElementById('recropBtn').addEventListener('click', () => {
+    cropSection.classList.remove('hidden');
+    cropSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    loadIntoCropper(`https://res.cloudinary.com/${CLOUD}/image/upload/${uploadedPublicPath}`);
+  });
 
   // ── Upload Cloudinary (identique à /admin) ──────────────────────
   async function uploadToCloudinary(file) {
@@ -427,6 +439,7 @@
       const getRes = await fetch('/api/site-data?t=' + Date.now());
       const data = getRes.ok ? await getRes.json() : {};
       data.signatureBanner = currentBannerUrl;
+      data.signatureBannerSource = uploadedPublicPath;
       const res = await fetch('/api/site-data', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'X-Admin-Key': window._adminKey },
