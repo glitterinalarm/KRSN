@@ -139,17 +139,21 @@
   let naturalW = 0, naturalH = 0;
   let mode = 'jour';
 
+  // Visuel de départ (le recadrage skull rider fait cette session) — tant que
+  // rien n'a encore été enregistré via ce module, la page doit quand même
+  // afficher une signature complète et copiable dès l'ouverture, pas un
+  // module vide qui attend un upload.
+  const DEFAULT_BANNER = 'https://res.cloudinary.com/dxrvmrbst/image/upload/c_crop,x_750,y_0,w_922,h_941/c_fill,w_1040,h_353,f_auto,q_auto:eco/v1780105887/c2680oeqnslfyvnoxk4w.png';
+
   async function init() {
     try {
       const res = await fetch('/api/site-data?t=' + Date.now());
       if (res.ok) siteData = await res.json();
     } catch (e) { /* pas grave si absent */ }
     if (!siteData) siteData = {};
-    if (siteData.signatureBanner) {
-      currentBannerUrl = siteData.signatureBanner;
-      document.getElementById('previewSection').classList.remove('hidden');
-      renderSignatures();
-    }
+    currentBannerUrl = siteData.signatureBanner || DEFAULT_BANNER;
+    document.getElementById('previewSection').classList.remove('hidden');
+    renderSignatures();
   }
 
   // ── Upload Cloudinary (identique à /admin) ──────────────────────
