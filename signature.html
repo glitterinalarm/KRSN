@@ -95,7 +95,27 @@
 <script>
 (function () {
   // ── Auth (identique à /admin) ──────────────────────────────────
+  // Clé gardée en sessionStorage (durée de l'onglet navigateur) et partagée
+  // avec /admin — sans ça, passer de l'un à l'autre redemandait le mot de
+  // passe à chaque fois alors que c'est censé être le même accès.
   window._adminKey = null;
+
+  function unlock() {
+    document.getElementById('login-overlay').style.opacity = '0';
+    setTimeout(() => {
+      document.getElementById('login-overlay').style.display = 'none';
+      document.getElementById('main-container').classList.remove('opacity-0', 'pointer-events-none');
+      init();
+    }, 500);
+  }
+
+  const storedKey = sessionStorage.getItem('paraffine_admin_key');
+  if (storedKey) {
+    window._adminKey = storedKey;
+    document.getElementById('login-overlay').style.display = 'none';
+    document.getElementById('main-container').classList.remove('opacity-0', 'pointer-events-none');
+    init();
+  }
 
   window.checkPass = async function () {
     const pass = document.getElementById('admin-pass').value;
@@ -108,12 +128,8 @@
       if (res.ok) {
         const { token } = await res.json();
         window._adminKey = token;
-        document.getElementById('login-overlay').style.opacity = '0';
-        setTimeout(() => {
-          document.getElementById('login-overlay').style.display = 'none';
-          document.getElementById('main-container').classList.remove('opacity-0', 'pointer-events-none');
-          init();
-        }, 500);
+        sessionStorage.setItem('paraffine_admin_key', token);
+        unlock();
       } else {
         flashError();
       }

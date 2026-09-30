@@ -965,6 +965,17 @@ function toggleMenu() {
             });
         }
 
+        // Clé gardée en sessionStorage (durée de l'onglet) et partagée avec
+        // /signature — sans ça, naviguer entre les deux redemandait le mot
+        // de passe alors que c'est censé être le même accès.
+        const storedAdminKey = sessionStorage.getItem('paraffine_admin_key');
+        if (storedAdminKey) {
+            window._adminKey = storedAdminKey;
+            document.getElementById('login-overlay').style.display = 'none';
+            document.getElementById('admin-container').classList.remove('opacity-0', 'pointer-events-none');
+            switchTab('works');
+        }
+
         async function checkPass() {
             const pass = document.getElementById('admin-pass').value;
             try {
@@ -976,6 +987,7 @@ function toggleMenu() {
                 if (res.ok) {
                     const { token } = await res.json();
                     window._adminKey = token;
+                    sessionStorage.setItem('paraffine_admin_key', token);
                     document.getElementById('login-overlay').style.opacity = '0';
                     setTimeout(() => {
                         document.getElementById('login-overlay').style.display = 'none';
