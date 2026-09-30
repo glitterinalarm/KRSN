@@ -317,11 +317,15 @@
   }
 
   // ── Icônes réseaux (hébergées sur le site, fiables en email) ────
+  // Gmail met en cache les images externes par URL — ?v= force un
+  // re-fetch quand le contenu d'une icône change sous le même nom de
+  // fichier (sinon Gmail continue de servir une vieille version en cache).
+  const ICONS_VERSION = 'v3';
   const ICONS = {
-    instagram: '/email-icons/instagram.png',
-    linkedin: '/email-icons/linkedin.png',
-    facebook: '/email-icons/facebook.png',
-    youtube: '/email-icons/youtube.png',
+    instagram: `/email-icons/instagram.png?${ICONS_VERSION}`,
+    linkedin: `/email-icons/linkedin.png?${ICONS_VERSION}`,
+    facebook: `/email-icons/facebook.png?${ICONS_VERSION}`,
+    youtube: `/email-icons/youtube.png?${ICONS_VERSION}`,
   };
 
   function socialRow(iconColor) {
