@@ -340,12 +340,16 @@
     // "badge" de la référence, en restant dans le noir/blanc/crème de la
     // charte Paraffine (pas de violet, ce n'est pas la marque).
     const pillBg = dark ? '#242119' : '#f5f3ee';
+    // La taille passe par la <td> (technique robuste en email), pas par des
+    // width/height sur le <a> — un lien est un élément inline, la plupart
+    // des clients mail ignorent ou déforment ses dimensions CSS.
     return `<table cellpadding="0" cellspacing="0" border="0"><tr>${links.map(([src, href]) => `
-      <td style="padding-right:8px;">
-        <a href="${href}" style="display:inline-block; width:22px; height:22px; background-color:${pillBg}; border-radius:19px; padding:8px; line-height:0;">
-          <img src="${location.origin}${src}" width="22" height="22" alt="" style="display:block; border:0;">
+      <td width="38" height="38" align="center" valign="middle" style="width:38px; height:38px; background-color:${pillBg}; border-radius:19px;">
+        <a href="${href}" style="display:block; line-height:0;">
+          <img src="${location.origin}${src}" width="24" height="24" alt="" style="display:block; border:0;">
         </a>
       </td>
+      <td width="8" style="width:8px; font-size:0; line-height:0;">&nbsp;</td>
     `).join('')}</tr></table>`;
   }
 
